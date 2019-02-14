@@ -59,7 +59,7 @@ function pmpro_courses_lesson_cpt() {
 		'exclude_from_search' => false,
 		'publicly_queryable'  => true,
 		'rewrite'             => $rewrite,
-		'capability_type'     => 'post',
+		'capability_type'     => 'page',
 		'show_in_rest'        => true,
 	);
 	register_post_type( 'pmpro_lesson', $args );

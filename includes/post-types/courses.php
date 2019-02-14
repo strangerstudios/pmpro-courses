@@ -3,7 +3,7 @@
  * Register Custom Post Type for Courses
  * Hooks into init.
  */
-function pmpro_courses_courses_cpt() {
+function pmpro_courses_course_cpt() {
 
 	$labels  = array(
 		'name'                  => _x( 'PMPro Courses', 'Post Type General Name', 'pmpro-courses' ),
@@ -46,7 +46,7 @@ function pmpro_courses_courses_cpt() {
 		'labels'              => $labels,
 		'supports'            => array( 'title', 'editor', 'thumbnail', 'comments', 'revisions', 'custom-fields', 'post-formats' ),
 		'taxonomies'          => array( 'category', 'post_tag' ),
-		'hierarchical'        => true,
+		'hierarchical'        => false,
 		'public'              => true,
 		'show_ui'             => true,
 		'show_in_menu'        => true,
@@ -64,4 +64,23 @@ function pmpro_courses_courses_cpt() {
 	register_post_type( 'pmpro_course', $args );
 
 }
-add_action( 'init', 'pmpro_courses_courses_cpt', 0 );
+add_action( 'init', 'pmpro_courses_course_cpt', 0 );
+
+/**
+ * Define the metaboxes.
+ */
+function pmpro_courses_course_cpt_define_meta_boxes() {
+	add_meta_box( 'pmpro_page_meta', __( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'pmpro_course', 'side');
+	add_meta_box( 'pmpro_courses_lessons', __( 'Lessons', 'pmpro-courses'), 'pmpro_courses_course_cpt_lessons', 'pmpro_course', 'normal' );	
+}
+add_action('admin_menu', 'pmpro_courses_course_cpt_define_meta_boxes', 20);
+
+/**
+ * Callback for lessons meta box
+ */
+function pmpro_courses_course_cpt_lessons() {
+?>
+<h2>Lessons</h2>
+<p>Copy this stuff from PMPro Series</p>
+<?php
+}
