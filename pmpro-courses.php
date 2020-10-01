@@ -22,6 +22,9 @@ require_once PMPRO_COURSES_DIR . '/includes/post-types/courses.php';
 require_once PMPRO_COURSES_DIR . '/includes/post-types/lessons.php';
 require_once PMPRO_COURSES_DIR . '/includes/admin.php';
 
+//Integrations
+require_once PMPRO_COURSES_DIR . '/includes/compatibility/learndash.php';
+
 /**
  * Tie into GlotPress
  *
