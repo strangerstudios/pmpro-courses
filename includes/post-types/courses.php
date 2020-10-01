@@ -79,8 +79,62 @@ add_action('admin_menu', 'pmpro_courses_course_cpt_define_meta_boxes', 20);
  * Callback for lessons meta box
  */
 function pmpro_courses_course_cpt_lessons() {
-?>
-<h2>Lessons</h2>
-<p>Copy this stuff from PMPro Series</p>
-<?php
+
+		global $wpdb, $post;
+
+		// boot out people without permissions
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return false;
+		}
+
+		?>
+				
+			
+		<div class="message error"><p><?php //echo $this->error; ?></p></div>
+		<h3><?php _e( 'Lessons in this Course', 'pmpro-series' ); ?></h3>
+		
+		<table id="pmproc_table" class="wp-list-table widefat striped">
+			<thead>
+				<th><?php _e( 'Order', 'pmpro-series' ); ?></th>
+				<th width="50%"><?php _e( 'Title', 'pmpro-series' ); ?></th>
+				<th width="20%"><?php _e( 'Actions', 'pmpro-series' ); ?></th>
+			</thead>
+			<tbody>
+			<?php echo pmpro_courses_build_lesson_html( pmpro_courses_get_lessons( $post->ID ) ); ?>
+			</tbody>
+		</table>
+		<h3><?php _e( 'Add/Edit Lessons', 'pmpro-series' ); ?> - <a href='<?php echo admin_url( 'post-new.php?post_type=pmpro_lesson' ); ?>' target='_BLANK'><?php _e('Create New Lesson','pmpro-courses'); ?></a></h3>
+		<table id="newmeta" class="wp-list-table widefat striped">
+			<thead>
+				<tr>
+					<th><?php _e( 'Lesson', 'pmpro-series' ); ?></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+					<select id="pmproc_post" name="pmproc_post">
+						<option value=""></option>
+					<?php
+						$all_lessons = pmpro_courses_get_lessons();
+
+					foreach ( $all_lessons as $lesson ) {
+						?>
+						<option value="<?php echo $lesson['id']; ?>"><?php echo esc_textarea( $lesson['title'] ); ?> (#
+						<?php
+						echo $lesson['id'];
+						?>
+							)</option>
+						<?php
+					}
+					?>
+					</select>
+					</td>					</td>
+					<td width="20%"><a class="button button-primary" id="pmproc_save"><?php _e( 'Add to Course', 'pmpro-series' ); ?></a></td>
+				</tr>
+			</tbody>
+		</table>
+		<?php
+	// }
 }
