@@ -561,3 +561,15 @@ function pmproc_ld_has_course_access( $hasaccess, $mypost, $myuser, $post_member
 	return $hasaccess;
 }
 add_filter( 'pmpro_has_membership_access_filter', 'pmproc_ld_has_course_access', 99, 4 );
+
+function pmproc_ld_settings( $integrations ){
+
+	$integrations[] = array(
+		'name' => __('LearnDash', 'pmpro-courses'),
+		'slug' => 'pmproc_learndash'
+	);
+
+	return $integrations;
+
+}
+add_filter( 'pmproc_settings_integrations', 'pmproc_ld_settings', 10, 1 );
