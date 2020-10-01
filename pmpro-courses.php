@@ -268,3 +268,32 @@ function pmproc_record_progress_ajax(){
 
 }
 add_action( 'wp_ajax_pmproc_record_progress', 'pmproc_record_progress_ajax' );
+
+function pmpro_courses_settings_page(){
+
+	add_submenu_page( 'edit.php?post_type=pmpro_course', __('Paid Memberships Pro Courses - Settings', 'pmpro-courses'), __('Settings', 'pmpro-courses'), 'manage_options', 'pmpro-courses-settings', 'pmpro_courses_settings' );
+
+}
+add_action( 'admin_menu', 'pmpro_courses_settings_page' );
+
+function pmpro_courses_settings(){
+
+	require_once PMPRO_COURSES_DIR . '/includes/settings.php';
+
+}
+
+function pmpro_courses_settings_save(){
+
+	if( isset( $_REQUEST['pmproc_save_integration_settings'] ) ){
+		if( !empty( $_REQUEST['pmproc_integrations'] ) ){
+
+			pmpro_setOption( 'pmproc_integrations', implode( ",", $_REQUEST['pmproc_integrations'] ) );
+			
+		} else {
+			pmpro_setOption( 'pmproc_integrations', '' );
+		}
+
+	}
+
+}
+add_action( 'admin_init', 'pmpro_courses_settings_save' );
