@@ -34,4 +34,3 @@ $pmproc_integrations = apply_filters( 'pmproc_settings_integrations', array() );
 		<input type='submit' name='pmproc_save_integration_settings' value='<?php _e('Save Settings', 'pmpro-courses'); ?>' class='button button-primary'/>
 	</form>
 </div>
-<?php
