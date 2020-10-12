@@ -191,6 +191,45 @@ function pmproc_complete_button( $lid, $cid ){
 
 }
 
+function pmproc_get_next_lesson( $lid, $cid ){
+
+	$args = array(
+		'post_type' => 'pmpro_lesson', 
+		'posts_per_page' => -1,
+		'meta_query' => array(
+			array(
+				'key' => 'pmproc_parent',
+				'value' => $cid,
+				'compare' => '='
+			)
+		)
+	);
+
+	$the_query = new WP_Query( $args );
+
+	$lessons = array();
+
+	if( $the_query->have_posts() ){
+		while( $the_query->have_posts() ){
+			$the_query->the_post();
+			$lessons[] = get_the_ID();
+		}
+	}
+
+	wp_reset_query();
+
+	$searched = array_search( $lid, $lessons );
+
+	$next_key = $searched + 1;
+
+	if( isset( $lessons[$searched] ) ){
+		return get_the_permalink( $lessons[$next_key] );
+	} else {
+		return get_the_permalink( $lessons[$searched] );
+	}
+
+}
+
 function pmproc_get_user_progress( $course_id ){
 
 	$percentage = 0;
@@ -237,6 +276,77 @@ function pmproc_get_complete_lessons( $cid ){
 
 	}
 
-	return array_unique( $progress );
+	if( is_array( $progress ) ){
+		return array_unique( $progress );
+	} else {
+		return array();
+	}
+
+}
+
+function pmproc_get_courses( $posts_per_page = 5, $user_id = false ){
+
+	global $wpdb;
+
+	$args = array(
+		'post_type' => 'pmpro_course',
+		'posts_per_page' => $posts_per_page,
+	);
+
+	$the_query = new WP_Query( $args );
+
+	$courses = array();
+
+	if( $the_query->have_posts() ){
+
+		while( $the_query->have_posts() ){
+
+			$the_query->the_post();
+			
+			$course_id = get_the_ID();
+
+			if( $user_id ){
+
+				$sql = "SELECT * FROM $wpdb->pmpro_memberships_pages WHERE page_id = '$course_id'";
+
+				$results = $wpdb->get_results( $sql );
+
+				if( $results ){
+
+					foreach( $results as $res ){
+
+						$ordsql = "SELECT * FROM $wpdb->pmpro_membership_orders WHERE user_id = '".$user_id."' AND membership_id = '".$res->membership_id."' AND status = 'success'";
+
+						$orders = $wpdb->get_row( $ordsql );
+
+						if( $orders ){
+							$courses[$course_id] = apply_filters( 'pmproc_return_courses_array', array(
+								'id' => $course_id,
+								'title' => get_the_title(),
+								'permalink' => get_the_permalink(),
+								'featured' => get_the_post_thumbnail_url( $course_id ),
+								'excerpt' => get_the_excerpt(),
+								'lessons' => pmpro_courses_get_lesson_count( $course_id )
+							), $course_id );
+						}
+					}
+				}
+
+			} else {
+				$courses[$course_id] = apply_filters( 'pmproc_return_courses_array', array(
+					'id' => $course_id,
+					'title' => get_the_title(),
+					'permalink' => get_the_permalink(),
+					'featured' => get_the_post_thumbnail_url( $course_id ),
+					'excerpt' => get_the_excerpt(),
+					'lessons' => pmpro_courses_get_lesson_count( $course_id )
+				), $course_id );
+			}
+		}
+	}
+
+	wp_reset_query();
+
+	return $courses;
 
 }
