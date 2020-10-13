@@ -156,8 +156,8 @@ function pmpro_courses_user_styles(){
 
 	if( 
 		is_singular( array( 'pmpro_course', 'pmpro_lesson' ) ) ||
-		has_shortcode( $post->post_content, 'pmpro_all_courses' ) || 
-		has_shortcode( $post->post_content, 'pmpro_my_courses' )
+		( $post && has_shortcode( $post->post_content, 'pmpro_all_courses' ) ) || 
+		( $post && has_shortcode( $post->post_content, 'pmpro_my_courses' ) )
 	){
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_style( 'pmpro-courses-styles', plugins_url( 'css/user.css', __FILE__ ) );
