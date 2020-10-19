@@ -30,7 +30,8 @@ $integrations = pmpro_getOption( 'pmproc_integrations' );
 $integ_array = explode( ",", $integrations );
 
 $integration_files = apply_filters( 'pmproc_includes_integrations', array(
-	'learndash' => PMPRO_COURSES_DIR . '/includes/compatibility/learndash.php'
+	'learndash' => PMPRO_COURSES_DIR . '/includes/compatibility/learndash.php',
+	'lifterlms' => PMPRO_COURSES_DIR . '/includes/compatibility/lifterlms.php'
 ) );
 
 if( !empty( $integ_array ) ){
@@ -46,6 +47,11 @@ function pmproc_ld_settings( $integrations ){
 	$integrations[] = array(
 		'name' => __('LearnDash', 'pmpro-courses'),
 		'slug' => 'learndash'
+	);
+
+	$integrations[] = array(
+		'name' => __('LifterLMS', 'pmpro-courses'),
+		'slug' => 'lifterlms'
 	);
 
 	return $integrations;
