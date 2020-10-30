@@ -21,9 +21,37 @@ require_once PMPRO_COURSES_DIR . '/includes/common.php';
 require_once PMPRO_COURSES_DIR . '/includes/post-types/courses.php';
 require_once PMPRO_COURSES_DIR . '/includes/post-types/lessons.php';
 require_once PMPRO_COURSES_DIR . '/includes/admin.php';
+require_once PMPRO_COURSES_DIR . '/includes/widgets.php';
 
-//Integrations
-require_once PMPRO_COURSES_DIR . '/includes/compatibility/learndash.php';
+/**
+ * If an integration is active, include its file
+ */
+$integrations = pmpro_getOption( 'pmproc_integrations' );
+$integ_array = explode( ",", $integrations );
+
+$integration_files = apply_filters( 'pmproc_includes_integrations', array(
+	'learndash' => PMPRO_COURSES_DIR . '/includes/compatibility/learndash.php'
+) );
+
+if( !empty( $integ_array ) ){
+	foreach( $integ_array as $integration ){
+		if( isset( $integration_files[$integration] ) ){
+			require_once $integration_files[$integration];
+		}
+	}
+}
+
+function pmproc_ld_settings( $integrations ){
+
+	$integrations[] = array(
+		'name' => __('LearnDash', 'pmpro-courses'),
+		'slug' => 'learndash'
+	);
+
+	return $integrations;
+
+}
+add_filter( 'pmproc_settings_integrations', 'pmproc_ld_settings', 10, 1 );
 
 /**
  * Template/Shortcode
@@ -32,7 +60,7 @@ function pmpro_courses_course_shortcode( $content ){
 
 	global $post;
 
-	if( $post->post_type == 'pmpro_course' && !is_admin() ){
+	if( $post->post_type == 'pmpro_course' && !is_admin() && !is_archive() ){
 
 		$show_progress_bar = apply_filters( 'pmproc_show_progress_bar', true );
 
@@ -40,26 +68,39 @@ function pmpro_courses_course_shortcode( $content ){
 			echo pmproc_display_progress_bar( $post->ID );
 		}
 
-		if(file_exists(get_stylesheet_directory() . "/paid-memberships-pro/lessons.php")) {
-			$template_path = get_stylesheet_directory() . "/paid-memberships-pro/lessons.php";
-		} elseif(file_exists(get_template_directory() . "/paid-memberships-pro/lessons.php")) {
-			$template_path = get_template_directory() . "/paid-memberships-pro/lessons.php";
-		} else {
-			$template_path = plugin_dir_path(__FILE__) . "templates/lessons.php";
-		}
-		
-		$template_path = apply_filters( 'pmpro_courses_template_path', $template_path, $content, $post );
+		$path = dirname(__FILE__);
+		$custom_dir = get_stylesheet_directory()."/paid-memberships-pro/pmpro-courses/";
+		$custom_file = $custom_dir."lessons.php";
 
-		/**
-		 * Load Template
-		 */
+		//load custom or default templates
+		if( file_exists($custom_file ) ){
+			$include_file = $custom_file;
+		} else {
+			$include_file = $path . "/templates/lessons.php";
+		}
+
 		ob_start();
-		include($template_path);
+		include $include_file;
 		$temp_content = ob_get_contents();
 		ob_end_clean();
+
 		return $content.$temp_content;
 
-	} 
+	}
+
+	if( $post->post_type == 'pmpro_lesson' && !is_admin() && !is_archive() ){
+
+		$show_complete_button = apply_filters( 'pmproc_show_complete_button', true );
+
+		if( $show_complete_button ){
+
+			$course_id = get_post_meta( $post->ID, 'pmproc_parent', true );
+
+			return $content.pmproc_complete_button( $post->ID, $course_id );
+
+		}
+
+	}
 
 	return $content;
 
@@ -113,11 +154,15 @@ function pmpro_courses_user_styles(){
 
 	global $post;
 
-	if( is_singular( array( 'pmpro_course', 'pmpro_lesson' ) ) ){
+	if( 
+		is_singular( array( 'pmpro_course', 'pmpro_lesson' ) ) ||
+		( $post && has_shortcode( $post->post_content, 'pmpro_all_courses' ) ) || 
+		( $post && has_shortcode( $post->post_content, 'pmpro_my_courses' ) )
+	){
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_style( 'pmpro-courses-styles', plugins_url( 'css/user.css', __FILE__ ) );
 		wp_enqueue_script( 'pmpro-courses-scripts', plugins_url( 'js/user.js', __FILE__ ) );
-
+		wp_localize_script( 'pmpro-courses-scripts', 'pmproc_ajaxurl', admin_url( 'admin-ajax.php' ));
 		wp_enqueue_script( 'pmpro-courses-loading-bar-js', plugins_url( 'js/loading-bar.js', __FILE__ ) );
 		wp_enqueue_style( 'pmpro-courses-loading-bar-css', plugins_url( 'css/loading-bar.css', __FILE__ ) );
 	}
@@ -208,18 +253,22 @@ function pmpro_courses_template_redirect() {
 
 	global $post, $pmpro_pages;
 
-	if( $post ){
+	if( !empty( $post ) ){
 
-		$post_id = $post->ID;
+		if( ( $post->post_type == 'pmpro_course' || $post->post_type == 'pmpro_lesson' ) && !is_archive() && !current_user_can( 'administrator' ) ){
 
-		//Choose a courses page to redirect to or go to the levels page? 	
-		$redirect_to = apply_filters( 'pmpro_courses_redirect_to', pmpro_url( 'levels' ) );
+			$post_id = $post->ID;
 
-		$access = pmpro_courses_check_level( $post_id );
+			//Choose a courses page to redirect to or go to the levels page? 	
+			$redirect_to = apply_filters( 'pmpro_courses_redirect_to', pmpro_url( 'levels' ) );
 
-		if( !$access && ( intval( $pmpro_pages['levels'] ) !== $post_id ) ){
-			wp_redirect( $redirect_to );
-			exit();
+			$access = pmpro_courses_check_level( $post_id );
+
+			if( !$access && ( intval( $pmpro_pages['levels'] ) !== $post_id ) ){
+				wp_redirect( $redirect_to );
+				exit();
+			}
+
 		}
 
 	}
@@ -261,7 +310,9 @@ function pmproc_record_progress_ajax(){
 				unset( $get_progress );
 			}
 
-			echo $updated;
+			$next_lesson = pmproc_get_next_lesson( $_REQUEST['lid'], $course_id );
+
+			echo json_encode( array( 'status' => $updated, 'next_lesson' => $next_lesson ) );
 
 			wp_die();
 
@@ -295,8 +346,110 @@ function pmpro_courses_settings_save(){
 		} else {
 			pmpro_setOption( 'pmproc_integrations', '' );
 		}
-
+		
 	}
 
 }
 add_action( 'admin_init', 'pmpro_courses_settings_save' );
+
+function pmpro_courses_save_notice(){
+
+	if( isset( $_REQUEST['pmproc_save_integration_settings'] ) ){
+		echo sprintf( "<div class='updated'><p>%s</p></div>", __( 'Integration Saved Successfully.', 'pmpro-courses') );
+	}
+
+}
+add_action( 'admin_notices', 'pmpro_courses_save_notice', 10 );
+
+function pmpro_courses_pages( $pages ){
+
+	$pages['pmpro_my_courses'] = array(
+			'label' => __('My Courses Page', 'pmpro-courses'),
+			'title' => __('My Courses', 'pmpro-courses'),
+			'hint' => __('Include the shortcode [pmpro_my_courses] on the page.', 'pmpro-courses' ),
+			'content' => '[pmpro_my_courses]'
+		
+	);
+
+	$pages['pmpro_all_courses'] = array(
+			'label' => __('All Courses Page', 'pmpro-courses'),
+			'title' => __('All Courses', 'pmpro-courses'),
+			'hint' => __('Include the shortcode [pmpro_all_courses] on the page.', 'pmpro-courses' ),
+			'content' => '[pmpro_all_courses]'
+		
+	);
+
+	return $pages;
+
+}
+add_filter( 'pmpro_extra_page_settings', 'pmpro_courses_pages', 10, 1 );
+
+function pmpro_courses_shortcode_courses( $atts ){
+
+	ob_start();
+
+	$path = dirname(__FILE__);
+	$custom_dir = get_stylesheet_directory()."/paid-memberships-pro/pmpro-courses/";
+	$custom_file = $custom_dir."courses.php";
+
+	$course_limit = isset( $atts['limit'] ) ? intval( $atts['limit'] ) : 5;
+
+	$courses = pmproc_get_courses( $course_limit );
+
+	//load custom or default templates
+	if( file_exists($custom_file ) ){
+		require_once($custom_file);
+	} else {
+		require_once($path . "/templates/courses.php");
+	}
+
+	$temp_content = ob_get_contents();
+	ob_end_clean();
+
+	return $temp_content;
+
+}
+add_shortcode( 'pmpro_all_courses', 'pmpro_courses_shortcode_courses' );
+
+function pmpro_my_courses_shortcode_courses( $atts ){
+
+	ob_start();
+
+	$path = dirname(__FILE__);
+	$custom_dir = get_stylesheet_directory()."/paid-memberships-pro/pmpro-courses/";
+	$custom_file = $custom_dir."courses.php";
+
+	$course_limit = isset( $atts['limit'] ) ? intval( $atts['limit'] ) : 5;
+
+	$courses = pmproc_get_courses( $course_limit, get_current_user_id() );
+
+	//load custom or default templates
+	if( file_exists($custom_file ) ){
+		require_once($custom_file);
+	} else {
+		require_once($path . "/templates/courses.php");
+	}
+
+	$temp_content = ob_get_contents();
+	ob_end_clean();
+
+	return $temp_content;
+
+}
+add_shortcode( 'pmpro_my_courses', 'pmpro_my_courses_shortcode_courses' );
+
+
+function pmproc_course_links_my_account(){
+
+	global $pmpro_pages;
+
+	if( isset( $pmpro_pages['pmpro_my_courses'] ) ){
+		?>
+		<li>
+			<a href='<?php the_permalink( $pmpro_pages['pmpro_my_courses'] ); ?>'><?php _e('My Courses', 'pmpro-courses'); ?></a>
+		</li>
+		<?php
+	}
+
+}
+add_action( 'pmpro_member_links_bottom', 'pmproc_course_links_my_account' );

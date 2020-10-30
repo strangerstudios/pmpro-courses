@@ -45,7 +45,7 @@ function pmpro_courses_lesson_cpt() {
 		'label'               => __( 'PMPro Lesson', 'pmpro-courses' ),
 		'description'         => __( 'Lessons for PMPro Courses', 'pmpro-courses' ),
 		'labels'              => $labels,
-		'supports'            => array( 'title', 'editor', 'thumbnail', 'comments', 'revisions', 'custom-fields', 'post-formats' ),
+		'supports'            => array( 'title', 'editor', 'thumbnail', 'revisions', 'custom-fields', 'post-formats' ),
 		'taxonomies'          => array( 'category', 'post_tag' ),
 		'hierarchical'        => false,
 		'public'              => true,

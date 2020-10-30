@@ -4,7 +4,7 @@ $pmproc_integrations = apply_filters( 'pmproc_settings_integrations', array() );
 
 ?>
 <div class='wrap'>
-	<form method='POST'>
+	<form method='POST'>		
 		<?php
 			if( !empty( $pmproc_integrations ) ){
 				foreach( $pmproc_integrations as $integration ){

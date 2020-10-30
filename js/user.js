@@ -11,10 +11,12 @@ jQuery(document).ready(function(){
 			cid: cid
 		}
 
-		jQuery.post( ajaxurl, data, function( response ){
-
+		jQuery.post( pmproc_ajaxurl, data, function( response ){
 			if( response ){
-				//Needs work - better handling of the response
+				response = JSON.parse( response );
+				if( response.next_lesson ){
+					window.location.href = response.next_lesson;
+				}
 			}
 
 		});
