@@ -45,7 +45,6 @@ function pmpro_courses_course_cpt() {
 		'description'         => __( 'Courses for PMPro Courses', 'pmpro-courses' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields', 'post-formats' ),
-		'taxonomies'          => array( 'pmpro_course_category' ),
 		'hierarchical'        => false,
 		'public'              => true,
 		'show_ui'             => true,
@@ -70,7 +69,8 @@ function pmpro_courses_course_cpt() {
 	    array(
 			'label' => __( 'Course Categories' ),
 			'rewrite' => array( 'slug' => 'course-category' ),
-		    'hierarchical' => true
+		    'hierarchical' => true,
+			'show_in_rest' => true,
 	    )
  	);
 }
