@@ -4,7 +4,7 @@
  * Plugin URI: https://www.paidmembershipspro.com/add-ons/courses/
  * Description: Courses, Lessons, and eLearning for Paid Memberships Pro.
  * Version: .1
- * Author: pbrocks, strangerstudios
+ * Author: strangerstudios
  * Author URI: https://www.strangerstudios.com
  * Text Domain: pmpro-courses
  * Domain Path: /languages
