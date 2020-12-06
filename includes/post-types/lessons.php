@@ -14,7 +14,7 @@ function pmpro_courses_lesson_cpt() {
 		'archives'              => __( 'Lesson Archives', 'pmpro-courses' ),
 		'attributes'            => __( 'Lesson Attributes', 'pmpro-courses' ),
 		'parent_item_colon'     => __( 'Parent Lesson:', 'pmpro-courses' ),
-		'all_items'             => __( 'Lessons', 'pmpro-courses' ),
+		'all_items'             => __( 'All Lessons', 'pmpro-courses' ),
 		'add_new_item'          => __( 'Add New Lesson', 'pmpro-courses' ),
 		'add_new'               => __( 'Add New Lesson', 'pmpro-courses' ),
 		'new_item'              => __( 'New Lesson', 'pmpro-courses' ),

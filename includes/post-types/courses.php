@@ -13,7 +13,7 @@ function pmpro_courses_course_cpt() {
 		'archives'              => __( 'Course Archives', 'pmpro-courses' ),
 		'attributes'            => __( 'Course Attributes', 'pmpro-courses' ),
 		'parent_item_colon'     => __( 'Parent Course:', 'pmpro-courses' ),
-		'all_items'             => __( 'Courses Pages', 'pmpro-courses' ),
+		'all_items'             => __( 'All Courses', 'pmpro-courses' ),
 		'add_new_item'          => __( 'Add New Course', 'pmpro-courses' ),
 		'add_new'               => __( 'Add New Course', 'pmpro-courses' ),
 		'new_item'              => __( 'New Course', 'pmpro-courses' ),
@@ -45,7 +45,7 @@ function pmpro_courses_course_cpt() {
 		'description'         => __( 'Courses for PMPro Courses', 'pmpro-courses' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields', 'post-formats' ),
-		'taxonomies'          => array( 'category', 'post_tag' ),
+		'taxonomies'          => array( 'pmpro_course_category' ),
 		'hierarchical'        => false,
 		'public'              => true,
 		'show_ui'             => true,
@@ -62,7 +62,17 @@ function pmpro_courses_course_cpt() {
 		'show_in_rest'        => true,
 	);
 	register_post_type( 'pmpro_course', $args );
-
+	
+	// Register Category Taxonomy
+	register_taxonomy(
+	    'pmpro_course_category',
+	    'pmpro_course',
+	    array(
+			'label' => __( 'Course Categories' ),
+			'rewrite' => array( 'slug' => 'course-category' ),
+		    'hierarchical' => true
+	    )
+ 	);
 }
 add_action( 'init', 'pmpro_courses_course_cpt', 0 );
 
