@@ -70,8 +70,9 @@ function pmpro_courses_build_lesson_html( $array_content ){
 			$ret .= "<td>".$count."</td>";
 			$ret .= "<td><a href='".admin_url( 'post.php?post='.$lesson['id'].'&action=edit' )."' title='".__('Edit', 'pmpro-courses').' '.$lesson['title']."' target='_BLANK'>".$lesson['title']."</a></td>";
 			$ret .= "<td>";
-			$ret .= "<a class='button button-secondary' href='javascript:pmproc_editPost(".$lesson['id']."); void(0);'>".__( 'edit', 'pmpro-series' )."</a>";
-			$ret .= "<a class='button button-secondary' href='javascript:pmproc_removePost(".$lesson['id']."); void(0);'>".__( 'remove', 'pmpro-series' )."</a>";
+			$ret .= "<a class='button button-secondary' href='javascript:pmproc_editPost(".$lesson['id']."); void(0);'>".__( 'edit', 'pmpro-courses' )."</a>";
+			$ret .= " ";
+			$ret .= "<a class='button button-secondary' href='javascript:pmproc_removePost(".$lesson['id']."); void(0);'>".__( 'remove', 'pmpro-courses' )."</a>";
 			$ret .= "</td>";
 			$ret .= "</tr>";
 
