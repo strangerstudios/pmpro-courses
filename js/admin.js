@@ -20,18 +20,18 @@ function pmproc_removePost(post_id) {
 		dataType: 'html',
 		data: data,
 		error: function(xml){
-			alert('Error removing series post [1]');
+			alert('Error removing lesson [1]');
 			//enable save button
 			jQuery('#pmproc_save').removeAttr('disabled');												
 		},
 		success: function(responseHTML){
 			if (responseHTML == 'error'){
-				alert('Error removing series post [2]');
+				alert('Error removing lesson [2]');
 				//enable save button
 				jQuery('#pmproc_save').removeAttr('disabled');	
 			}else{
 				jQuery('#pmproc_table tbody').html(responseHTML);
-				// pmpros_Setup();
+				// pmproc_Setup();
 			}																						
 		}
 	});
@@ -54,26 +54,26 @@ function pmproc_updatePost() {
 		dataType: 'html',
 		data: data,
 		error: function(xml){
-			alert('Error saving series post [1]');
+			alert('Error saving lesson to course [1]');
 			//enable save button
 			jQuery('#pmproc_save').html('Save');	
 			jQuery('#pmproc_save').removeAttr('disabled');												
 		},
 		success: function(responseHTML){
 			if (responseHTML == 'error'){
-				alert('Error saving series post [2]');
+				alert('Error saving lesson to course [2]');
 				//enable save button
 				jQuery('#pmproc_save').html('Save');	
 				jQuery('#pmproc_save').removeAttr('disabled');		
 			}else{
 				jQuery('#pmproc_table tbody').html(responseHTML);
-				// pmpros_Setup();
+				// pmproc_Setup();
 			}																						
 		}
 	});
 }
 
-function pmpros_Setup() {
+function pmproc_Setup() {
 	jQuery('#pmproc_post').select2({width: 'elements'});
 	
 	jQuery('#pmproc_save').click(function() {
@@ -84,5 +84,5 @@ function pmpros_Setup() {
 }
 
 jQuery(document).ready(function(jQuery) {
-	pmpros_Setup();
+	pmproc_Setup();
 });
