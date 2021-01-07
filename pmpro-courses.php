@@ -211,12 +211,10 @@ function pmpro_courses_remove_course_callback(){
 add_action( 'wp_ajax_pmproc_remove_course', 'pmpro_courses_remove_course_callback' );
 
 /**
- * Adds columns to the lessons page
+ * Adds "Course" column to the lessons page
  */
-function pmpro_courses_lessons_columns($columns) {
-
-    $columns['pmpro_course_assigned'] = __( 'Assigned Course', 'your_text_domain' );
-
+function pmpro_courses_lessons_columns( $columns ) {
+    $columns['pmpro_course_assigned'] = __( 'Course', 'pmpro-courses' );
     return $columns;
 }
 add_filter( 'manage_pmpro_lesson_posts_columns', 'pmpro_courses_lessons_columns' );
@@ -231,22 +229,37 @@ function pmpro_courses_lessons_columns_content( $column, $post_id ) {
 add_action( 'manage_pmpro_lesson_posts_custom_column' , 'pmpro_courses_lessons_columns_content', 10, 2 );
 
 /**
- * Adds columns to the courses page
+ * Adds "Course" column to the lessons page
  */
 function pmpro_courses_columns($columns) {
-
-    $columns['pmpro_courses_num_lessons'] = __( 'Content', 'your_text_domain' );
-
+    $columns['pmpro_courses_num_lessons'] = __( 'Lesson Count', 'pmpro-courses' );
+    $columns['pmpro_courses_level'] = __( 'Level', 'pmpro-courses' );
     return $columns;
 }
 add_filter( 'manage_pmpro_course_posts_columns', 'pmpro_courses_columns' );
 
-function pmpro_courses_columns_content( $column, $post_id ) {
-    switch ( $column ) {
-        case 'pmpro_courses_num_lessons' :
-            echo pmpro_courses_get_lesson_count( $post_id ).' '.__('Lessons', 'pmpro-courses'); 
-            break;
-    }
+function pmpro_courses_columns_content( $column, $course_id ) {
+	global $wpdb;
+	switch ( $column ) {
+		case 'pmpro_courses_num_lessons' :
+			$lesson_count = pmpro_courses_get_lesson_count( $course_id );
+			printf( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ), number_format_i18n( $lesson_count ) );
+			break;
+		case 'pmpro_courses_level' :
+			$membership_levels = pmpro_getAllLevels( true, true );
+			$course_levels = $wpdb->get_col( "SELECT membership_id FROM {$wpdb->pmpro_memberships_pages} WHERE page_id = '" . intval( $course_id ) . "'" );
+			$level_names = array();
+			foreach ( $course_levels as $id ) {
+				$level = pmpro_getLevel( $id );
+				$level_names[] = $level->name;
+			}
+			if ( ! empty( $level_names ) ) {
+				echo implode( ', ', $level_names );
+			} else {
+				echo '&#8212;';
+			}
+			break;
+	}
 }
 add_action( 'manage_pmpro_course_posts_custom_column' , 'pmpro_courses_columns_content', 10, 2 );
 
@@ -347,10 +360,10 @@ function pmpro_courses_settings() {
 function pmpro_courses_settings_save() {
 	if ( isset( $_REQUEST['pmproc_save_integration_settings'] ) ) {
 		if ( ! empty( $_REQUEST['pmproc_integrations'] ) ) {
-			pmpro_setOption( 'pmproc_integrations', implode( ",", $_REQUEST['pmproc_integrations'] ) );	
+			pmpro_setOption( 'pmproc_integrations', implode( ",", $_REQUEST['pmproc_integrations'] ) );
 		} else {
 			pmpro_setOption( 'pmproc_integrations', '' );
-		}	
+		}
 	}
 }
 add_action( 'admin_init', 'pmpro_courses_settings_save' );
