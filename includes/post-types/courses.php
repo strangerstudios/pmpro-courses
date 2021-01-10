@@ -42,7 +42,7 @@ function pmpro_courses_course_cpt() {
 	);
 	$args    = array(
 		'label'               => __( 'Course', 'pmpro-courses' ),
-		'description'         => __( 'Courses for Paid Memberships Pro', 'pmpro-courses' ),
+		'description'         => __( 'Courses and lessons for members.', 'pmpro-courses' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields' ),
 		'hierarchical'        => false,
@@ -54,7 +54,7 @@ function pmpro_courses_course_cpt() {
 		'show_in_admin_bar'   => true,
 		'show_in_nav_menus'   => true,
 		'can_export'          => true,
-		'has_archive'         => true,
+		'has_archive'         => 'courses',
 		'exclude_from_search' => false,
 		'publicly_queryable'  => true,
 		'rewrite'             => $rewrite,
@@ -68,7 +68,7 @@ function pmpro_courses_course_cpt() {
 	    'pmpro_course_category',
 	    'pmpro_course',
 	    array(
-			'label' => __( 'Course Categories' ),
+			'label' => __( 'Course Category' ),
 			'rewrite' => array( 'slug' => 'course-category' ),
 		    'hierarchical' => true,
 			'show_in_rest' => true,

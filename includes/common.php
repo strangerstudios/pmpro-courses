@@ -19,7 +19,7 @@ function pmpro_courses_get_lessons( $course = 0 ) {
 	$lessons = array();
 	if ( ! empty( $results ) ) {
 		foreach( $results as $result ) {
-			$lessons[] = array(
+			$lessons[$result->ID] = array(
 				'id' 	=> $result->ID,
 				'title' => $result->post_title,
 				'content' => $result->post_content,
@@ -86,7 +86,7 @@ function pmpro_courses_get_lesson_count( $course_id ) {
 		WHERE $wpdb->posts.post_type = 'pmpro_lesson' AND $wpdb->posts.post_status = 'publish'
 		AND $wpdb->postmeta.meta_key = 'pmproc_parent' AND $wpdb->postmeta.meta_value = '$course_id' ";
 	$results = $wpdb->get_var( $sql );
-	return $results;
+	return intval( $results );
 }
 
 function pmpro_courses_check_level( $post_id ){
@@ -147,68 +147,98 @@ function pmpro_courses_check_level( $post_id ){
 }
 
 /**
- * Display a button that allows a user to mark a course as complete.
+ * Get the current user's completition status for a lesson.
  *
  */
-function pmproc_complete_button( $lid, $cid ) {
-	$button_text = apply_filters( 'pmproc_button_to_complete_text', __('Mark As Complete', 'pmpro-courses') );
-	$complete_text = apply_filters( 'pmproc_button_complete_text', __('Completed', 'pmpro-courses' ) );
+function pmproc_get_user_lesson_status( $lid, $cid, $user_id = null ) {
+	// If no user_id passed, try to get the ID for the current user.
+	if ( empty( $user_id ) ) {
+		$user_id = get_current_user_id();
+	}
 
-	$content = '<button class="pmproc_button_mark_complete_action" lid="' . $lid . '" cid="' . $cid . '">' . esc_html( $button_text ) . '</button>';
+	// If no user_id still, just return.
+	if ( empty( $user_id ) ) {
+		return false;
+	}
 
-	$user = wp_get_current_user();
-	if ( ! empty( $user ) && ! empty( $user->ID ) ) {
-		$user_id = $user->ID;
-		$progress = get_user_meta( $user->ID, 'pmproc_progress_' . $cid, true );
-		if ( ! empty( $progress ) ) {
-			if ( in_array( $lid, $progress ) ) {
-				$show_complete_button = apply_filters( 'pmproc_button_show_complete', true );
-				if ( $show_complete_button ) {
-					$content = '<button class="pmproc_button_mark_complete">'. esc_html( $complete_text ) . '</button>';
-				}
-			}
+	// Check whether the user has completed this lesson.
+	$progress = get_user_meta( $user_id, 'pmproc_progress_' . $cid, true );
+	if ( ! empty( $progress ) ) {
+		if ( in_array( $lid, $progress ) ) {
+			return 'complete';
 		}
+	} 
+
+	// If we get this far, there is a user but the lesson is not complete.
+	return 'incomplete';
+}
+
+/**
+ * Display a button that allows a user to mark a lesson as complete.
+ *
+ */
+function pmproc_complete_button( $lid, $cid, $user_id = null ) {	
+	// Filter to hide the completion button.
+	$show_complete_button = apply_filters( 'pmproc_button_show_complete', true );
+	if ( empty( $show_complete_button ) ) {
+		return;
+	}
+
+	// If no user_id passed, try to get the ID for the current user.
+	if ( empty( $user_id ) ) {
+		$user_id = get_current_user_id();
+	}
+
+	// If no user_id still, just return.
+	if ( empty( $user_id ) ) {
+		return;
+	}
+
+	// Get the user's status for this lesson.
+	$lesson_status = pmproc_get_user_lesson_status( $lid, $cid, $user_id );
+
+	if ( empty( $lesson_status ) ) {
+		return;
+	}
+
+	if ( $lesson_status === 'complete' ) {
+		// Filter the text shown as the button title for a completed lesson.
+		$lesson_complete_text = apply_filters( 'pmproc_lesson_complete_text', __('Lesson Completed', 'pmpro-courses' ) );
+		$content = '<button class="pmpro_courses-button pmpro_courses-button-complete" title="' .  esc_html( $lesson_complete_text ) . '"><span class="dashicons dashicons-yes"></span></button>';
+	} else {
+		// Filter the text shown as the button title to mark a lesson complete.
+		$lesson_to_complete_text = apply_filters( 'pmproc_lesson_to_complete_text', __('Mark Lesson as Complete', 'pmpro-courses') );
+		$content = '<button class="pmpro_courses-button pmpro_courses-button-incomplete pmpro_courses-mark-complete-action" lid="' . $lid . '" cid="' . $cid . '" title="' . esc_html( $lesson_to_complete_text ) . '"><span class="dashicons dashicons-yes"></span></button>';
 	}
 
 	return $content;
 }
 
 /**
- * Get the permalink for the next lesson in the course.
+ * Build a text link for the previous or next lesson in the course.
  *
  */
-function pmproc_get_next_lesson( $lid, $cid ) {
-	$args = array(
-		'post_type' => 'pmpro_lesson', 
-		'posts_per_page' => -1,
-		'meta_query' => array(
-			array(
-				'key' => 'pmproc_parent',
-				'value' => $cid,
-				'compare' => '='
-			)
-		)
-	);
-	$the_query = new WP_Query( $args );
+function pmproc_lesson_navigation( $lid, $cid, $position ) {
+	// Build 
+	$lessons = pmpro_courses_get_lessons( $cid );
 
-	$lessons = array();
-	if ( $the_query->have_posts() ){
-		while( $the_query->have_posts() ){
-			$the_query->the_post();
-			$lessons[] = get_the_ID();
-		}
+	// If no lessons or only one lesson, return.
+	if ( empty( $lessons ) || count( $lessons ) === 1 ) {
+		return;
 	}
 
-	wp_reset_query();
+	// Get the position of the current lesson in the array.
+	$searched = array_search( $lid, array_column( $lessons, 'id' ) );
 
-	$searched = array_search( $lid, $lessons );
-
-	$next_key = $searched + 1;
-
-	if ( isset( $lessons[$searched] ) ) {
-		return get_the_permalink( $lessons[$next_key] );
+	// Return the next lesson link.
+	if ( empty( $position ) || $position === 'next' ) {
+		$lesson_to_link = current( array_slice( $lessons, array_search( $lid, array_keys( $lessons ) ) + 1, 1) );
 	} else {
-		return get_the_permalink( $lessons[$searched] );
+		$lesson_to_link = current( array_slice( $lessons, array_search( $lid, array_keys( $lessons ) ) - 1, 1) );
+	}
+
+	if ( ! empty( $lesson_to_link ) ) {
+		return '<a href="' . $lesson_to_link['permalink'] . '" title="' . $lesson_to_link['title'] . '">' . $lesson_to_link['title'] . '</a>';
 	}
 }
 
@@ -233,7 +263,7 @@ function pmproc_get_user_progress( $course_id ) {
 function pmproc_display_progress_bar( $course_id ){
 	$percentage = pmproc_get_user_progress( $course_id );
 	if ( $percentage !== 0 ) {
-		return '<div><div data-preset="line" class="ldBar" data-value="' . $percentage . '" style="width: 	100%;"></div></div>';
+		//return '<div><div data-preset="line" class="ldBar" data-value="' . $percentage . '" style="width: 	100%;"></div></div>';
 	} 
 	return;
 }

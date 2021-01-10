@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Paid Memberships Pro - Courses Add On
+ * Plugin Name: Paid Memberships Pro - Courses for Membership Add On
  * Plugin URI: https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/
  * Description: Create courses and lessons for members. Integrates LMS plugins with Paid Memberships Pro.
- * Version: .1
+ * Version: 0.1
  * Author: Paid Memberships Pro
  * Author URI: https://www.paidmembershipspro.com
  * Text Domain: pmpro-courses
@@ -54,25 +54,33 @@ function pmproc_ld_settings( $integrations ){
 add_filter( 'pmproc_settings_integrations', 'pmproc_ld_settings', 10, 1 );
 
 /**
- * Template/Shortcode
+ * Content filter to show additional course information on the single course page.
  */
-function pmpro_courses_course_shortcode( $content ){
-
+function pmpro_courses_the_content_course( $content ) {
 	global $post;
-
-	if( $post->post_type == 'pmpro_course' && !is_admin() && !is_archive() ){
-
-		$show_progress_bar = apply_filters( 'pmproc_show_progress_bar', true );
-
-		if( $show_progress_bar ){
-			echo pmproc_display_progress_bar( $post->ID );
+	if ( is_singular( 'pmpro_course' ) ) {
+		// This is a single pmpro_course CPT, show additional content before and after post_content.
+		$before_the_content = '';
+		$course_categories_list = get_the_term_list( $post->ID, 'pmpro_course_category', '', __( ', ', 'pmpro-courses' ) );
+		if ( $course_categories_list ) {
+			$before_the_content .= sprintf(
+				/* translators: %s: list of categories. */
+				'<p><span class="cat-links">' . esc_html__( 'Course Category: %s', 'pmpro-courses' ) . ' </span></p>',
+				$course_categories_list
+			);
 		}
 
+		$show_progress_bar = apply_filters( 'pmproc_show_progress_bar', true );
+		if ( $show_progress_bar ) {
+			$before_the_content .= pmproc_display_progress_bar( $post->ID );
+		}
+
+		// Show a list of lessons from a custom template or the default lesson list after the_content.
 		$path = dirname(__FILE__);
 		$custom_dir = get_stylesheet_directory()."/paid-memberships-pro/pmpro-courses/";
 		$custom_file = $custom_dir."lessons.php";
 
-		//load custom or default templates
+		// Load custom or default templates.
 		if( file_exists($custom_file ) ){
 			$include_file = $custom_file;
 		} else {
@@ -81,31 +89,76 @@ function pmpro_courses_course_shortcode( $content ){
 
 		ob_start();
 		include $include_file;
-		$temp_content = ob_get_contents();
+		$after_the_content = ob_get_contents();
 		ob_end_clean();
 
-		return $content.$temp_content;
-
+		// Return the content after appending new pre and post sections.
+		return $before_the_content . $content . $after_the_content;
 	}
+	return $content;
+}
+add_filter( 'the_content', 'pmpro_courses_the_content_course', 10, 1 );
 
-	if( $post->post_type == 'pmpro_lesson' && !is_admin() && !is_archive() ){
+/**
+ * Content filter to show lesson and course information on the single lesson page.
+ */
+function pmpro_courses_the_content_lesson( $content ) {
+	global $post;
+	if ( is_singular( 'pmpro_lesson' ) ) {
+		$course_id = get_post_meta( $post->ID, 'pmproc_parent', true );
 
-		$show_complete_button = apply_filters( 'pmproc_show_complete_button', true );
-
-		if( $show_complete_button ){
-
-			$course_id = get_post_meta( $post->ID, 'pmproc_parent', true );
-
-			return $content.pmproc_complete_button( $post->ID, $course_id );
-
+		// This is a single pmpro_lesson CPT, show additional content before the_content.
+		$before_the_content = '';
+		if ( ! empty( $course_id ) ) {
+			$before_the_content .= sprintf(
+				/* translators: %s: link to the course for this lesson. */
+				'<p>' . esc_html__( 'Back to: %s', 'pmpro-courses' ) . ' </span></p>',
+				'<a href="' . get_permalink( $course_id ) . '" title="' . get_the_title( $course_id ) . '">' . get_the_title( $course_id ) . '</a>'
+			);
 		}
 
+		$after_the_content = '<hr class="styled-separator is-style-wide" aria-hidden="true" />';
+
+		// Show a link to mark the lesson complete or incomplete.
+		$show_complete_button = apply_filters( 'pmproc_show_complete_button', true );
+		if ( $show_complete_button ) {
+			$lesson_status = pmproc_get_user_lesson_status( $post->ID, $course_id );
+			if ( ! empty( $lesson_status ) ) {
+				$after_the_content .= '<div class="pmpro_lesson-status">';
+				if ( $lesson_status === 'complete' ) {
+					// Filter the text shown as the button title for a completed lesson.
+					$after_the_content .= esc_html( apply_filters( 'pmproc_lesson_complete_text', __('Lesson Completed', 'pmpro-courses' ) ) );
+				} else {
+					// Filter the text shown as the button title to mark a lesson complete.
+					$after_the_content .= esc_html( apply_filters( 'pmproc_lesson_to_complete_text', __('Mark Lesson as Complete', 'pmpro-courses') ) );
+				}
+				$after_the_content .= pmproc_complete_button( $post->ID, $course_id );
+				$after_the_content .= '</div>';
+				$after_the_content .= '<hr class="styled-separator is-style-wide" aria-hidden="true" />';
+			}
+		}
+
+		// Show a link to the previous and next lesson in the course.
+		$show_lesson_navigation = apply_filters( 'pmproc_show_lesson_navigation', true );
+		if ( $show_lesson_navigation ) {
+			$pmproc_lesson_navigation_prev = pmproc_lesson_navigation( $post->ID, $course_id, 'prev' );
+			$pmproc_lesson_navigation_next = pmproc_lesson_navigation( $post->ID, $course_id, 'next' );
+
+			$after_the_content .= '<nav class="pmpro_lesson-navigation" role="navigation">';
+			if ( ! empty( $pmproc_lesson_navigation_prev ) ) {
+				$after_the_content .= '<div class="nav-previous"><span class="pmpro_lesson-navigation-label">' . __( 'Previous Lesson', 'pmpro-courses' ) . '</span>' . $pmproc_lesson_navigation_prev . '</div>';
+			}
+			if ( ! empty( $pmproc_lesson_navigation_next ) ) {
+				$after_the_content .= '<div class="nav-next"><span class="pmpro_lesson-navigation-label">' . __( 'Next Lesson', 'pmpro-courses' ) . '</span>' . $pmproc_lesson_navigation_next . '</div>';
+			}
+			$after_the_content .= '</nav>';
+		}
+
+		return $before_the_content . $content . $after_the_content;
 	}
-
 	return $content;
-
 }
-add_filter( 'the_content', 'pmpro_courses_course_shortcode', 10, 1);
+add_filter( 'the_content', 'pmpro_courses_the_content_lesson', 10, 1 );
 
 /**
  * Tie into GlotPress
@@ -161,6 +214,7 @@ function pmpro_courses_frontend_styles(){
 		( $post && has_shortcode( $post->post_content, 'pmpro_my_courses' ) )
 	){
 		wp_enqueue_script( 'jquery' );
+		wp_enqueue_style( 'dashicons' );
 		wp_enqueue_style( 'pmpro-courses-styles', plugins_url( 'css/frontend.css', __FILE__ ) );
 		wp_enqueue_script( 'pmpro-courses-scripts', plugins_url( 'js/user.js', __FILE__ ) );
 		wp_localize_script( 'pmpro-courses-scripts', 'pmproc_ajaxurl', admin_url( 'admin-ajax.php' ));
@@ -432,7 +486,7 @@ function pmpro_my_courses_shortcode_courses( $atts ) {
 	$course_limit = isset( $atts['limit'] ) ? intval( $atts['limit'] ) : 5;
 
 	$courses = pmproc_get_courses( $course_limit, get_current_user_id() );
-
+	
 	//load custom or default templates
 	if ( file_exists($custom_file ) ) {
 		require_once($custom_file);

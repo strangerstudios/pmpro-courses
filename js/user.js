@@ -1,6 +1,6 @@
 jQuery(document).ready(function(){
 
-	jQuery("body").on("click", ".pmproc_button_mark_complete_action", function(){
+	jQuery("body").on("click", ".pmpro_courses-mark-complete-action", function(){
 
 		var lid = jQuery(this).attr('lid');
 		var cid = jQuery(this).attr('cid');
