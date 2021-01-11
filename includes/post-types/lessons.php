@@ -45,7 +45,7 @@ function pmpro_courses_lesson_cpt() {
 		'label'               => __( 'Lesson', 'pmpro-courses' ),
 		'description'         => __( 'Lessons for Paid Memberships Pro Courses', 'pmpro-courses' ),
 		'labels'              => $labels,
-		'supports'            => array( 'title', 'editor', 'thumbnail', 'revisions', 'custom-fields' ),
+		'supports'            => array( 'title', 'editor', 'thumbnail', 'revisions', 'custom-fields', 'page-attributes' ),
 		'hierarchical'        => false,
 		'public'              => true,
 		'show_ui'             => true,

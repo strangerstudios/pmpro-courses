@@ -232,7 +232,9 @@ function pmpro_courses_update_course_callback(){
 		if( $_REQUEST['action'] == 'pmproc_update_course' ){
 			$course = intval( $_REQUEST['course'] );
 			$lesson = intval( $_REQUEST['lesson'] );
+			$order = intval( $_REQUEST['order'] );
 			update_post_meta( $lesson, 'pmproc_parent', $course );
+			wp_update_post( array( 'ID' => $lesson, 'menu_order' => $order ) );
 			echo pmpro_courses_build_lesson_html( pmpro_courses_get_lessons( $course ) );
 			wp_die();
 		} 

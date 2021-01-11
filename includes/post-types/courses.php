@@ -44,7 +44,7 @@ function pmpro_courses_course_cpt() {
 		'label'               => __( 'Course', 'pmpro-courses' ),
 		'description'         => __( 'Courses and lessons for members.', 'pmpro-courses' ),
 		'labels'              => $labels,
-		'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields' ),
+		'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields', 'page-attributes' ),
 		'hierarchical'        => false,
 		'public'              => true,
 		'menu_icon'           => 'dashicons-book',
@@ -68,7 +68,7 @@ function pmpro_courses_course_cpt() {
 	    'pmpro_course_category',
 	    'pmpro_course',
 	    array(
-			'label' => __( 'Course Category' ),
+			'label' => __( 'Course Categories' ),
 			'rewrite' => array( 'slug' => 'course-category' ),
 		    'hierarchical' => true,
 			'show_in_rest' => true,
@@ -138,7 +138,7 @@ function pmpro_courses_course_cpt_lessons() {
 					</td>
 					<td width="20%">
 						<label for="pmproc_order"><?php _e( 'Order', 'pmpro-courses' ); ?></label>
-						<input name="pmproc_order" type="text" size="5" />
+						<input id="pmproc_order" name="pmproc_order" type="text" size="5" />
 					</td>
 					<td width="20%">
 						<a class="button button-primary" id="pmproc_save"><?php _e( 'Add to Course', 'pmpro-courses' ); ?></a>

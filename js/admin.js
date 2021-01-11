@@ -1,6 +1,7 @@
 
-function pmproc_editPost(post_id){
+function pmproc_editPost(post_id, order){
 	jQuery('#pmproc_post').val(post_id).trigger("change");
+	jQuery('#pmproc_order').val(order);
 	jQuery('#pmproc_save').html('Save');
 	location.href = "#pmproc_edit_post";
 }
@@ -41,12 +42,14 @@ function pmproc_updatePost() {
 
 	jQuery(this).attr('disabled', 'true');	
 
-	var lesson_id = jQuery("#pmproc_post").val();
+	var lesson_id = jQuery('#pmproc_post').val();
+	var order = jQuery('#pmproc_order').val();
 
 	var data = {
 		action: 'pmproc_update_course',
 		course: pmpro_courses.course_id,
-		lesson: lesson_id
+		lesson: lesson_id,
+		order: order
 	}
 	jQuery.ajax({
 		url: ajaxurl,
@@ -67,7 +70,8 @@ function pmproc_updatePost() {
 				jQuery('#pmproc_save').removeAttr('disabled');		
 			}else{
 				jQuery('#pmproc_table tbody').html(responseHTML);
-				// pmproc_Setup();
+				jQuery('#pmproc_post').val(null).trigger('change');
+				jQuery('#pmproc_order').val('');
 			}																						
 		}
 	});
@@ -75,6 +79,13 @@ function pmproc_updatePost() {
 
 function pmproc_Setup() {
 	jQuery('#pmproc_post').select2({width: 'elements'});
+	
+	jQuery('#pmproc_order').keypress(function (e) {
+		if (e.which == 13) {
+			pmproc_updatePost();
+			return false;
+		}
+	});
 	
 	jQuery('#pmproc_save').click(function() {
 		if( jQuery(this).attr('disabled') !== 'true' ){

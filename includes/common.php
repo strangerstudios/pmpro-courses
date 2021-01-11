@@ -13,6 +13,7 @@ function pmpro_courses_get_lessons( $course = 0 ) {
 	} else {
 		$sql .= "WHERE $wpdb->posts.post_type = 'pmpro_lesson' AND $wpdb->posts.post_status = 'publish' ";
 	}
+	$sql .= "ORDER BY menu_order, post_title ";
 	$results = $wpdb->get_results( $sql );
 
 	// Build the array of $lessons.
@@ -24,6 +25,7 @@ function pmpro_courses_get_lessons( $course = 0 ) {
 				'title' => $result->post_title,
 				'content' => $result->post_content,
 				'excerpt' => $result->post_excerpt,
+				'order' => $result->menu_order,
 				'permalink' => get_the_permalink( $result->ID )
 			);
 		}
@@ -57,10 +59,10 @@ function pmpro_courses_build_lesson_html( $array_content ){
 		foreach ( $array_content as $lesson ) {
 
 			$ret .= "<tr>";
-			$ret .= "<td>".$count."</td>";
+			$ret .= "<td>".$lesson['order']."</td>";
 			$ret .= "<td><a href='".admin_url( 'post.php?post='.$lesson['id'].'&action=edit' )."' title='".__('Edit', 'pmpro-courses').' '.$lesson['title']."' target='_BLANK'>".$lesson['title']."</a></td>";
 			$ret .= "<td>";
-			$ret .= "<a class='button button-secondary' href='javascript:pmproc_editPost(".$lesson['id']."); void(0);'>".__( 'edit', 'pmpro-courses' )."</a>";
+			$ret .= "<a class='button button-secondary' href='javascript:pmproc_editPost(".$lesson['id'].",".$lesson['order']."); void(0);'>".__( 'edit', 'pmpro-courses' )."</a>";
 			$ret .= " ";
 			$ret .= "<a class='button button-secondary' href='javascript:pmproc_removePost(".$lesson['id']."); void(0);'>".__( 'remove', 'pmpro-courses' )."</a>";
 			$ret .= "</td>";
@@ -84,7 +86,7 @@ function pmpro_courses_get_lesson_count( $course_id ) {
 	$sql = "SELECT count(*) FROM $wpdb->posts ";
 	$sql .= " LEFT JOIN $wpdb->postmeta on $wpdb->posts.ID = $wpdb->postmeta.post_id 
 		WHERE $wpdb->posts.post_type = 'pmpro_lesson' AND $wpdb->posts.post_status = 'publish'
-		AND $wpdb->postmeta.meta_key = 'pmproc_parent' AND $wpdb->postmeta.meta_value = '$course_id' ";
+		AND $wpdb->postmeta.meta_key = 'pmproc_parent' AND $wpdb->postmeta.meta_value = '$course_id'";
 	$results = $wpdb->get_var( $sql );
 	return intval( $results );
 }
