@@ -45,13 +45,36 @@ function pmproc_ld_settings( $integrations ){
 
 	$integrations[] = array(
 		'name' => __('LearnDash', 'pmpro-courses'),
-		'slug' => 'learndash'
+		'slug' => 'learndash',
+		'description' => __( 'LearnDash LMS', 'pmpro-courses' ),
 	);
 
 	return $integrations;
 
 }
 add_filter( 'pmproc_settings_integrations', 'pmproc_ld_settings', 10, 1 );
+
+/**
+ * Set up settings and such.
+ */
+function pmpro_courses_admin_init() {
+	$db_version = get_option( 'pmpro_courses_db_version', '' );
+	if ( $db_version < 1 ) {
+		// Figure out which integrations to enable.
+		$pmproc_integrations = array();
+		if( defined( 'LEARNDASH_VERSION' ) ) {
+			$pmpromc_integrations[] = 'learndash';
+		}
+		if ( empty( $pmproc_integrations ) ) {
+			$pmproc_integrations[] = 'default';
+		}
+		update_option( 'pmproc_integrations', $pmproc_integrations );
+		
+		// Save DB version.
+		update_option( 'pmpro_courses_db_version', 1 );
+	}
+}
+add_action( 'admin_init', 'pmpro_courses_admin_init' );
 
 /**
  * Content filter to show additional course information on the single course page.
