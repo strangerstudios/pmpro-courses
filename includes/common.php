@@ -99,17 +99,6 @@ function pmpro_courses_check_level( $post_id ){
 
 		$parent = intval( get_post_meta( $post_id, 'pmproc_parent', true ) );
 
-		$overrides = get_post_meta( $post_id, 'pmproc_lesson_override', true );
-
-		//We're overriding the membership level in the lesson
-		if( $overrides !== '' && $overrides !== null ){
-			if(  !pmpro_hasMembershipLevel( $overrides ) ){
-				return false;
-			} else {
-				return true;
-			}
-		} 
-
 		if( $parent !== '' ){
 
 			$required_membership = array();

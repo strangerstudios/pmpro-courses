@@ -46,7 +46,7 @@ function pmpro_courses_lesson_cpt() {
 		'description'         => __( 'Lessons for Paid Memberships Pro Courses', 'pmpro-courses' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', 'editor', 'thumbnail', 'revisions', 'custom-fields', 'page-attributes' ),
-		'hierarchical'        => false,
+		'hierarchical'        => true,
 		'public'              => true,
 		'show_ui'             => true,
 		'show_in_menu'        => 'edit.php?post_type=pmpro_course',
@@ -65,43 +65,36 @@ function pmpro_courses_lesson_cpt() {
 }
 add_action( 'init', 'pmpro_courses_lesson_cpt' );
 
+/**
+ * Add meta boxes for lessons.
+ */
 function pmpro_courses_lessons_cpt_define_meta_boxes() {
-
-	add_meta_box( 'pmpro_courses_preview', __( 'Override Membership Level', 'pmpro-courses'), 'pmpro_courses_lessons_override_membership', 'pmpro_lesson', 'side', 'high' );
-
+	add_meta_box( 'pmproc_lesson_attributes', __( 'Course', 'pmpro-courses'), 'pmpro_courses_lesson_course_metabox', 'pmpro_lesson', 'side', 'high' );
 }
 add_action('admin_menu', 'pmpro_courses_lessons_cpt_define_meta_boxes', 20);
 
-function pmpro_courses_lessons_override_membership(){
-
-	global $wpdb, $post, $pmpro_levels;
-
-	// boot out people without permissions
-	if ( ! current_user_can( 'edit_posts' ) ) {
-		return false;
-	}
-
-	$overrides = get_post_meta( $post->ID, 'pmproc_lesson_override', true );
-
-	?><p><?php _e('Lessons are restricted based on the course membership level by default.', 'pmpro-courses'); ?></p>
-	<p><input type='checkbox' name='pmpro_c_lessons_m[]' value='0' id='pmproc_0' <?php if( is_array( $overrides ) && in_array( 0, $overrides ) ){ echo 'checked=true'; } ?>/><label for='pmproc_0'><?php _e('Non Members', 'pmpro-courses'); ?></label></p>
-
-	<?php
-	if( !empty( $pmpro_levels ) ){
-		foreach( $pmpro_levels as $level ){
-			?>
-			<p><input type='checkbox' name='pmpro_c_lessons_m[]' value='<?php echo $level->id; ?>' id='pmproc_<?php echo $level->id; ?>' <?php if( is_array( $overrides ) && in_array( $level->id, $overrides ) ){ echo 'checked=true'; } ?>/><label for='pmproc_<?php echo $level->id; ?>'><?php echo $level->name; ?></label></p>
-			<?php
-		}
-	}
-
+/**
+ * Lesson attributes meta box.
+ */
+function pmpro_courses_lesson_course_metabox( $post ) {
+	$course_id = get_post_meta( $post->ID, 'pmproc_parent', true );
+	
+	wp_dropdown_pages( array(
+		'selected' => $course_id,
+		'show_option_none' => '--' . __( 'None', 'pmpro-courses' ) . '--',
+		'name' => 'pmproc_parent',
+		'id' => 'pmproc_parent',
+		'post_type' => 'pmpro_course',
+		'echo' => 1,
+	));
 }
 
+/**
+ * Save meta data for lessons from the edit lesson page.
+ */
 function pmpro_courses_save_lessons_meta( $post_id ){
-
 	if( 'pmpro_lesson' === get_post_type() ){
-		update_post_meta( $post_id, 'pmproc_lesson_override', $_REQUEST['pmpro_c_lessons_m'] );
-	}		
-
+		update_post_meta( $post_id, 'pmproc_parent', intval( $_REQUEST['pmproc_parent'] ) );
+	}
 }
 add_action( 'save_post', 'pmpro_courses_save_lessons_meta', 10, 1 );

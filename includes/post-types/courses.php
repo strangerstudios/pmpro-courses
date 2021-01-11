@@ -45,7 +45,7 @@ function pmpro_courses_course_cpt() {
 		'description'         => __( 'Courses and lessons for members.', 'pmpro-courses' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields', 'page-attributes' ),
-		'hierarchical'        => false,
+		'hierarchical'        => true,
 		'public'              => true,
 		'menu_icon'           => 'dashicons-book',
 		'show_ui'             => true,
