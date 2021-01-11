@@ -2,6 +2,7 @@
 function pmproc_editPost(post_id, order){
 	jQuery('#pmproc_post').val(post_id).trigger("change");
 	jQuery('#pmproc_order').val(order);
+	jQuery('#pmproc_order').focus();
 	jQuery('#pmproc_save').html('Save');
 	location.href = "#pmproc_edit_post";
 }
@@ -66,12 +67,13 @@ function pmproc_updatePost() {
 			if (responseHTML == 'error'){
 				alert('Error saving lesson to course [2]');
 				//enable save button
-				jQuery('#pmproc_save').html('Save');	
+				jQuery('#pmproc_save').html('Save');
 				jQuery('#pmproc_save').removeAttr('disabled');		
 			}else{
 				jQuery('#pmproc_table tbody').html(responseHTML);
 				jQuery('#pmproc_post').val(null).trigger('change');
 				jQuery('#pmproc_order').val('');
+				jQuery('#pmproc_save').html('Add to Course');
 			}																						
 		}
 	});
