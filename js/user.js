@@ -11,7 +11,7 @@ jQuery(document).ready(function(){
 			cid: cid
 		}
 
-		jQuery.post( pmproc_ajaxurl, data, function( response ){
+		jQuery.post( pmpro_courses.ajaxurl, data, function( response ){
 			if( response ){
 				response = JSON.parse( response );
 				if( response.next_lesson ){
