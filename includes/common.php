@@ -26,11 +26,34 @@ function pmpro_courses_get_lessons( $course = 0 ) {
 				'content' => $result->post_content,
 				'excerpt' => $result->post_excerpt,
 				'order' => $result->menu_order,
-				'permalink' => get_the_permalink( $result->ID )
+				'permalink' => get_the_permalink( $result->ID ),
+				'menu_order' => $result->menu_order,
 			);
 		}
 	}
 	return $lessons;
+}
+
+/**
+ * Get the next order # for a lesson in a course.
+ */
+function pmproc_get_next_lesson_order( $course ) {
+	// In case a full post object is passed in.
+	if ( is_object( $course ) ) {
+		$course = $course->ID;
+	}
+	
+	// Get all the lessons.
+	$lessons = pmpro_courses_get_lessons( $course );
+		
+	if ( empty( $lessons ) ) {
+		// Default to 1
+		return 1;
+	} else {
+		// Last menu_order + 1
+		$last_child = end( $lessons );
+		return $last_child['menu_order'] + 1;
+	}
 }
 
 /**

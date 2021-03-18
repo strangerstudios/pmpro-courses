@@ -239,7 +239,7 @@ function pmpro_courses_frontend_styles(){
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_style( 'dashicons' );
 		wp_enqueue_style( 'pmpro-courses-styles', plugins_url( 'css/frontend.css', __FILE__ ) );
-		wp_enqueue_script( 'pmpro-courses-scripts', plugins_url( 'js/user.js', __FILE__ ) );
+		wp_enqueue_script( 'pmpro-courses-scripts', plugins_url( 'js/user.js', __FILE__ ), array( 'jquery' ) );
 		wp_localize_script( 'pmpro-courses-scripts', 'pmpro_courses', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 		wp_enqueue_script( 'pmpro-courses-loading-bar-js', plugins_url( 'js/loading-bar.js', __FILE__ ) );
 		wp_enqueue_style( 'pmpro-courses-loading-bar-css', plugins_url( 'css/loading-bar.css', __FILE__ ) );
@@ -256,11 +256,19 @@ function pmpro_courses_update_course_callback(){
 			$course = intval( $_REQUEST['course'] );
 			$lesson = intval( $_REQUEST['lesson'] );
 			$order = intval( $_REQUEST['order'] );
+			
+			// If no order, set to the max.
+			if ( empty( $order ) ) {
+				$order = pmproc_get_next_lesson_order( $course );
+			}			
+			
 			update_post_meta( $lesson, 'pmproc_parent', $course );
 			wp_update_post( array( 'ID' => $lesson, 'menu_order' => $order ) );
+			
 			echo pmpro_courses_build_lesson_html( pmpro_courses_get_lessons( $course ) );
+			
 			wp_die();
-		} 
+		}
 
 	}
 
