@@ -26,7 +26,7 @@ require_once PMPRO_COURSES_DIR . '/includes/widgets.php';
 /**
  * If an integration is active, include its file
  */
-$integrations = pmpro_getOption( 'pmproc_integrations' );
+$integrations = get_option( 'pmpro_pmproc_integrations' );
 $integ_array = explode( ",", $integrations );
 
 $integration_files = apply_filters( 'pmproc_includes_integrations', array(
