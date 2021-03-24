@@ -1,9 +1,23 @@
 <?php
 /**
- * Parts of code used here has been used from the learndash-paidmemberships plugin
- * and adjusted to suit the needs of this add on.
+ * Add LearnDash to the modules list.
  */
+function pmpro_courses_learndash_module( $modules ){
 
+	$modules[] = array(
+		'name' => __('LearnDash', 'pmpro-courses'),
+		'slug' => 'learndash',
+		'description' => __( 'LearnDash LMS', 'pmpro-courses' ),
+	);
+
+	return $modules;
+
+}
+add_filter( 'pmpro_courses_modules', 'pmpro_courses_learndash_module', 10, 1 );
+
+/**
+ * Is the LearnDash module active?
+ */
 function pmproc_ld_using_learndash(){
 
 	//Make sure Learndash Integration is active
@@ -125,8 +139,7 @@ function pmproc_ld_delete_course_by_course_id( $course_id )
  * @param  int  $course_id ID of a LearnDash course
  * @since 1.0.7
  */
-function pmproc_ld_delete_course_by_membership_id_course_id( $membership_id, $course_id )
-{
+function pmproc_ld_delete_course_by_membership_id_course_id( $membership_id, $course_id ) {
 	global $wpdb;
 
 	$wpdb->delete(
@@ -176,6 +189,10 @@ function pmproc_ld_reassign_access_list($course_id, $access_list) {
 }
 
 function pmproc_ld_require_membership(){
+	// Make sure the LearnDash module is active.
+	if ( ! pmpro_courses_is_module_active( 'learndash' ) ) {
+		return;
+	}
 
 	add_meta_box("pmproc-ld-level-list-meta", __("Require Membership","pmpro-courses"), "pmproc_ld_level_list", "sfwd-courses", "side", "low");
 
@@ -217,6 +234,11 @@ function pmproc_ld_level_list(){
 function pmproc_ld_save_post( $post_id, $post, $update ){
 
 	global $table_prefix, $wpdb;
+	
+	// Make sure the LearnDash module is active.
+	if ( ! pmpro_courses_is_module_active( 'learndash' ) ) {
+		return;
+	}
 	
 	if( !function_exists( 'learndash_get_course_id' ) ){
 		return;
@@ -276,7 +298,11 @@ function pmproc_ld_save_post( $post_id, $post, $update ){
 add_action( 'save_post', 'pmproc_ld_save_post', 10, 3 );
 
 function pmproc_ld_after_level_settings(){
-
+	// Make sure the LearnDash module is active.
+	if ( ! pmpro_courses_is_module_active( 'learndash' ) ) {
+		return;
+	}
+	
 	if( !pmproc_ld_using_learndash() ){
 		return __('Please deactivate Learndash for Paid Memberships Pro to prevent any conflicts with Paid Memberships Pro Courses - Learndash', 'pmpro-courses' );
 	}
@@ -325,7 +351,11 @@ function pmproc_ld_after_level_settings(){
 add_action( 'pmpro_membership_level_after_other_settings', 'pmproc_ld_after_level_settings' );
 
 function pmproc_ld_save_level_settings(){
-
+	// Make sure the LearnDash module is active.
+	if ( ! pmpro_courses_is_module_active( 'learndash' ) ) {
+		return;
+	}
+	
 	if( !pmproc_ld_using_learndash() ){
 		return;
 	}
@@ -379,6 +409,11 @@ add_action( 'pmpro_save_membership_level', 'pmproc_ld_save_level_settings' );
 
 function pmproc_ld_user_change_level( $level, $user_id, $cancel_level ) {
 
+	// Make sure the LearnDash module is active.
+	if ( ! pmpro_courses_is_module_active( 'learndash' ) ) {
+		return;
+	}
+	
 	if( !pmproc_ld_using_learndash() ){
 		return;
 	}
@@ -427,6 +462,11 @@ add_action( 'pmpro_after_change_membership_level', 'pmproc_ld_user_change_level'
  */
 function pmproc_ld_update_access_on_approval( $meta_id, $object_id, $meta_key, $meta_value ) {
 
+	// Make sure the LearnDash module is active.
+	if ( ! pmpro_courses_is_module_active( 'learndash' ) ) {
+		return;
+	}
+	
 	if( !pmproc_ld_using_learndash() ){
 		return;
 	}
@@ -451,6 +491,11 @@ add_action( 'update_user_meta', 'pmproc_ld_update_access_on_approval', 10, 4 );
  */
 function pmproc_ld_update_course_access_on_order_update( $order ) {	
 
+	// Make sure the LearnDash module is active.
+	if ( ! pmpro_courses_is_module_active( 'learndash' ) ) {
+		return;
+	}
+	
 	if( !pmproc_ld_using_learndash() ){
 		return;
 	}
@@ -479,6 +524,11 @@ add_action( 'pmpro_updated_order', 'pmproc_ld_update_course_access_on_order_upda
  */
 function pmproc_ld_remove_course_access_on_order_deletion( $order_id, $order ) {
 
+	// Make sure the LearnDash module is active.
+	if ( ! pmpro_courses_is_module_active( 'learndash' ) ) {
+		return;
+	}
+	
 	if( !pmproc_ld_using_learndash() ){
 		return;
 	}
@@ -502,6 +552,11 @@ add_action( 'pmpro_delete_order', 'pmproc_ld_remove_course_access_on_order_delet
  */
 function pmproc_ld_remove_course_access_by_order( $order ) {
 
+	// Make sure the LearnDash module is active.
+	if ( ! pmpro_courses_is_module_active( 'learndash' ) ) {
+		return;
+	}
+	
 	if( !pmproc_ld_using_learndash() ){
 		return;
 	}
@@ -527,6 +582,11 @@ add_action( 'pmpro_subscription_recuring_stopped', 'pmproc_ld_remove_course_acce
  */
 function pmproc_ld_give_course_access_by_order( $order ) {
 
+	// Make sure the LearnDash module is active.
+	if ( ! pmpro_courses_is_module_active( 'learndash' ) ) {
+		return;
+	}
+	
 	if( !pmproc_ld_using_learndash() ){
 		return;
 	}
@@ -554,6 +614,11 @@ add_action( 'pmpro_subscription_recuring_restarted', 'pmproc_ld_give_course_acce
  */
 function pmproc_ld_has_course_access( $hasaccess, $mypost, $myuser, $post_membership_levels ) {
 
+	// Make sure the LearnDash module is active.
+	if ( ! pmpro_courses_is_module_active( 'learndash' ) ) {
+		$hasaccess;
+	}
+	
 	if( !pmproc_ld_using_learndash() ){
 		return $hasaccess;
 	}

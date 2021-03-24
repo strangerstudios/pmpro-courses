@@ -1,5 +1,34 @@
 <?php
 /**
+ * Get an array of all PMPro Courses modules.
+ * Use the pmpro_courses_modules filter to add your own modules.
+ */
+function pmpro_courses_get_modules() {
+	$modules = array(
+		array(
+			'name' => __( 'Default', 'pmpro-courses' ),
+			'slug' => 'default',
+			'description' => __( 'The Course and Lesson post types bundled with PMPro Courses.', 'pmpro-courses' ),
+		)
+	);
+	$modules = apply_filters( 'pmpro_courses_modules', $modules );
+
+	return $modules;
+}
+
+/**
+ * Check if a specific module is active.
+ */
+function pmpro_courses_is_module_active( $module ) {
+	$active_modules = get_option( 'pmpro_courses_modules', array() );
+	if ( in_array( $module, $active_modules ) ) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+/**
  * Get an array of lessons data assigned to this course ID.
  *
  */

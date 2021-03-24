@@ -1,44 +1,68 @@
 <?php
-	$pmpro_integrations = array(
-		array(
-			'name' => __( 'Default', 'pmpro-courses' ),
-			'slug' => 'default',
-			'description' => __( 'The Course and Lesson post types bundled with PMPro Courses.', 'pmpro-courses' ),
-		)
+function pmpro_courses_pages( $pages ) {
+	$pages['pmpro_my_courses'] = array(
+			'label' => __('My Courses Page', 'pmpro-courses'),
+			'title' => __('My Courses', 'pmpro-courses'),
+			'hint' => __('Include the shortcode [pmpro_my_courses] on the page.', 'pmpro-courses' ),
+			'content' => '[pmpro_my_courses]'
+		
 	);
-	$pmproc_integrations = apply_filters( 'pmproc_settings_integrations', $pmpro_integrations );
-?>
-<div class='wrap'>
-	<h2><?php _e( 'PMPro Courses Settings', 'pmpro-courses' ); ?></h2>
-	<p><?php _e( 'Which modules would you like to enable?', 'pmpro-courses' ); ?></p>
-	<form method='POST'>
-		<h3><?php __( 'Modules', 'pmpro-courses' );?></h3>
-		<table class='form-table'>	
-		<?php
-			if( !empty( $pmproc_integrations ) ){
-				foreach( $pmproc_integrations as $integration ){
+	$pages['pmpro_all_courses'] = array(
+			'label' => __('All Courses Page', 'pmpro-courses'),
+			'title' => __('All Courses', 'pmpro-courses'),
+			'hint' => __('Include the shortcode [pmpro_all_courses] on the page.', 'pmpro-courses' ),
+			'content' => '[pmpro_all_courses]'
+		
+	);
+	return $pages;
+}
+add_filter( 'pmpro_extra_page_settings', 'pmpro_courses_pages', 10, 1 );
 
-					$saved = pmpro_getOption( 'pmproc_integrations' );
+/**
+ * Add a Course page for settings under the Memberships menu.
+ */
+function pmpro_courses_settings_page() {	
+	// Course settings page under Memberships menu.
+	add_submenu_page( 'pmpro-dashboard', __('Paid Memberships Pro Courses - Settings', 'pmpro-courses'), __('Courses', 'pmpro-courses'), 'manage_options', 'pmpro-courses-settings', 'pmpro_courses_settings' );
+	
+	if ( pmpro_courses_is_module_active( 'default' ) ) {
+		// Add New Lesson menu page under Courses menu.
+		add_submenu_page( 'edit.php?post_type=pmpro_course', __('Paid Memberships Pro Courses - Add New Lesson', 'pmpro-courses'), __('Add New Lesson', 'pmpro-courses'), 'manage_options', 'post-new.php?post_type=pmpro_lesson', '', 5 );
+		
+		// Mirror the Settings menu item under Courses to go to same page under Memberships menu.
+		add_submenu_page( 'edit.php?post_type=pmpro_course', __('Paid Memberships Pro Courses - Settings', 'pmpro-courses'), __('Settings', 'pmpro-courses'), 'manage_options', 'admin.php?page=pmpro-courses-settings', '', 10 );
+	}	
+}
+add_action( 'admin_menu', 'pmpro_courses_settings_page' );
 
-					$saved = explode(",",$saved );
+function pmpro_courses_settings() {
+	require_once PMPRO_COURSES_DIR . '/includes/adminpages/settings.php';
+}
 
-					$checked = false;
-					if( in_array( $integration['slug'], $saved ) ){
-						$checked = true;
-					}
-					?>
-					<tr>
-						<th scope="row" valign="top">
-							<label for="<?php echo $integration['slug']; ?>"><?php echo $integration['name']; ?></label>
-						</th>
-						<td><input type='checkbox' name='pmproc_integrations[]' value='<?php echo $integration['slug']; ?>' id='<?php echo $integration['slug']; ?>' <?php if( $checked ){ echo 'checked="true"'; } ?>/> <label for="<?php echo $integration['slug']; ?>"><?php echo $integration['description'];?></label></td>				
-					</tr>
-					<?php
+function pmpro_courses_settings_save() {
+	if ( isset( $_REQUEST['pmpro_courses_save_settings'] ) ) {
+		if ( ! empty( $_REQUEST['pmpro_courses_modules'] ) ) {
+			// Make sure they are valid modules.
+			$all_modules = pmpro_courses_get_modules();
+			$active_modules = array();
+			foreach( $_REQUEST['pmpro_courses_modules'] as $active_module ) {
+				if ( in_array( $active_module, array_keys( $all_modules ) ) ) {
+					$active_modules[] = $active_module;
 				}
 			}
-		?>
-		</table>	
-		<br/><hr/><br/>		
-		<input type='submit' name='pmproc_save_integration_settings' value='<?php _e('Save Settings', 'pmpro-courses'); ?>' class='button button-primary'/>
-	</form>
-</div>
+			
+			// Save the option.
+			update_option( 'pmpro_courses_modules', $active_modules );			
+		} else {
+			update_option( 'pmpro_courses_modules', array() );
+		}
+	}
+}
+add_action( 'admin_init', 'pmpro_courses_settings_save' );
+
+function pmpro_courses_save_notice() {
+	if ( isset( $_REQUEST['pmpro_courses_save_settings'] ) ) {
+		echo sprintf( "<div class='updated'><p>%s</p></div>", __( 'Settings saved successfully.', 'pmpro-courses') );
+	}
+}
+add_action( 'admin_notices', 'pmpro_courses_save_notice', 10 );
