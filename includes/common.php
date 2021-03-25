@@ -30,37 +30,29 @@ function pmpro_courses_is_module_active( $module ) {
 
 /**
  * Get an array of lessons data assigned to this course ID.
- *
  */
-function pmpro_courses_get_lessons( $course = 0 ) {
-	global $wpdb;
-	$sql = "SELECT * FROM $wpdb->posts ";
-	if ( $course !== 0 ) {
-		$sql .= " LEFT JOIN $wpdb->postmeta on $wpdb->posts.ID = $wpdb->postmeta.post_id 
-		WHERE $wpdb->posts.post_type = 'pmpro_lesson' AND $wpdb->posts.post_status = 'publish'
-		AND $wpdb->postmeta.meta_key = 'pmproc_parent' AND $wpdb->postmeta.meta_value = '$course' ";
-	} else {
-		$sql .= "WHERE $wpdb->posts.post_type = 'pmpro_lesson' AND $wpdb->posts.post_status = 'publish' ";
+function pmpro_courses_get_lessons( $course ) {
+	// Get ID from course if an object is passed in.
+	if ( is_object( $course ) ) {
+		$course = $course->ID;
 	}
-	$sql .= "ORDER BY menu_order, post_title ";
-	$results = $wpdb->get_results( $sql );
 
-	// Build the array of $lessons.
-	$lessons = array();
-	if ( ! empty( $results ) ) {
-		foreach( $results as $result ) {
-			$lessons[$result->ID] = array(
-				'id' 	=> $result->ID,
-				'title' => $result->post_title,
-				'content' => $result->post_content,
-				'excerpt' => $result->post_excerpt,
-				'order' => $result->menu_order,
-				'permalink' => get_the_permalink( $result->ID ),
-				'menu_order' => $result->menu_order,
-			);
-		}
+	// Return false if no course ID was passed in.
+	if ( empty( $course ) ) {
+		return false;
 	}
-	return $lessons;
+	
+	// Set up args for query.
+	$args = array(
+		'post_parent' => $course,
+		'numberposts' => -1,
+		'post_type' => 'pmpro_lesson',
+		'orderby' => 'menu_order',
+		'order' => 'ASC'
+	);
+	
+	// Return lessons.
+	return get_posts( $args );
 }
 
 /**
@@ -81,42 +73,27 @@ function pmproc_get_next_lesson_order( $course ) {
 	} else {
 		// Last menu_order + 1
 		$last_child = end( $lessons );
-		return $last_child['menu_order'] + 1;
+		return $last_child->menu_order + 1;
 	}
 }
 
-/**
- * Get a link to the course assigned to this lesson ID.
- *
- */
-function pmpro_courses_get_course( $lesson_id ) {
-	$parent = intval( get_post_meta( $lesson_id, 'pmproc_parent', true ) );
-	if ( $parent ) {
-		$course = get_post( $parent );
-		if ( $course ) {
-			return '<a href="' . esc_url( add_query_arg( array( 'post' => $parent, 'action' => 'edit' ), admin_url( 'post.php' ) ) ) . '">' . esc_html( $course->post_title ) . '</a>';
-		}
-	}
-	return '&#8212;';
-}
-
-function pmpro_courses_build_lesson_html( $array_content ){
+function pmpro_courses_build_lesson_html( $lessons ){
 
 	$ret = "";
 
-	if( !empty( $array_content ) ){
+	if( !empty( $lessons ) ){
 		
 		$count = 1;
 
-		foreach ( $array_content as $lesson ) {
+		foreach ( $lessons as $lesson ) {
 
 			$ret .= "<tr>";
-			$ret .= "<td>".$lesson['order']."</td>";
-			$ret .= "<td><a href='".admin_url( 'post.php?post='.$lesson['id'].'&action=edit' )."' title='".__('Edit', 'pmpro-courses').' '.$lesson['title']."' target='_BLANK'>".$lesson['title']."</a></td>";
+			$ret .= "<td>".$lesson->menu_order."</td>";
+			$ret .= "<td><a href='".admin_url( 'post.php?post=' . $lesson->ID.'&action=edit' ) . "' title='" . __('Edit', 'pmpro-courses') .' '. $lesson->post_title. "' target='_BLANK'>". $lesson->post_title ."</a></td>";
 			$ret .= "<td>";
-			$ret .= "<a class='button button-secondary' href='javascript:pmproc_editPost(".$lesson['id'].",".$lesson['order']."); void(0);'>".__( 'edit', 'pmpro-courses' )."</a>";
+			$ret .= "<a class='button button-secondary' href='javascript:pmproc_editPost(".$lesson->ID.",".$lesson->menu_order."); void(0);'>".__( 'edit', 'pmpro-courses' )."</a>";
 			$ret .= " ";
-			$ret .= "<a class='button button-secondary' href='javascript:pmproc_removePost(".$lesson['id']."); void(0);'>".__( 'remove', 'pmpro-courses' )."</a>";
+			$ret .= "<a class='button button-secondary' href='javascript:pmproc_removePost(".$lesson->ID."); void(0);'>".__( 'remove', 'pmpro-courses' )."</a>";
 			$ret .= "</td>";
 			$ret .= "</tr>";
 
@@ -255,34 +232,6 @@ function pmproc_complete_button( $lid, $cid, $user_id = null ) {
 	}
 
 	return $content;
-}
-
-/**
- * Build a text link for the previous or next lesson in the course.
- *
- */
-function pmproc_lesson_navigation( $lid, $cid, $position ) {
-	// Build 
-	$lessons = pmpro_courses_get_lessons( $cid );
-
-	// If no lessons or only one lesson, return.
-	if ( empty( $lessons ) || count( $lessons ) === 1 ) {
-		return;
-	}
-
-	// Get the position of the current lesson in the array.
-	$searched = array_search( $lid, array_column( $lessons, 'id' ) );
-
-	// Return the next lesson link.
-	if ( empty( $position ) || $position === 'next' ) {
-		$lesson_to_link = current( array_slice( $lessons, array_search( $lid, array_keys( $lessons ) ) + 1, 1) );
-	} else {
-		$lesson_to_link = current( array_slice( $lessons, array_search( $lid, array_keys( $lessons ) ) - 1, 1) );
-	}
-
-	if ( ! empty( $lesson_to_link ) ) {
-		return '<a href="' . $lesson_to_link['permalink'] . '" title="' . $lesson_to_link['title'] . '">' . $lesson_to_link['title'] . '</a>';
-	}
 }
 
 /**

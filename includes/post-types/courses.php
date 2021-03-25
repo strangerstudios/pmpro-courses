@@ -12,7 +12,6 @@ function pmpro_courses_course_cpt() {
 		'name_admin_bar'        => __( 'Course', 'pmpro-courses' ),
 		'archives'              => __( 'Course Archives', 'pmpro-courses' ),
 		'attributes'            => __( 'Course Attributes', 'pmpro-courses' ),
-		'parent_item_colon'     => __( 'Parent Course:', 'pmpro-courses' ),
 		'all_items'             => __( 'All Courses', 'pmpro-courses' ),
 		'add_new_item'          => __( 'Add New Course', 'pmpro-courses' ),
 		'add_new'               => __( 'Add New Course', 'pmpro-courses' ),
@@ -90,17 +89,13 @@ add_action('admin_menu', 'pmpro_courses_course_cpt_define_meta_boxes', 20);
  * Callback for lessons meta box
  */
 function pmpro_courses_course_cpt_lessons() {
-
 		global $wpdb, $post;
 
 		// boot out people without permissions
 		if ( ! current_user_can( 'edit_posts' ) ) {
 			return false;
 		}
-
-		?>
-				
-			
+		?>	
 		<div class="message error"><p><?php //echo $this->error; ?></p></div>
 		<table id="pmproc_table" class="wp-list-table widefat striped pmpro-metabox-items">
 			<thead>
@@ -109,7 +104,9 @@ function pmpro_courses_course_cpt_lessons() {
 				<th width="20%"><?php _e( 'Actions', 'pmpro-courses' ); ?></th>
 			</thead>
 			<tbody>
-			<?php echo pmpro_courses_build_lesson_html( pmpro_courses_get_lessons( $post->ID ) ); ?>
+			<?php 				
+				echo pmpro_courses_build_lesson_html( pmpro_courses_get_lessons( $post->ID ) );
+			?>
 			</tbody>
 		</table>
 
@@ -121,19 +118,16 @@ function pmpro_courses_course_cpt_lessons() {
 						<label for="pmproc_post"><?php _e( 'Lesson', 'pmpro-courses' ); ?></label>
 						<select id="pmproc_post" name="pmproc_post">
 							<option value=""></option>
-						<?php
-							$all_lessons = pmpro_courses_get_lessons();
-
-						foreach ( $all_lessons as $lesson ) {
-							?>
-							<option value="<?php echo $lesson['id']; ?>"><?php echo esc_textarea( $lesson['title'] ); ?> (#
 							<?php
-							echo $lesson['id'];
+								$all_lessons = get_posts( array( 'post_type' => 'pmpro_lesson', 'post_status' => 'publish', 'orderby' => menu_order, 'order' => 'ASC' ) );
+								foreach ( $all_lessons as $lesson ) {
+									?>
+									<option value="<?php echo intval( $lesson->ID ); ?>"><?php echo esc_html( $lesson->post_title ); ?>
+									(#<?php echo $lesson->ID;?>)
+									</option>
+									<?php
+								}
 							?>
-								)</option>
-							<?php
-						}
-						?>
 						</select>
 					</td>
 					<td width="20%">

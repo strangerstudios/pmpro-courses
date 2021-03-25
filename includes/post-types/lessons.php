@@ -13,7 +13,6 @@ function pmpro_courses_lesson_cpt() {
 		'name_admin_bar'        => __( 'Lesson', 'pmpro-courses' ),
 		'archives'              => __( 'Lesson Archives', 'pmpro-courses' ),
 		'attributes'            => __( 'Lesson Attributes', 'pmpro-courses' ),
-		'parent_item_colon'     => __( 'Parent Lesson:', 'pmpro-courses' ),
 		'all_items'             => __( 'All Lessons', 'pmpro-courses' ),
 		'add_new_item'          => __( 'Add New Lesson', 'pmpro-courses' ),
 		'add_new'               => __( 'Add New Lesson', 'pmpro-courses' ),
@@ -46,7 +45,7 @@ function pmpro_courses_lesson_cpt() {
 		'description'         => __( 'Lessons for Paid Memberships Pro Courses', 'pmpro-courses' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', 'editor', 'thumbnail', 'revisions', 'custom-fields', 'page-attributes' ),
-		'hierarchical'        => true,
+		'hierarchical'        => false,
 		'public'              => true,
 		'show_ui'             => true,
 		'show_in_menu'        => 'edit.php?post_type=pmpro_course',
@@ -76,17 +75,19 @@ add_action('admin_menu', 'pmpro_courses_lessons_cpt_define_meta_boxes', 20);
 /**
  * Lesson attributes meta box.
  */
-function pmpro_courses_lesson_course_metabox( $post ) {
-	$course_id = get_post_meta( $post->ID, 'pmproc_parent', true );
-	
+function pmpro_courses_lesson_course_metabox( $post ) {	
+	?>
+	<label class="components-base-control__label" for="pmproc_parent"><?php _e( 'Course', 'pmpro-courses' );?></label>
+	<?php	
 	wp_dropdown_pages( array(
-		'selected' => $course_id,
+		'selected' => $post->post_parent,
+		'echo' => 1,
 		'show_option_none' => '--' . __( 'None', 'pmpro-courses' ) . '--',
 		'name' => 'pmproc_parent',
 		'id' => 'pmproc_parent',
 		'post_type' => 'pmpro_course',
-		'echo' => 1,
-	));
+		'post_status' => 'publish',
+	) );
 }
 
 /**
@@ -94,7 +95,7 @@ function pmpro_courses_lesson_course_metabox( $post ) {
  */
 function pmpro_courses_save_lessons_meta( $post_id ){
 	if( 'pmpro_lesson' === get_post_type() ){
-		update_post_meta( $post_id, 'pmproc_parent', intval( $_REQUEST['pmproc_parent'] ) );
+		wp_update_post( $post_id, 'parent_post', intval( $_REQUEST['pmproc_parent'] ) );
 	}
 }
 add_action( 'save_post', 'pmpro_courses_save_lessons_meta', 10, 1 );

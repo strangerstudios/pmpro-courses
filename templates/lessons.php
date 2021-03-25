@@ -10,11 +10,11 @@ if ( ! empty( $lessons ) ) { ?>
 		<ol class="pmpro_courses-list">
 			<?php
 				foreach( $lessons as $lesson ) { ?>
-					<li id="pmpro_courses-lesson-<?php echo $lesson['id']; ?>" class="pmpro_courses-list-item">
-						<div class="pmpro_courses-list-item-title"><a href="<?php echo $lesson['permalink']; ?>"><?php echo $lesson['title']; ?></a></div>
+					<li id="pmpro_courses-lesson-<?php echo intval( $lesson->ID ); ?>" class="pmpro_courses-list-item">
+						<div class="pmpro_courses-list-item-title"><a href="<?php echo esc_url( get_permalink( $lesson->ID ) ); ?>"><?php echo esc_html( $lesson->post_title ); ?></a></div>
 						<?php
 							if ( is_user_logged_in() ) {
-								echo pmproc_complete_button( $lesson['id'], $post->ID );
+								echo pmproc_complete_button( $lesson->ID, $post->ID );
 							}
 						?>
 					</li>

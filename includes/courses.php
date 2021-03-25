@@ -21,8 +21,7 @@ function pmpro_courses_the_content_course( $content ) {
 			$before_the_content .= pmproc_display_progress_bar( $post->ID );
 		}
 
-		// Show a list of lessons from a custom template or the default lesson list after the_content.
-		$path = dirname(__FILE__);
+		// Show a list of lessons from a custom template or the default lesson list after the_content.		
 		$custom_dir = get_stylesheet_directory()."/paid-memberships-pro/pmpro-courses/";
 		$custom_file = $custom_dir."lessons.php";
 
@@ -30,7 +29,7 @@ function pmpro_courses_the_content_course( $content ) {
 		if( file_exists($custom_file ) ){
 			$include_file = $custom_file;
 		} else {
-			$include_file = $path . "/templates/lessons.php";
+			$include_file = PMPRO_COURSES_DIR . "/templates/lessons.php";
 		}
 
 		ob_start();
@@ -59,9 +58,8 @@ function pmpro_courses_update_course_callback(){
 				$order = pmproc_get_next_lesson_order( $course );
 			}			
 			
-			update_post_meta( $lesson, 'pmproc_parent', $course );
-			wp_update_post( array( 'ID' => $lesson, 'menu_order' => $order ) );
-			
+			wp_update_post( array( 'ID' => $lesson, 'post_parent' => $course, 'menu_order' => $order ) );
+						
 			echo pmpro_courses_build_lesson_html( pmpro_courses_get_lessons( $course ) );
 			
 			wp_die();
@@ -80,13 +78,11 @@ function pmpro_courses_remove_course_callback(){
 
 			$course = intval( $_REQUEST['course'] );
 			$lesson = intval( $_REQUEST['lesson'] );
-			$deleted = delete_post_meta( $lesson, 'pmproc_parent' );
-
-			if( $deleted ){
-				echo pmpro_courses_build_lesson_html( pmpro_courses_get_lessons( $course ) );
-			} else {
-				echo 'error';
-			}
+			
+			wp_update_post( array( 'ID' => $lesson, 'post_parent' => '' ) );
+			
+			echo pmpro_courses_build_lesson_html( pmpro_courses_get_lessons( $course ) );
+			
 			wp_die();
 		}
 	}
@@ -128,6 +124,21 @@ function pmpro_courses_columns_content( $column, $course_id ) {
 	}
 }
 add_action( 'manage_pmpro_course_posts_custom_column' , 'pmpro_courses_columns_content', 10, 2 );
+
+/**
+ * Get the edit post link for a course.
+ */
+function pmpro_courses_get_edit_course_link( $course ) {
+	if ( ! is_object( $course ) ) {
+		$course = get_post( $course );
+	}
+	
+	if ( empty( $course ) ) {
+		return false;
+	}
+	
+	return '<a href="' . esc_url( add_query_arg( array( 'post' => $course->ID, 'action' => 'edit' ), admin_url( 'post.php' ) ) ) . '">' . esc_html( $course->post_title ) . '</a>';
+}
 
 function pmpro_courses_template_redirect() {
 
