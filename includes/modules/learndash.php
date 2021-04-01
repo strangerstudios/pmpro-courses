@@ -3,9 +3,9 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	public $slug = 'learndash';
 	
 	/**
-     * Initial setup for the LearnDash module.
-     * @since 1.0
-     */
+	* Initial setup for the LearnDash module.
+	* @since 1.0
+	*/
 	public function init() {
 		add_filter( 'pmpro_courses_modules', array( 'PMPro_Courses_LearnDash', 'add_module' ), 10, 1 );
 	}
