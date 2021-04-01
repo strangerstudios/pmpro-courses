@@ -1,19 +1,29 @@
 <?php
-/**
- * Add LearnDash to the modules list.
- */
-function pmpro_courses_learndash_module( $modules ){
+class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
+	public $slug = 'learndash';
+	
+	/**
+     * Initial setup for the LearnDash module.
+     * @since 1.0
+     */
+	public function init() {
+		add_filter( 'pmpro_courses_modules', array( 'PMPro_Courses_LearnDash', 'add_module' ), 10, 1 );
+	}
+	
+	/**
+	 * Add LearnDash to the modules list.
+	 */
+	public static function add_module( $modules ){
 
-	$modules[] = array(
-		'name' => __('LearnDash', 'pmpro-courses'),
-		'slug' => 'learndash',
-		'description' => __( 'LearnDash LMS', 'pmpro-courses' ),
-	);
+		$modules[] = array(
+			'name' => __('LearnDash', 'pmpro-courses'),
+			'slug' => 'learndash',
+			'description' => __( 'LearnDash LMS', 'pmpro-courses' ),
+		);
 
-	return $modules;
-
+		return $modules;
+	}
 }
-add_filter( 'pmpro_courses_modules', 'pmpro_courses_learndash_module', 10, 1 );
 
 /**
  * Is the LearnDash module active?
