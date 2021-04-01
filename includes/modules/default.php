@@ -7,16 +7,16 @@ class PMPro_Courses_Module {
     public $slug = 'default';
     
     /**
-	 * Get the one instance of this class.
-	 * @since 1.0
-	 * @return PMPro_Courses_Module Main instance
-	 */
-	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
-		}
-		return self::$_instance;
-	}
+     * Get the one instance of this class.
+     * @since 1.0
+     * @return PMPro_Courses_Module Main instance
+     */
+    public static function instance() {
+        if ( is_null( self::$_instance ) ) {
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
     
     /**
      * Run init if active.
