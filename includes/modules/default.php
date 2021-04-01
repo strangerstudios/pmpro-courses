@@ -17,6 +17,19 @@ class PMPro_Courses_Module {
         }
         return self::$_instance;
     }
+
+    /**
+     * Prevent cloning.
+     */
+    private function __clone() {}
+
+    /**
+     * Prevent unserializing.
+     */
+    final public function __wakeup() {
+        _doing_it_wrong( __FUNCTION__, __( 'Unserializing instances of this class is forbidden.', 'pmpro-courses' ), '4.6' );
+        die();
+    }
     
     /**
      * Run init if active.
