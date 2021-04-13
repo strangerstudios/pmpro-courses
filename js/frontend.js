@@ -1,24 +1,21 @@
 jQuery(document).ready(function(){
 
-	jQuery("body").on("click", ".pmpro_courses-mark-complete-action", function(){
+	jQuery("body").on("click", ".pmpro_courses-button", function(){
 
-		var lid = jQuery(this).attr('lid');
-		var cid = jQuery(this).attr('cid');
+		var button = jQuery(this);
+		var lid = button.attr('data-lid');
+		var cid = button.attr('data-cid');
 
 		var data = {
-			action: 'pmproc_record_progress',
+			action: 'pmpro_courses_toggle_lesson_progress',
 			lid: lid,
 			cid: cid
 		}
 
-		jQuery.post( pmpro_courses.ajaxurl, data, function( response ){
-			if( response ){
-				response = JSON.parse( response );
-				if( response.next_lesson ){
-					window.location.href = response.next_lesson;
-				}
+		jQuery.get( pmpro_courses.ajaxurl, data, function( response ){
+			if( response ) {				
+				button.replaceWith( response );
 			}
-
 		});
 	});
 

@@ -26,12 +26,10 @@ function pmpro_courses_get_user_progress( $course_id, $user_id = null ) {
 /**
  * Mark a lesson as incomplete.
  */
-function pmpro_courses_toggle_lesson_progress( $lesson_id, $user_id = null, $complete = null ) {
-	global $current_user;
-	
+function pmpro_courses_toggle_lesson_progress( $lesson_id, $user_id = null, $complete = null ) {	
 	// default to current user
 	if ( empty( $user_id ) ) {
-		$user_id = $current_user->ID;
+		$user_id = get_current_user_id();
 	}
 	
 	if ( empty( $user_id ) ) {
@@ -53,7 +51,7 @@ function pmpro_courses_toggle_lesson_progress( $lesson_id, $user_id = null, $com
 		$progress[$lesson_id] = $complete;
 	} else {
 		// toggle the status
-		if ( $empty( $progress ) || empty( $progress[$lesson_id] ) ) {
+		if ( empty( $progress ) || empty( $progress[$lesson_id] ) ) {
 			$progress[$lesson_id] = true;
 		} else {
 			$progress[$lesson_id] = false;
@@ -106,7 +104,7 @@ function pmpro_courses_get_user_lesson_status( $lid, $cid, $user_id = null ) {
 /**
  * Display a button that allows a user to mark a lesson as complete.
  */
-function pmpro_courses_complete_button( $lid, $cid, $user_id = null ) {	
+function pmpro_courses_complete_button( $lid, $cid, $user_id = null ) {
 	// Filter to hide the completion button.
 	$show_complete_button = apply_filters( 'pmpro_courses_button_show_complete', true );
 	if ( empty( $show_complete_button ) ) {
@@ -133,11 +131,11 @@ function pmpro_courses_complete_button( $lid, $cid, $user_id = null ) {
 	if ( $lesson_status === 'complete' ) {
 		// Filter the text shown as the button title for a completed lesson.
 		$lesson_complete_text = apply_filters( 'pmpro_courses_lesson_complete_text', __('Lesson Completed', 'pmpro-courses' ) );
-		$content = '<button class="pmpro_courses-button pmpro_courses-button-complete" title="' .  esc_html( $lesson_complete_text ) . '"><span class="dashicons dashicons-yes"></span></button>';
+		$content = '<button data-lid="' . esc_attr( $lid ) . '" data-cid="' . esc_attr( $cid ) . '" class="pmpro_courses-button pmpro_courses-button-complete" title="' .  esc_html( $lesson_complete_text ) . '"><span class="dashicons dashicons-yes"></span></button>';
 	} else {
 		// Filter the text shown as the button title to mark a lesson complete.
 		$lesson_to_complete_text = apply_filters( 'pmpro_courses_lesson_to_complete_text', __('Mark Lesson as Complete', 'pmpro-courses') );
-		$content = '<button class="pmpro_courses-button pmpro_courses-button-incomplete pmpro_courses-mark-complete-action" lid="' . $lid . '" cid="' . $cid . '" title="' . esc_html( $lesson_to_complete_text ) . '"><span class="dashicons dashicons-yes"></span></button>';
+		$content = '<button data-lid="' . esc_attr( $lid ) . '" data-cid="' . esc_attr( $cid ) . '" class="pmpro_courses-button pmpro_courses-button-incomplete pmpro_courses-mark-complete-action" title="' . esc_html( $lesson_to_complete_text ) . '"><span class="dashicons dashicons-yes"></span></button>';
 	}
 
 	return $content;
@@ -149,9 +147,10 @@ function pmpro_courses_complete_button( $lid, $cid, $user_id = null ) {
 function pmpro_courses_get_user_progress_percentage( $course_id ) {
 	$percentage = 0;
 	$lesson_count = pmpro_courses_get_lesson_count( $course_id );
-	$progress = count( pmproc_get_complete_lessons( $course_id ) );
-	if ( $lesson_count !== 0 && $progress !== 0 ) {
-		$percentage = $progress / $lesson_count * 100;
+	$progress = pmpro_courses_get_user_progress( $course_id );
+	$progress_count = count( $progress );
+	if ( $lesson_count !== 0 && $progress_count !== 0 ) {
+		$percentage = $progress_count / $lesson_count * 100;
 	}
 	return $percentage;
 }
@@ -171,39 +170,17 @@ function pmproc_display_progress_bar( $course_id ){
 /**
  * AJAX callback to toggle completion for a lesson.
  */
-function pmpro_courses_record_progress_ajax(){
-
-	if( !empty( $_REQUEST['action'] ) && $_REQUEST['action'] == 'pmproc_record_progress' ){
-
-		$user = wp_get_current_user();
-		$course_id = intval( $_REQUEST['cid'] );
-		$lesson_id = intval( $_REQUEST['lid'] );
-
-		if( $user ){
-
-			$user_id = $user->ID;
-
-			$current_progress = get_user_meta( $user_id, 'pmproc_progress_'.$course_id, true );
-
-			if( empty( $current_progress ) || empty( $current_progress[$lesson_id] ) ) {
-				// complete this lesson
-				$current_progress[$lesson_id] = true;				
-			} else {
-				// marking incomplete
-				$current_progress[$lesson_id] = false;
-			}
+function pmpro_courses_toggle_lesson_progress_ajax(){		
+	$user_id = get_current_user_id();
 			
-			update_user_meta( $user_id, 'pmproc_progress_'.$course_id, $current_progress );
+	$course_id = intval( $_REQUEST['cid'] );
+	$lesson_id = intval( $_REQUEST['lid'] );
 
-			$next_lesson = pmproc_get_next_lesson( $lesson_id, $course_id );
-
-			echo json_encode( array( 'progress' => $current_progress, 'next_lesson' => $next_lesson ) );
-
-			wp_die();
-
-		}		
-
+	if ( ! empty( $user_id ) ) {
+		pmpro_courses_toggle_lesson_progress( $lesson_id, $user_id );			
+		echo pmpro_courses_complete_button( $lesson_id, $course_id, $user_id );
+				
+		wp_die();
 	}
-
 }
-add_action( 'wp_ajax_pmproc_record_progress', 'pmpro_courses_record_progress_ajax' );
+add_action( 'wp_ajax_pmpro_courses_toggle_lesson_progress', 'pmpro_courses_toggle_lesson_progress_ajax' );

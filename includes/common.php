@@ -108,7 +108,6 @@ function pmpro_courses_build_lesson_html( $lessons ){
 
 /**
  * Get a count of lessons assigned to this course ID.
- *
  */
 function pmpro_courses_get_lesson_count( $course_id ) {
 	global $wpdb;
