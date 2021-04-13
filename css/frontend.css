@@ -35,6 +35,8 @@
 	opacity: 1;
 }
 
+.pmpro_courses_lesson-status label { cursor: pointer; }
+.pmpro_courses_lesson-status .pmpro_courses-button { float: left; margin-right: 1em; }
 
 .pmpro_courses_shortcode_container li {
     display: inline-block;

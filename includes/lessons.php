@@ -24,15 +24,9 @@ function pmpro_courses_the_content_lesson( $content ) {
 		if ( $show_complete_button ) {
 			$lesson_status = pmpro_courses_get_user_lesson_status( $post->ID, $course_id );
 			if ( ! empty( $lesson_status ) ) {
-				$after_the_content .= '<div class="pmpro_lesson-status">';
-				if ( $lesson_status === 'complete' ) {
-					// Filter the text shown as the button title for a completed lesson.
-					$after_the_content .= esc_html( apply_filters( 'pmproc_lesson_complete_text', __('Lesson Completed', 'pmpro-courses' ) ) );
-				} else {
-					// Filter the text shown as the button title to mark a lesson complete.
-					$after_the_content .= esc_html( apply_filters( 'pmproc_lesson_to_complete_text', __('Mark Lesson as Complete', 'pmpro-courses') ) );
-				}
+				$after_the_content .= '<div class="pmpro_courses_lesson-status">';				
 				$after_the_content .= pmpro_courses_complete_button( $post->ID, $course_id );
+				$after_the_content .= '<label for="pmpro_courses_lesson' . esc_attr( $post->ID ) . '_toggle">' . __( 'Completed?', 'pmpro-courses' ) . '</label>';
 				$after_the_content .= '</div>';
 				$after_the_content .= '<hr class="styled-separator is-style-wide" aria-hidden="true" />';
 			}
