@@ -14,7 +14,7 @@ if ( ! empty( $lessons ) ) { ?>
 						<div class="pmpro_courses-list-item-title"><a href="<?php echo esc_url( get_permalink( $lesson->ID ) ); ?>"><?php echo esc_html( $lesson->post_title ); ?></a></div>
 						<?php
 							if ( is_user_logged_in() ) {
-								echo pmproc_complete_button( $lesson->ID, $post->ID );
+								echo pmpro_courses_complete_button( $lesson->ID, $post->ID );
 							}
 						?>
 					</li>

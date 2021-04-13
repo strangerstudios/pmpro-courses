@@ -112,7 +112,7 @@ function pmpro_courses_frontend_styles(){
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_style( 'dashicons' );
 		wp_enqueue_style( 'pmpro-courses-styles', plugins_url( 'css/frontend.css', __FILE__ ) );
-		wp_enqueue_script( 'pmpro-courses-scripts', plugins_url( 'js/user.js', __FILE__ ), array( 'jquery' ) );
+		wp_enqueue_script( 'pmpro-courses-scripts', plugins_url( 'js/frontend.js', __FILE__ ), array( 'jquery' ) );
 		wp_localize_script( 'pmpro-courses-scripts', 'pmpro_courses', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 		wp_enqueue_script( 'pmpro-courses-loading-bar-js', plugins_url( 'js/loading-bar.js', __FILE__ ) );
 		wp_enqueue_style( 'pmpro-courses-loading-bar-css', plugins_url( 'css/loading-bar.css', __FILE__ ) );

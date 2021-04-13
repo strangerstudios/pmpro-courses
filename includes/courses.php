@@ -16,10 +16,12 @@ function pmpro_courses_the_content_course( $content ) {
 			);
 		}
 
+		/* // No progress bars for now.
 		$show_progress_bar = apply_filters( 'pmproc_show_progress_bar', true );
 		if ( $show_progress_bar ) {
 			$before_the_content .= pmproc_display_progress_bar( $post->ID );
 		}
+		*/
 
 		// Show a list of lessons from a custom template or the default lesson list after the_content.		
 		$custom_dir = get_stylesheet_directory()."/paid-memberships-pro/pmpro-courses/";
