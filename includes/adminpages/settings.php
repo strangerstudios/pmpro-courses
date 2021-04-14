@@ -1,5 +1,9 @@
-<div class='wrap'>
-	<h2><?php _e( 'PMPro Courses Settings', 'pmpro-courses' ); ?></h2>
+<?php
+	require_once( PMPRO_DIR . "/adminpages/admin_header.php" );
+	?>
+	<h1 class="wp-heading-inline">
+		<?php esc_html_e( 'Courses for Membership Settings', 'pmpro-courses' ); ?>
+	</h1>
 	<p><?php _e( 'Which modules would you like to enable?', 'pmpro-courses' ); ?></p>
 	<form method='POST'>
 		<h3><?php __( 'Modules', 'pmpro-courses' );?></h3>
@@ -28,8 +32,11 @@
 				}
 			}
 		?>
-		</table>	
-		<br/><hr/><br/>		
-		<input type='submit' name='pmpro_courses_save_settings' value='<?php _e('Save Settings', 'pmpro-courses'); ?>' class='button button-primary'/>
+		</table>
+		<p class="submit"><input type="submit" name="pmpro_courses_save_settings" value="<?php esc_html_e( 'Save Settings', 'pmpro-courses' ); ?>" class="button button-primary" /></p>
 	</form>
-</div>
+	<hr />
+	<p><a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses-admin&utm_campaign=add-ons" target="_blank"><?php esc_html_e( 'Documentation', 'pmpro_courses' ); ?></a> | <a href="https://www.paidmembershipspro.com/support/?utm_source=plugin&utm_medium=pmpro-courses-admin&utm_campaign=support" target="_blank"><?php esc_html_e( 'Support', 'pmpro_courses' ); ?></a></p>
+	<?php
+	require_once( PMPRO_DIR . "/adminpages/admin_footer.php" );
+?>
