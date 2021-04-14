@@ -120,43 +120,6 @@ class PMPRO_Courses_Lesson_Widget extends WP_Widget {
 } 
 
 /**
- * Check $_REQUEST for parameters from the widget. Add to SQL query.
- */
-function my_pmpro_directory_widget_filter_sql_parts( $sql_parts, $levels, $s, $pn, $limit, $start, $end, $order_by, $order ) {
-	global $wpdb;
-
-	// Filter results based on membership level if a level was selected.
-	if ( ! empty( $_REQUEST['membership_levels'] ) && is_array( $_REQUEST['membership_levels'] ) ) {
-		// User's membership level is already joined, so we can skip that step.
-		$sql_parts['WHERE'] .= " AND mu.membership_id in ('" . implode( "','", $_REQUEST['membership_levels'] ) . "') ";
-	}
-
-	// Filter results based on coat color if a color is selected.
-	if ( ! empty( $_REQUEST['coat_color'] ) && is_array( $_REQUEST['coat_color'] ) ) {
-		$sql_parts['JOIN'] .= " LEFT JOIN $wpdb->usermeta um_coat_color ON um_coat_color.meta_key = 'dog_coat_color' AND u.ID = um_coat_color.user_id ";
-		$sql_parts['WHERE'] .= " AND um_coat_color.meta_value in ('" . implode( "','", $_REQUEST['coat_color'] ) . "') ";
-	}
-
-	// Filter results based on max weight if a max weight was inputted.
-	if ( ! empty( $_REQUEST['max_weight'] ) && is_numeric( $_REQUEST['max_weight'] ) ) {
-		$join_weight = true; // We will JOIN this later, but we don't want to JOIN it twice.
-		$sql_parts['WHERE'] .= ' AND um_dog_weight.meta_value <= ' . $_REQUEST['max_weight'] . ' ';
-	}
-	// Filter results based on min weight if a min weight was inputted.
-	if ( ! empty( $_REQUEST['min_weight'] ) && is_numeric( $_REQUEST['min_weight'] ) ) {
-		$join_weight = true; // We will JOIN this later, but we don't want to JOIN it twice.
-		$sql_parts['WHERE'] .= ' AND um_dog_weight.meta_value >= ' . $_REQUEST['min_weight'] . ' ';
-	}
-	// Make sure to get the dog weight in the SQL query if we use that in a WHERE clause.
-	if ( ! empty( $join_weight ) ) {
-		$sql_parts['JOIN'] .= " LEFT JOIN $wpdb->usermeta um_dog_weight ON um_dog_weight.meta_key = 'dog_weight' AND u.ID = um_dog_weight.user_id ";
-	}
-
-	return $sql_parts;
-}
-add_filter( 'pmpro_member_directory_sql_parts', 'my_pmpro_directory_widget_filter_sql_parts', 10, 9 );
-
-/**
  * Registers widget.
  */
 function my_pmpro_register_directory_widget() {
