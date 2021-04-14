@@ -119,7 +119,7 @@ function pmpro_courses_course_cpt_lessons() {
 						<select id="pmproc_post" name="pmproc_post">
 							<option value=""></option>
 							<?php
-								$all_lessons = get_posts( array( 'post_type' => 'pmpro_lesson', 'post_status' => 'publish', 'orderby' => menu_order, 'order' => 'ASC' ) );
+								$all_lessons = get_posts( array( 'post_type' => 'pmpro_lesson', 'post_status' => 'publish', 'orderby' => 'menu_order', 'order' => 'ASC' ) );
 								foreach ( $all_lessons as $lesson ) {
 									?>
 									<option value="<?php echo intval( $lesson->ID ); ?>"><?php echo esc_html( $lesson->post_title ); ?>
