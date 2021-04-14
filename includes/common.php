@@ -200,7 +200,7 @@ function pmproc_get_courses( $posts_per_page = 5, $user_id = false ){
 						$orders = $wpdb->get_row( $ordsql );
 
 						if( $orders ){
-							$courses[$course_id] = apply_filters( 'pmproc_return_courses_array', array(
+							$courses[$course_id] = apply_filters( 'pmpro_courses_return_courses_array', array(
 								'id' => $course_id,
 								'title' => get_the_title(),
 								'permalink' => get_the_permalink(),
@@ -213,7 +213,7 @@ function pmproc_get_courses( $posts_per_page = 5, $user_id = false ){
 				}
 
 			} else {
-				$courses[$course_id] = apply_filters( 'pmproc_return_courses_array', array(
+				$courses[$course_id] = apply_filters( 'pmpro_courses_return_courses_array', array(
 					'id' => $course_id,
 					'title' => get_the_title(),
 					'permalink' => get_the_permalink(),
