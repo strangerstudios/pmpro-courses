@@ -36,8 +36,10 @@ class PMPro_Courses_Module {
      * @since 1.0
      */
     public function __construct() {
+        $this->init();
+        
         if ( $this->is_active() ) {
-            $this->init();
+            $this->init_active();
         }
     }
     
@@ -55,9 +57,36 @@ class PMPro_Courses_Module {
     /**
      * Initial setup for the default module.
      * Override this for modules that inherit this class.
+     * This code will run if the module is active or not.
      * @since 1.0
      */
     public function init() {
+        // example to use hook to add your module
+        // add_filter( 'pmpro_courses_modules', array( 'PMPro_Courses_MyModule', 'add_module' ), 10, 1 );
+    }
+    
+    /**
+	 * Example callback to add your module to the modules list.
+	 */
+    /*
+	public static function add_module( $modules ){
+
+		$modules[] = array(
+			'name' => __('MyModule', 'pmpro-courses'),
+			'slug' => 'mymodule',
+			'description' => __( 'My Module', 'pmpro-courses' ),
+		);
+		
+		return $modules;
+	}
+    */
+    
+    /**
+     * Initial setup for the default module when active.
+     * Override this for modules that inherit this class.
+     * @since 1.0
+     */
+    public function init_active() {
         require_once PMPRO_COURSES_DIR . '/includes/post-types/courses.php';
         require_once PMPRO_COURSES_DIR . '/includes/post-types/lessons.php';
         require_once PMPRO_COURSES_DIR . '/includes/courses.php';

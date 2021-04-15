@@ -6,9 +6,17 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	 * Initial setup for the LearnDash module.
 	 * @since 1.0
 	 */
-	public function init() {
+	public function init() {		
 		add_filter( 'pmpro_courses_modules', array( 'PMPro_Courses_LearnDash', 'add_module' ), 10, 1 );
 	}
+	
+	/**
+     * Initial setup for the LearnDash module when active.
+     * @since 1.0
+     */
+    public function init_active() {
+        
+    }
 	
 	/**
 	 * Add LearnDash to the modules list.
@@ -20,7 +28,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 			'slug' => 'learndash',
 			'description' => __( 'LearnDash LMS', 'pmpro-courses' ),
 		);
-
+		
 		return $modules;
 	}
 }
