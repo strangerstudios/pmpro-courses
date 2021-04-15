@@ -5,23 +5,6 @@
 function pmpro_courses_the_content_course( $content ) {
 	global $post;
 	if ( is_singular( 'pmpro_course' ) ) {
-		// This is a single pmpro_course CPT, show additional content before and after post_content.
-		$before_the_content = '';
-		$course_categories_list = get_the_term_list( $post->ID, 'pmpro_course_category', '', __( ', ', 'pmpro-courses' ) );
-		if ( $course_categories_list ) {
-			$before_the_content .= sprintf(
-				/* translators: %s: list of categories. */
-				'<p><span class="cat-links">' . esc_html__( 'Course Category: %s', 'pmpro-courses' ) . ' </span></p>',
-				$course_categories_list
-			);
-		}
-
-		/* // No progress bars for now.
-		$show_progress_bar = apply_filters( 'pmproc_show_progress_bar', true );
-		if ( $show_progress_bar ) {
-			$before_the_content .= pmproc_display_progress_bar( $post->ID );
-		}
-		*/
 
 		// Show a list of lessons from a custom template or the default lesson list after the_content.		
 		$custom_dir = get_stylesheet_directory()."/paid-memberships-pro/pmpro-courses/";
@@ -39,8 +22,8 @@ function pmpro_courses_the_content_course( $content ) {
 		$after_the_content = ob_get_contents();
 		ob_end_clean();
 
-		// Return the content after appending new pre and post sections.
-		return $before_the_content . $content . $after_the_content;
+		// Return the content after appending the new post section.
+		return $content . $after_the_content;
 	}
 	return $content;
 }
