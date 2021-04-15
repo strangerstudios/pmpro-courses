@@ -111,10 +111,9 @@ function pmpro_courses_build_lesson_html( $lessons ){
  */
 function pmpro_courses_get_lesson_count( $course_id ) {
 	global $wpdb;
+
 	$sql = "SELECT count(*) FROM $wpdb->posts ";
-	$sql .= " LEFT JOIN $wpdb->postmeta on $wpdb->posts.ID = $wpdb->postmeta.post_id 
-		WHERE $wpdb->posts.post_type = 'pmpro_lesson' AND $wpdb->posts.post_status = 'publish'
-		AND $wpdb->postmeta.meta_key = 'pmproc_parent' AND $wpdb->postmeta.meta_value = '$course_id'";
+	$sql .= " WHERE post_parent = '$course_id' AND post_type = 'pmpro_lesson'";
 	$results = $wpdb->get_var( $sql );
 	return intval( $results );
 }
@@ -201,7 +200,7 @@ function pmproc_get_courses( $posts_per_page = 5, $user_id = false ){
 						$orders = $wpdb->get_row( $ordsql );
 
 						if( $orders ){
-							$courses[$course_id] = apply_filters( 'pmproc_return_courses_array', array(
+							$courses[$course_id] = apply_filters( 'pmpro_courses_return_courses_array', array(
 								'id' => $course_id,
 								'title' => get_the_title(),
 								'permalink' => get_the_permalink(),
@@ -214,7 +213,7 @@ function pmproc_get_courses( $posts_per_page = 5, $user_id = false ){
 				}
 
 			} else {
-				$courses[$course_id] = apply_filters( 'pmproc_return_courses_array', array(
+				$courses[$course_id] = apply_filters( 'pmpro_courses_return_courses_array', array(
 					'id' => $course_id,
 					'title' => get_the_title(),
 					'permalink' => get_the_permalink(),

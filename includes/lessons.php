@@ -5,17 +5,7 @@
 function pmpro_courses_the_content_lesson( $content ) {
 	global $post;
 	if ( is_singular( 'pmpro_lesson' ) ) {
-		$course_id = get_post_meta( $post->ID, 'pmproc_parent', true );
-
-		// This is a single pmpro_lesson CPT, show additional content before the_content.
-		$before_the_content = '';
-		if ( ! empty( $course_id ) ) {
-			$before_the_content .= sprintf(
-				/* translators: %s: link to the course for this lesson. */
-				'<p>' . esc_html__( 'Back to: %s', 'pmpro-courses' ) . ' </span></p>',
-				'<a href="' . get_permalink( $course_id ) . '" title="' . get_the_title( $course_id ) . '">' . get_the_title( $course_id ) . '</a>'
-			);
-		}
+		$course_id = wp_get_post_parent_id( $post->ID );
 
 		$after_the_content = '<hr class="styled-separator is-style-wide" aria-hidden="true" />';
 
@@ -24,15 +14,25 @@ function pmpro_courses_the_content_lesson( $content ) {
 		if ( $show_complete_button ) {
 			$lesson_status = pmpro_courses_get_user_lesson_status( $post->ID, $course_id );
 			if ( ! empty( $lesson_status ) ) {
-				$after_the_content .= '<div class="pmpro_courses_lesson-status">';				
-				$after_the_content .= pmpro_courses_complete_button( $post->ID, $course_id );
-				$after_the_content .= '<label for="pmpro_courses_lesson' . esc_attr( $post->ID ) . '_toggle">' . __( 'Completed?', 'pmpro-courses' ) . '</label>';
+				$after_the_content .= '<div class="pmpro_courses_lesson-status">';
+				$after_the_content .= '<p><input name="pmpro_courses_lesson" type="checkbox" /> <label for="pmpro_courses_lesson' . esc_attr( $post->ID ) . '_toggle">Mark Complete</label></p>';
+				$after_the_content .= '<p><input name="pmpro_courses_lesson" type="checkbox" checked="checked" /> <label for="pmpro_courses_lesson' . esc_attr( $post->ID ) . '_toggle">Completed</label></p>';
+				//$after_the_content .= pmpro_courses_complete_button( $post->ID, $course_id );
+				//$after_the_content .= '<label for="pmpro_courses_lesson' . esc_attr( $post->ID ) . '_toggle">' . __( 'Completed?', 'pmpro-courses' ) . '</label>';
 				$after_the_content .= '</div>';
 				$after_the_content .= '<hr class="styled-separator is-style-wide" aria-hidden="true" />';
 			}
 		}
+
+		if ( ! empty( $course_id ) ) {
+			$after_the_content .= sprintf(
+				/* translators: %s: link to the course for this lesson. */
+				'<p>' . esc_html__( 'Course: %s', 'pmpro-courses' ) . ' </span></p>',
+				'<a href="' . get_permalink( $course_id ) . '" title="' . get_the_title( $course_id ) . '">' . get_the_title( $course_id ) . '</a>'
+			);
+		}
 		
-		return $before_the_content . $content . $after_the_content;
+		return $content . $after_the_content;
 	}
 	return $content;
 }
