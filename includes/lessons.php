@@ -15,8 +15,8 @@ function pmpro_courses_the_content_lesson( $content ) {
 			$lesson_status = pmpro_courses_get_user_lesson_status( $post->ID, $course_id );
 			if ( ! empty( $lesson_status ) ) {
 				$after_the_content .= '<div class="pmpro_courses_lesson-status">';
-				$after_the_content .= '<p><input name="pmpro_courses_lesson" type="checkbox" /> <label for="pmpro_courses_lesson' . esc_attr( $post->ID ) . '_toggle">Mark Complete</label></p>';
-				$after_the_content .= '<p><input name="pmpro_courses_lesson" type="checkbox" checked="checked" /> <label for="pmpro_courses_lesson' . esc_attr( $post->ID ) . '_toggle">Completed</label></p>';
+				$after_the_content .= '<p><input id="pmpro_courses_lesson' . esc_attr( $post->ID ) . '_toggle" type="checkbox" /> <label for="pmpro_courses_lesson' . esc_attr( $post->ID ) . '_toggle">Mark Complete</label></p>';
+				$after_the_content .= '<p><input id="pmpro_courses_lesson' . esc_attr( $post->ID ) . '_toggle" type="checkbox" checked="checked" /> <label for="pmpro_courses_lesson' . esc_attr( $post->ID ) . '_toggle">Completed</label></p>';
 				//$after_the_content .= pmpro_courses_complete_button( $post->ID, $course_id );
 				//$after_the_content .= '<label for="pmpro_courses_lesson' . esc_attr( $post->ID ) . '_toggle">' . __( 'Completed?', 'pmpro-courses' ) . '</label>';
 				$after_the_content .= '</div>';
