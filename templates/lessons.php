@@ -1,7 +1,6 @@
 <?php
 /**
- * Displays a list of lessons 
- *
+ * Displays a list of lessons
  */
 $lessons = pmpro_courses_get_lessons( $post->ID );
 if ( ! empty( $lessons ) ) { ?>

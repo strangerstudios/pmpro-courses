@@ -5,8 +5,7 @@
 function pmpro_courses_the_content_course( $content ) {
 	global $post;
 	if ( is_singular( 'pmpro_course' ) ) {
-
-		// Show a list of lessons from a custom template or the default lesson list after the_content.		
+		// Look for a /paid-memberships-pro/pmpro-courses/lessons.php template in the active theme.
 		$custom_dir = get_stylesheet_directory()."/paid-memberships-pro/pmpro-courses/";
 		$custom_file = $custom_dir."lessons.php";
 
@@ -18,6 +17,10 @@ function pmpro_courses_the_content_course( $content ) {
 		}
 
 		ob_start();
+		// Show non-member text if needed.
+		echo pmpro_membership_content_filter('');
+		
+		// lessons template
 		include $include_file;
 		$after_the_content = ob_get_contents();
 		ob_end_clean();
@@ -126,29 +129,51 @@ function pmpro_courses_get_edit_course_link( $course ) {
 }
 
 function pmpro_courses_template_redirect() {
-
 	global $post, $pmpro_pages;
 
-	if( !empty( $post ) ){
-
-		if( ( $post->post_type == 'pmpro_course' || $post->post_type == 'pmpro_lesson' ) && !is_archive() && !current_user_can( 'administrator' ) ){
-
-			$post_id = $post->ID;
-
-			//Choose a courses page to redirect to or go to the levels page? 	
-			$redirect_to = apply_filters( 'pmpro_courses_redirect_to', pmpro_url( 'levels' ) );
-
-			$access = pmpro_courses_check_level( $post_id );
-
-			if( !$access && ( intval( $pmpro_pages['levels'] ) !== $post_id ) ){
-				wp_redirect( $redirect_to );
-				exit();
-			}
-
+	if( !empty( $post ) ) {		
+		// Only check if a PMPro course or lesson.
+		if ( $post->post_type != 'pmpro_course' && $post->post_type != 'pmpro_lesson' ) {
+			return;
 		}
-
+		
+		// Let admins in.
+		if ( current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		
+		// Ignore archives.
+		if ( is_archive() ) {
+			return;
+		}
+		
+		// Okay check access.
+		$access = pmpro_courses_check_level( $post->ID );
+		
+		// They have access. Let em in.
+		if ( $access ) {
+			return;
+		}
+		
+		// Make sure we don't redirect away from the levels page if they have odd settings.
+		if ( intval( $pmpro_pages['levels'] ) == $post->ID ) {
+			return;
+		}
+		
+		// No access.
+		if ( $post->post_type == 'pmpro_lesson' ) {
+			// Send lessons to their parent unless filtered.
+			$redirect_to = apply_filters( 'pmpro_courses_lesson_redirect_to', get_permalink( $post->post_parent ) );
+		} else {
+			// Don't redirect courses unless a url is passed in filter.
+			$redirect_to = apply_filters( 'pmpro_courses_course_redirect_to', null );
+		}
+		
+		if ( $redirect_to ) {
+			wp_redirect( $redirect_to );
+			exit;
+		}	
 	}
-
 }
 add_action( 'template_redirect', 'pmpro_courses_template_redirect' );
 
