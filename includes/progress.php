@@ -129,13 +129,9 @@ function pmpro_courses_complete_button( $lid, $cid, $user_id = null ) {
 	}
 
 	if ( $lesson_status === 'complete' ) {
-		// Filter the text shown as the button title for a completed lesson.
-		$lesson_complete_text = apply_filters( 'pmpro_courses_lesson_complete_text', __('Lesson Completed', 'pmpro-courses' ) );
-		$content = '<button id="pmpro_courses_lesson' . esc_attr( $lid ) . '_toggle" data-lid="' . esc_attr( $lid ) . '" data-cid="' . esc_attr( $cid ) . '" class="pmpro_courses-button pmpro_courses-button-complete" title="' .  esc_html( $lesson_complete_text ) . '"><span class="dashicons dashicons-yes"></span></button>';
-	} else {
-		// Filter the text shown as the button title to mark a lesson complete.
-		$lesson_to_complete_text = apply_filters( 'pmpro_courses_lesson_to_complete_text', __('Mark Lesson as Complete', 'pmpro-courses') );
-		$content = '<button id="pmpro_courses_lesson' . esc_attr( $lid ) . '_toggle" data-lid="' . esc_attr( $lid ) . '" data-cid="' . esc_attr( $cid ) . '" class="pmpro_courses-button pmpro_courses-button-incomplete pmpro_courses-mark-complete-action" title="' . esc_html( $lesson_to_complete_text ) . '"><span class="dashicons dashicons-yes"></span></button>';
+		$content = '<p><input class="pmpro_courses_lesson_toggle" id="pmpro_courses_lesson' . esc_attr( $lid ) . '_toggle" data-lid="' . esc_attr( $lid ) . '" data-cid="' . esc_attr( $cid ) . '" type="checkbox" checked="checked" /> <label for="pmpro_courses_lesson' . esc_attr( $lid ) . '_toggle">' . __( 'Completed', 'pmpro-courses' ) . '</label></p>';
+	} else {		
+		$content = '<p><input class="pmpro_courses_lesson_toggle" id="pmpro_courses_lesson' . esc_attr( $lid ) . '_toggle" data-lid="' . esc_attr( $lid ) . '" data-cid="' . esc_attr( $cid ) . '" type="checkbox" /> <label for="pmpro_courses_lesson' . esc_attr( $lid ) . '_toggle">' . __( 'Mark Complete', 'pmpro-courses' ) . '</label></p>';
 	}
 
 	return $content;
