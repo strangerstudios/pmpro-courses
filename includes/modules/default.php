@@ -95,5 +95,9 @@ class PMPro_Courses_Module {
         require_once PMPRO_COURSES_DIR . '/includes/widgets.php';
         require_once PMPRO_COURSES_DIR . '/includes/shortcodes/all-courses.php';
         require_once PMPRO_COURSES_DIR . '/includes/shortcodes/my-courses.php';
+        
+        // Replace the PMPro content filter with ours, defined in courses.php
+        remove_filter('the_content', 'pmpro_membership_content_filter', 5);
+        add_filter( 'the_content', 'pmpro_courses_the_content_course', 5 );
     }
 }

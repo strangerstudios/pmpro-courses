@@ -18,7 +18,16 @@ function pmpro_courses_the_content_course( $content ) {
 
 		ob_start();
 		// Show non-member text if needed.
-		echo pmpro_membership_content_filter('');
+		$hasaccess = pmpro_has_membership_access(NULL, NULL, true);
+		if( is_array( $hasaccess ) ) {
+			//returned an array to give us the membership level values
+			$post_membership_levels_ids = $hasaccess[1];
+			$post_membership_levels_names = $hasaccess[2];
+			$hasaccess = $hasaccess[0];
+			if ( ! $hasaccess ) {
+				echo pmpro_get_no_access_message( '', $post_membership_levels_ids, $post_membership_levels_names );
+			}
+		}
 		
 		// lessons template
 		include $include_file;
@@ -30,7 +39,19 @@ function pmpro_courses_the_content_course( $content ) {
 	}
 	return $content;
 }
-add_filter( 'the_content', 'pmpro_courses_the_content_course', 10, 1 );
+
+/**
+ * Replace the PMPro content filter with ours, which ignores courses.
+ */
+function pmpro_courses_the_content_replacement( $content ) {
+	global $post;
+	
+	if ( ! empty( $post ) && $post->post_type == 'pmpro_courses' ) {
+		return pmpro_courses_the_content_course( $content );
+	} else {
+		return pmpro_membership_content_filter( $content );
+	}
+}
 
 function pmpro_courses_update_course_callback(){
 
