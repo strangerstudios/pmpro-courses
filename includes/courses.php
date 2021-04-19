@@ -139,7 +139,7 @@ function pmpro_courses_get_edit_course_link( $course ) {
 function pmpro_courses_template_redirect() {
 	global $post, $pmpro_pages;
 
-	if( !empty( $post ) ) {		
+	if( !empty( $post ) && is_singular() ) {		
 		// Only check if a PMPro course or lesson.
 		if ( $post->post_type != 'pmpro_course' && $post->post_type != 'pmpro_lesson' ) {
 			return;
@@ -147,11 +147,6 @@ function pmpro_courses_template_redirect() {
 		
 		// Let admins in.
 		if ( current_user_can( 'manage_options' ) ) {
-			return;
-		}
-		
-		// Ignore archives and search.
-		if ( is_archive() || is_search() ) {
 			return;
 		}
 		
@@ -169,12 +164,12 @@ function pmpro_courses_template_redirect() {
 		}
 		
 		// No access.
-		if ( $post->post_type == 'pmpro_lesson' ) {
+		if ( $post->post_type == 'pmpro_course' ) {
+			// Don't redirect courses unless a url is passed in filter.
+			$redirect_to = apply_filters( 'pmpro_courses_course_redirect_to', null );			
+		} else {
 			// Send lessons to their parent unless filtered.
 			$redirect_to = apply_filters( 'pmpro_courses_lesson_redirect_to', get_permalink( $post->post_parent ) );
-		} else {
-			// Don't redirect courses unless a url is passed in filter.
-			$redirect_to = apply_filters( 'pmpro_courses_course_redirect_to', null );
 		}
 		
 		if ( $redirect_to ) {
@@ -187,7 +182,7 @@ add_action( 'template_redirect', 'pmpro_courses_template_redirect' );
 
 function pmproc_has_course_access( $hasaccess, $mypost, $myuser, $post_membership_levels ) {
 
-	if ( 'pmpro_courses' == $mypost->post_type ) {
+	if ( 'pmpro_course' == $mypost->post_type ) {
 		$hasaccess = pmpro_courses_check_level( $mypost->ID );
 	}
 
