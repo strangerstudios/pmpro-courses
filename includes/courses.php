@@ -2,7 +2,7 @@
 /**
  * Content filter to show additional course information on the single course page.
  */
-function pmpro_courses_the_content_course( $content ) {
+function pmpro_courses_the_content_course( $filtered_content, $original_content ) {
 	global $post;
 	if ( is_singular( 'pmpro_course' ) ) {
 		// Look for a /paid-memberships-pro/pmpro-courses/lessons.php template in the active theme.
@@ -35,22 +35,9 @@ function pmpro_courses_the_content_course( $content ) {
 		ob_end_clean();
 
 		// Return the content after appending the new post section.
-		return $content . $after_the_content;
+		return $original_content . $after_the_content;
 	}
-	return $content;
-}
-
-/**
- * Replace the PMPro content filter with ours, which ignores courses.
- */
-function pmpro_courses_the_content_replacement( $content ) {
-	global $post;
-	
-	if ( ! empty( $post ) && $post->post_type == 'pmpro_courses' ) {
-		return pmpro_courses_the_content_course( $content );
-	} else {
-		return pmpro_membership_content_filter( $content );
-	}
+	return $filtered_content;	// Probably false.
 }
 
 function pmpro_courses_update_course_callback(){
