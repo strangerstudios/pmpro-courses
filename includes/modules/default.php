@@ -98,6 +98,6 @@ class PMPro_Courses_Module {
         
         // Replace the PMPro content filter with ours, defined in courses.php
         remove_filter('the_content', 'pmpro_membership_content_filter', 5);
-        add_filter( 'the_content', 'pmpro_courses_the_content_course', 5 );
+        add_filter( 'the_content', 'pmpro_courses_the_content_replacement', 5 );
     }
 }
