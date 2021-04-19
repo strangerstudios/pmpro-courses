@@ -163,8 +163,8 @@ function pmpro_courses_template_redirect() {
 			return;
 		}
 		
-		// Ignore archives.
-		if ( is_archive() ) {
+		// Ignore archives and search.
+		if ( is_archive() || is_search() ) {
 			return;
 		}
 		
