@@ -61,6 +61,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 			}		
 			
 			// Okay check access.
+			// TODO handle non courses. Check the related course. Maybe filter pmpro_has_membership_access instead of adding logic here.
 			$access = pmpro_has_membership_access( $post->ID );
 			
 			// They have access. Let em in.
