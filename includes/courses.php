@@ -151,7 +151,11 @@ function pmpro_courses_template_redirect() {
 		}
 		
 		// Okay check access.
-		$access = pmpro_courses_check_level( $post->ID );
+		if ( $post->post_type == 'pmpro_course' ) {
+			$access = pmpro_has_membership_access( $post->ID );
+		} else {
+			$access = pmpro_has_membership_access( $post->post_parent );
+		}	
 		
 		// They have access. Let em in.
 		if ( $access ) {
@@ -179,16 +183,6 @@ function pmpro_courses_template_redirect() {
 	}
 }
 add_action( 'template_redirect', 'pmpro_courses_template_redirect' );
-
-function pmproc_has_course_access( $hasaccess, $mypost, $myuser, $post_membership_levels ) {
-
-	if ( 'pmpro_course' == $mypost->post_type ) {
-		$hasaccess = pmpro_courses_check_level( $mypost->ID );
-	}
-
-	return $hasaccess;
-}
-add_filter( 'pmpro_has_membership_access_filter', 'pmproc_has_course_access', 99, 4 );
 
 function pmproc_course_links_my_account() {
 	global $pmpro_pages;

@@ -118,52 +118,6 @@ function pmpro_courses_get_lesson_count( $course_id ) {
 	return intval( $results );
 }
 
-function pmpro_courses_check_level( $post_id ){
-
-	global $wpdb;
-
-	if( is_singular( array( 'pmpro_lesson' ) ) ){
-
-		$parent = intval( get_post_meta( $post_id, 'pmproc_parent', true ) );
-
-		if( $parent !== '' ){
-
-			$required_membership = array();
-			$sql = "SELECT * FROM $wpdb->pmpro_memberships_pages WHERE `page_id` = ".$parent."";
-			$results = $wpdb->get_results( $sql  );
-			if( !empty( $results ) ){
-				foreach( $results as $result ){
-					$required_membership[] = intval( $result->membership_id );
-				}
-				if( !pmpro_hasMembershipLevel( $required_membership ) ){
-					return false;
-				} else {
-					return true;
-				}
-			}
-
-		}
-
-	}
-
-	if( is_singular( array( 'pmpro_course' ) ) ){
-		$required_membership = array();
-		$sql = "SELECT * FROM $wpdb->pmpro_memberships_pages WHERE `page_id` = ".$post_id."";
-		$results = $wpdb->get_results( $sql  );
-		if( !empty( $results ) ){
-			foreach( $results as $result ){
-				$required_membership[] = intval( $result->membership_id );
-			}			
-			if( !pmpro_hasMembershipLevel( $required_membership ) ){
-				return false;
-			} else {
-				return true;
-			}
-		}
-	}
-
-}
-
 function pmproc_get_courses( $posts_per_page = 5, $user_id = false ){
 
 	global $wpdb;
