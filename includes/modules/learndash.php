@@ -41,6 +41,61 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	public static function admin_menu() {
 		add_meta_box( 'pmpro_page_meta', __( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'sfwd-courses', 'side');
 	}
+
+	/**
+	 * Check if a user has access to a LD course, lesson, etc.
+	 * For courses, the default PMPro check works.
+	 * For other LD CPTs, we first find the course_id.
+	 * For public courses, access to lessons/etc is
+	 * the same as access for the associated course.
+	 * For private courses (with assignedments),
+	 * access is true to let LD handle it.
+	 */
+	public static function has_access_to_post( $post_id = null, $user_id = null ) {
+		global $post;
+		
+		// Use post global or queried object if no $post_id was passed in.
+		// Copied from PMPro includes/content.php.
+		if( ! $post_id && ! empty( $post ) && ! empty( $post->ID ) ) {
+			$post_id = $post->ID;
+		} elseif( ! $post_id && ! empty( $queried_object ) && ! empty( $queried_object->ID ) ) {
+			$post_id = $queried_object->ID;
+		}
+		
+		// No post, return true.
+		if( ! $post_id ) {
+			return true;
+		}
+		
+		$ld_non_course_cpts = array( 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz', 'sfwd-question', 'sfwd-certificates', 'groups', 'sfwd-assignment' );				
+		
+		// Check if this is a course or other non-LD CPT.
+		$mypost = get_post( $post_id );		
+		if ( ! in_array( $mypost->post_type, $ld_non_course_cpts ) ) {
+			// Let PMPro handle these CPTs.
+			return pmpro_has_membership_access( $post_id, $user_id );
+		} else {
+			// Let admins in.
+			if ( current_user_can( 'manage_options' ) ) {
+				return true;
+			}
+			
+			// Check course.
+			$course_id = get_post_meta( $post_id, 'course_id', true );
+			$price_type = learndash_get_setting( $course_id, 'course_price_type' );
+						
+			if ( ! empty( $course_id ) && $price_type == 'open' ) {				
+				// Access same as course.
+				return pmpro_has_membership_access( $course_id, $user_id );
+			} elseif ( ! empty( $course_id ) ) {
+				// Let LD handle it through enrollment.
+				return true;
+			} else {
+				// A LearnDash CPT with no course. Let PMPro handle it.
+				return pmpro_has_membership_access( $post_id, $user_id ); 
+			}
+		}
+	}
 	
 	/**
 	 * Filter PMPro access so check on lessons and
@@ -51,25 +106,8 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 		if ( !  $hasaccess ) {
 			return $hasaccess;
 		}
-
-		// Don't need to check unless it's an LD non-course CPT
-		$ld_non_course_cpts = array( 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz', 'sfwd-question', 'sfwd-certificates', 'groups', 'sfwd-assignment' );					
-		if ( ! in_array( $mypost->post_type, $ld_non_course_cpts ) ) {
-			return $hasaccess;
-		}
-		
-		// Let admins in.
-		if ( current_user_can( 'manage_options' ) ) {
-			return $hasaccess;
-		}
-		
-		// Okay check for an associated course_id.
-		$course_id = get_post_meta( $mypost->ID, 'course_id', true );
-		if ( ! empty( $course_id ) ) {
-			$hasaccess = pmpro_has_membership_access( $course_id, $myuser->ID );
-		}
-		
-		return $hasaccess;
+				
+		return PMPro_Courses_LearnDash::has_access_to_post( $mypost->ID, $myuser->ID );
 	}
 	
 	/**
@@ -86,18 +124,8 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 				return;
 			}
 			
-			// Let admins in.
-			if ( current_user_can( 'manage_options' ) ) {
-				return;
-			}
-			
-			// Okay check access.
-			$course_id = get_post_meta( $post->ID, 'course_id', true );			
-			if ( $post->post_type != 'sfwd-courses' && ! empty( $course_id ) ) {
-				$access = pmpro_has_membership_access( $course_id );
-			} else {
-				$access = pmpro_has_membership_access( $post->ID );
-			}
+			// Check access for this course or lesson.
+			$access = PMPro_Courses_LearnDash::has_access_to_post( $post->ID );
 
 			// They have access. Let em in.
 			if ( $access ) {
@@ -115,6 +143,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 				$redirect_to = apply_filters( 'pmpro_courses_course_redirect_to', null );				
 			} else {
 				// Send lessons and other content to the parent course.
+				$course_id = get_post_meta( $post->ID, 'course_id', true );
 				if ( ! empty( $course_id ) ) {
 					$redirect_to = get_permalink( $course_id );
 				} else {
