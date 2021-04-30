@@ -43,6 +43,16 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	}
 
 	/**
+	 * Run pmpro_has_membership_access without our hooks active.
+	 */
+	public static function pmpro_has_membership_access( $post_id = null, $user_id = null ) {
+		remove_filter( 'pmpro_has_membership_access_filter', array( 'PMPro_Courses_LearnDash', 'pmpro_has_membership_access_filter' ), 10, 4 );
+		$hasaccess = pmpro_has_membership_access( $post_id, $user_id );
+		add_filter( 'pmpro_has_membership_access_filter', array( 'PMPro_Courses_LearnDash', 'pmpro_has_membership_access_filter' ), 10, 4 );
+		return $hasaccess;
+	}
+
+	/**
 	 * Check if a user has access to a LD course, lesson, etc.
 	 * For courses, the default PMPro check works.
 	 * For other LD CPTs, we first find the course_id.
@@ -73,7 +83,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 		$mypost = get_post( $post_id );		
 		if ( ! in_array( $mypost->post_type, $ld_non_course_cpts ) ) {
 			// Let PMPro handle these CPTs.
-			return pmpro_has_membership_access( $post_id, $user_id );
+			return PMPro_Courses_LearnDash::pmpro_has_membership_access( $post_id, $user_id );
 		} else {
 			// Let admins in.
 			if ( current_user_can( 'manage_options' ) ) {
@@ -86,13 +96,13 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 						
 			if ( ! empty( $course_id ) && $price_type == 'open' ) {				
 				// Access same as course.
-				return pmpro_has_membership_access( $course_id, $user_id );
+				return PMPro_Courses_LearnDash::pmpro_has_membership_access( $course_id, $user_id );
 			} elseif ( ! empty( $course_id ) ) {
 				// Let LD handle it through enrollment.
 				return true;
 			} else {
 				// A LearnDash CPT with no course. Let PMPro handle it.
-				return pmpro_has_membership_access( $post_id, $user_id ); 
+				return PMPro_Courses_LearnDash::pmpro_has_membership_access( $post_id, $user_id ); 
 			}
 		}
 	}
