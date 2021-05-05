@@ -18,7 +18,8 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
         add_action('admin_menu', array( 'PMPro_Courses_LearnDash', 'admin_menu' ), 20);
 		add_filter( 'pmpro_has_membership_access_filter', array( 'PMPro_Courses_LearnDash', 'pmpro_has_membership_access_filter' ), 10, 4 );
 		add_action( 'template_redirect', array( 'PMPro_Courses_LearnDash', 'template_redirect' ) );
-        add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_LearnDash', 'pmpro_membership_content_filter' ), 10, 2 );		
+        add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_LearnDash', 'pmpro_membership_content_filter' ), 10, 2 );
+		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_LearnDash', 'pmpro_after_all_membership_level_changes' ) );		
     }
 	
 	/**
@@ -194,6 +195,74 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 			return $original_content . $after_the_content;		
 		} else {
 			return $filtered_content;	// Probably false.
+		}
+	}
+	
+	/**
+	 * Get courses associated with a level.
+	 */
+	public static function get_courses_for_levels( $level_ids ) {
+		global $wpdb;
+		
+		// In case a level object was passed in.
+		if ( is_object( $level_ids ) ) {
+			$level_ids = $level_ids->ID;
+		}
+		
+		// Make sure we have an array of ids.
+		if ( ! is_array( $level_ids ) ) {
+			$level_ids = array( $level_ids );
+		}
+		
+		if ( empty( $level_ids ) ) {
+			return array();
+		}
+		
+		$sqlQuery = "SELECT mp.page_id 
+					 FROM $wpdb->pmpro_memberships_pages mp
+					 	LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID
+					 WHERE mp.membership_id IN(" . implode(',', $level_ids ) . ")
+					 	AND p.post_type = 'sfwd-courses' ";
+		$course_ids = $wpdb->get_col( $sqlQuery );
+		
+		return $course_ids;
+	}
+	
+	/**
+	 * When users change levels, enroll/unenroll them from
+	 * any associated private courses.
+	 */
+	public static function pmpro_after_all_membership_level_changes( $pmpro_old_user_levels ) {
+		foreach ( $pmpro_old_user_levels as $user_id => $old_levels ) {
+			$current_levels = pmpro_getMembershipLevelsForUser( $user_id );
+			if ( ! empty( $current_levels ) ) {
+				$current_levels = wp_list_pluck( $current_levels, 'ID' );
+			} else {
+				$current_levels = array();
+			}
+			
+			// Pluck level IDs out of the old user levels array
+			$old_levels = wp_list_pluck( $old_levels, 'ID' );
+			
+			// Figure out which levels the user lost.
+			$lost_levels = array_diff( $old_levels, $current_levels );
+			
+			// Unenroll the user in any couses for their lost levels.
+			$courses_to_unenroll = PMPro_Courses_LearnDash::get_courses_for_levels( $lost_levels );
+			foreach( $courses_to_unenroll as $course_id ) {
+				if ( ld_course_check_user_access( $course_id, $user_id ) ) {
+					// True param here at the end tells it to remove.
+					ld_update_course_access( $user_id, $course_id, true );
+				}
+			}
+			
+			// Enroll the user in any courses for their current levels.
+			$courses_to_enroll = PMPro_Courses_LearnDash::get_courses_for_levels( $current_levels );
+			foreach( $courses_to_enroll as $course_id ) {
+				if ( ! ld_course_check_user_access( $course_id, $user_id ) ) {
+					ld_update_course_access( $user_id, $course_id );
+				}
+			}
 		}
 	}
 }
