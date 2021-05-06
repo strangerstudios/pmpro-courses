@@ -234,21 +234,21 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	 */
 	public static function pmpro_after_all_membership_level_changes( $pmpro_old_user_levels ) {
 		foreach ( $pmpro_old_user_levels as $user_id => $old_levels ) {
+			// Get current courses.
 			$current_levels = pmpro_getMembershipLevelsForUser( $user_id );
 			if ( ! empty( $current_levels ) ) {
 				$current_levels = wp_list_pluck( $current_levels, 'ID' );
 			} else {
 				$current_levels = array();
 			}
+			$current_courses = PMPro_Courses_LearnDash::get_courses_for_levels( $current_levels );
 			
-			// Pluck level IDs out of the old user levels array
+			// Get old courses.
 			$old_levels = wp_list_pluck( $old_levels, 'ID' );
+			$old_courses = PMPro_Courses_LearnDash::get_courses_for_levels( $old_levels );
 			
-			// Figure out which levels the user lost.
-			$lost_levels = array_diff( $old_levels, $current_levels );
-			
-			// Unenroll the user in any couses for their lost levels.
-			$courses_to_unenroll = PMPro_Courses_LearnDash::get_courses_for_levels( $lost_levels );
+			// Unenroll the user in any couses they used to have, but lost.
+			$courses_to_unenroll = array_diff( $old_courses, $current_courses );
 			foreach( $courses_to_unenroll as $course_id ) {
 				if ( ld_course_check_user_access( $course_id, $user_id ) ) {
 					// True param here at the end tells it to remove.
@@ -257,7 +257,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 			}
 			
 			// Enroll the user in any courses for their current levels.
-			$courses_to_enroll = PMPro_Courses_LearnDash::get_courses_for_levels( $current_levels );
+			$courses_to_enroll = array_diff( $current_courses, $old_courses );
 			foreach( $courses_to_enroll as $course_id ) {
 				if ( ! ld_course_check_user_access( $course_id, $user_id ) ) {
 					ld_update_course_access( $user_id, $course_id );
