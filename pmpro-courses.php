@@ -26,6 +26,8 @@ require_once PMPRO_COURSES_DIR . '/includes/modules/default.php';
 $default_module = new PMPro_Courses_Module();
 require_once PMPRO_COURSES_DIR . '/includes/modules/learndash.php';
 $learndash_module = new PMPro_Courses_LearnDash();
+require_once PMPRO_COURSES_DIR . '/includes/modules/lifterlms.php';
+$lifterlms_module = new PMPro_Courses_LifterLMS();
 
 /**
  * Default settings on first load and updates.
