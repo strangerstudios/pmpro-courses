@@ -222,7 +222,8 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 					 FROM $wpdb->pmpro_memberships_pages mp
 					 	LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID
 					 WHERE mp.membership_id IN(" . implode(',', $level_ids ) . ")
-					 	AND p.post_type = 'sfwd-courses' ";
+					 	AND p.post_type = 'sfwd-courses' 
+						AND p.post_status = 'publish' ";
 		$course_ids = $wpdb->get_col( $sqlQuery );
 		
 		return $course_ids;
