@@ -223,7 +223,8 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 					 	LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID
 					 WHERE mp.membership_id IN(" . implode(',', $level_ids ) . ")
 					 	AND p.post_type = 'sfwd-courses' 
-						AND p.post_status = 'publish' ";
+						AND p.post_status = 'publish'
+					 GROUP BY mp.page_id";
 		$course_ids = $wpdb->get_col( $sqlQuery );
 		
 		return $course_ids;
@@ -245,7 +246,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 			$current_courses = PMPro_Courses_LearnDash::get_courses_for_levels( $current_levels );
 			
 			// Get old courses.
-			$old_levels = wp_list_pluck( $pmpro_old_user_levels, 'ID' );
+			$old_levels = wp_list_pluck( $old_levels, 'ID' );
 			$old_courses = PMPro_Courses_LearnDash::get_courses_for_levels( $old_levels );
 			
 			// Unenroll the user in any couses they used to have, but lost.
