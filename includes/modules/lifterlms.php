@@ -16,7 +16,13 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
      */
     public function init_active() {
         add_action('admin_menu', array( 'PMPro_Courses_LifterLMS', 'admin_menu' ), 20);
-        add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_LifterLMS', 'pmpro_membership_content_filter' ), 10, 2 );
+        
+		// If Lifter is not active, we're done here.
+		if ( ! class_exists( 'LifterLMS' ) ) {
+			return;
+		}
+		
+		add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_LifterLMS', 'pmpro_membership_content_filter' ), 10, 2 );
         add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_LifterLMS', 'pmpro_after_all_membership_level_changes' ) );
     }
 	

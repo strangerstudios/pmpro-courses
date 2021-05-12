@@ -16,6 +16,12 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
      */
     public function init_active() {
         add_action('admin_menu', array( 'PMPro_Courses_LearnDash', 'admin_menu' ), 20);
+		
+		// If LearnDash is not active, we're done here.
+		if ( ! defined( 'LEARNDASH_VERSION' ) ) {
+			return;
+		}
+		
 		add_filter( 'pmpro_has_membership_access_filter', array( 'PMPro_Courses_LearnDash', 'pmpro_has_membership_access_filter' ), 10, 4 );
 		add_action( 'template_redirect', array( 'PMPro_Courses_LearnDash', 'template_redirect' ) );
         add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_LearnDash', 'pmpro_membership_content_filter' ), 10, 2 );
