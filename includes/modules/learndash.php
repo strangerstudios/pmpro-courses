@@ -249,7 +249,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 			$old_levels = wp_list_pluck( $old_levels, 'ID' );
 			$old_courses = PMPro_Courses_LearnDash::get_courses_for_levels( $old_levels );
 			
-			// Unenroll the user in any couses they used to have, but lost.
+			// Unenroll the user in any courses they used to have, but lost.
 			$courses_to_unenroll = array_diff( $old_courses, $current_courses );
 			foreach( $courses_to_unenroll as $course_id ) {
 				if ( ld_course_check_user_access( $course_id, $user_id ) ) {
