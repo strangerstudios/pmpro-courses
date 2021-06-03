@@ -14,7 +14,7 @@ function pmpro_courses_get_user_progress( $course_id, $user_id = null ) {
 		return array();
 	}
 		
-	$course_progress = get_user_meta( $user_id, 'pmproc_progress_' . $course_id, true );
+	$course_progress = get_user_meta( $user_id, 'pmpro_courses_progress_' . $course_id, true );
 	
 	if ( empty( $course_progress ) ) {
 		$course_progress = array();
@@ -58,7 +58,7 @@ function pmpro_courses_toggle_lesson_progress( $lesson_id, $user_id = null, $com
 		}
 	}
 	
-	update_user_meta( $user_id, 'pmproc_progress_' . $lesson->post_parent, $progress );
+	update_user_meta( $user_id, 'pmpro_courses_progress_' . $lesson->post_parent, $progress );
 	
 	return true;
 }
@@ -155,8 +155,8 @@ function pmpro_courses_get_user_progress_percentage( $course_id ) {
  * Display a progress bar for the current user and course ID.
  * TODO: ...
  */
-function pmproc_display_progress_bar( $course_id ){
-	$percentage = pmproc_get_user_progress( $course_id );
+function pmpro_courses_display_progress_bar( $course_id ){
+	$percentage = pmpro_courses_get_user_progress( $course_id );
 	if ( $percentage !== 0 ) {
 		//return '<div><div data-preset="line" class="ldBar" data-value="' . $percentage . '" style="width: 	100%;"></div></div>';
 	} 

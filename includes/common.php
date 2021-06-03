@@ -91,9 +91,9 @@ function pmpro_courses_build_lesson_html( $lessons ){
 			$ret .= "<td>".$lesson->menu_order."</td>";
 			$ret .= "<td><a href='".admin_url( 'post.php?post=' . $lesson->ID.'&action=edit' ) . "' title='" . __('Edit', 'pmpro-courses') .' '. $lesson->post_title. "' target='_BLANK'>". $lesson->post_title ."</a></td>";
 			$ret .= "<td>";
-			$ret .= "<a class='button button-secondary' href='javascript:pmproc_editPost(".$lesson->ID.",".$lesson->menu_order."); void(0);'>".__( 'edit', 'pmpro-courses' )."</a>";
+			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_edit_post(".$lesson->ID.",".$lesson->menu_order."); void(0);'>".__( 'edit', 'pmpro-courses' )."</a>";
 			$ret .= " ";
-			$ret .= "<a class='button button-secondary' href='javascript:pmproc_removePost(".$lesson->ID."); void(0);'>".__( 'remove', 'pmpro-courses' )."</a>";
+			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_remove_post(".$lesson->ID."); void(0);'>".__( 'remove', 'pmpro-courses' )."</a>";
 			$ret .= "</td>";
 			$ret .= "</tr>";
 

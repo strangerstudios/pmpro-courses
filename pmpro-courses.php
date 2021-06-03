@@ -73,9 +73,9 @@ function pmpro_courses_admin_styles( $hook ) {
 	if ( in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'pmpro_course' == get_post_type() ) {
 
 		wp_enqueue_style( 'pmpro-courses-admin', plugins_url( 'css/admin.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
-		wp_enqueue_style( 'pmproc-select2', plugins_url( 'css/select2.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
-		wp_enqueue_script( 'pmproc-select2', plugins_url( 'js/select2.js', __FILE__ ), array( 'jquery' ), PMPRO_COURSES_VERSION );
-		wp_register_script( 'pmproc_pmpro', plugins_url( 'js/admin.js', __FILE__ ), array( 'jquery' ), null, true );
+		wp_enqueue_style( 'pmpro-courses-select2', plugins_url( 'css/select2.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
+		wp_enqueue_script( 'pmpro-courses-select2', plugins_url( 'js/select2.js', __FILE__ ), array( 'jquery' ), PMPRO_COURSES_VERSION );
+		wp_register_script( 'pmpro_courses', plugins_url( 'js/admin.js', __FILE__ ), array( 'jquery' ), null, true );
 
 		if ( ! empty( $_GET['post'] ) ) {
 			$post_id = intval( $_GET['post'] );
@@ -93,8 +93,8 @@ function pmpro_courses_admin_styles( $hook ) {
 			'remove_error_2' => __( 'Error removing lesson [2]', 'pmpro-courses' ),
 		);
 
-		wp_localize_script( 'pmproc_pmpro', 'pmpro_courses', $localize );
-		wp_enqueue_script( 'pmproc_pmpro' );
+		wp_localize_script( 'pmpro_courses', 'pmpro_courses', $localize );
+		wp_enqueue_script( 'pmpro_courses' );
 	}
 }
 add_action( 'admin_enqueue_scripts', 'pmpro_courses_admin_styles' );

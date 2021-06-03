@@ -29,7 +29,7 @@ class PMPRO_Courses_Lesson_Widget extends WP_Widget {
 			return;
 		}
 
-		$course_id = get_post_meta( $post->ID, 'pmproc_parent', true );		
+		$course_id = get_post_meta( $post->ID, 'pmpro_courses_parent', true );		
 
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
@@ -41,14 +41,14 @@ class PMPRO_Courses_Lesson_Widget extends WP_Widget {
 			'posts_per_page' => $instance['lessons_per_page'],
 			'meta_query' => array(
 				array(
-					'key' => 'pmproc_parent',
+					'key' => 'pmpro_courses_parent',
 					'value' => $course_id,
 					'compare' => '='
 				)
 			)
 		);
 
-		$progress = get_user_meta( $user_id, 'pmproc_progress_'.$course_id, true );
+		$progress = get_user_meta( $user_id, 'pmpro_courses_progress_'.$course_id, true );
 
 		$progress = array_unique( $progress );
 

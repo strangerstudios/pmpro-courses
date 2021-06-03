@@ -68,7 +68,7 @@ add_action( 'init', 'pmpro_courses_lesson_cpt' );
  * Add meta boxes for lessons.
  */
 function pmpro_courses_lessons_cpt_define_meta_boxes() {
-	add_meta_box( 'pmproc_lesson_attributes', __( 'Course', 'pmpro-courses'), 'pmpro_courses_lesson_course_metabox', 'pmpro_lesson', 'side', 'high' );
+	add_meta_box( 'pmpro_courses_lesson_attributes', __( 'Course', 'pmpro-courses'), 'pmpro_courses_lesson_course_metabox', 'pmpro_lesson', 'side', 'high' );
 }
 add_action('admin_menu', 'pmpro_courses_lessons_cpt_define_meta_boxes', 20);
 
@@ -77,14 +77,14 @@ add_action('admin_menu', 'pmpro_courses_lessons_cpt_define_meta_boxes', 20);
  */
 function pmpro_courses_lesson_course_metabox( $post ) {	
 	?>
-	<label class="components-base-control__label" for="pmproc_parent"><?php _e( 'Course', 'pmpro-courses' );?></label>
+	<label class="components-base-control__label" for="pmpro_courses_parent"><?php _e( 'Course', 'pmpro-courses' );?></label>
 	<?php	
 	wp_dropdown_pages( array(
 		'selected' => $post->post_parent,
 		'echo' => 1,
 		'show_option_none' => '--' . __( 'None', 'pmpro-courses' ) . '--',
-		'name' => 'pmproc_parent',
-		'id' => 'pmproc_parent',
+		'name' => 'pmpro_courses_parent',
+		'id' => 'pmpro_courses_parent',
 		'post_type' => 'pmpro_course',
 		'post_status' => 'publish',
 	) );
@@ -95,7 +95,7 @@ function pmpro_courses_lesson_course_metabox( $post ) {
  */
 function pmpro_courses_save_lessons_meta( $post_id ){
 	if( 'pmpro_lesson' === get_post_type() ){
-		wp_update_post( $post_id, 'parent_post', intval( $_REQUEST['pmproc_parent'] ) );
+		wp_update_post( $post_id, 'parent_post', intval( $_REQUEST['pmpro_courses_parent'] ) );
 	}
 }
 add_action( 'save_post', 'pmpro_courses_save_lessons_meta', 10, 1 );

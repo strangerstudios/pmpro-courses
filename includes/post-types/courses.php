@@ -115,8 +115,8 @@ function pmpro_courses_course_cpt_lessons() {
 			<tbody>
 				<tr>
 					<td>
-						<label for="pmproc_post"><?php _e( 'Lesson', 'pmpro-courses' ); ?></label>
-						<select id="pmproc_post" name="pmproc_post">
+						<label for="pmpro_courses_post"><?php _e( 'Lesson', 'pmpro-courses' ); ?></label>
+						<select id="pmpro_courses_post" name="pmpro_courses_post">
 							<option value=""></option>
 							<?php
 								$all_lessons = get_posts( array( 'post_type' => 'pmpro_lesson', 'post_status' => 'publish', 'orderby' => 'menu_order', 'order' => 'ASC' ) );
@@ -131,11 +131,11 @@ function pmpro_courses_course_cpt_lessons() {
 						</select>
 					</td>
 					<td width="20%">
-						<label for="pmproc_order"><?php _e( 'Order', 'pmpro-courses' ); ?></label>
-						<input id="pmproc_order" name="pmproc_order" type="text" size="5" />
+						<label for="pmpro_courses_order"><?php _e( 'Order', 'pmpro-courses' ); ?></label>
+						<input id="pmpro_courses_order" name="pmpro_courses_order" type="text" size="5" />
 					</td>
 					<td width="20%">
-						<a class="button button-primary" id="pmproc_save"><?php _e( 'Add to Course', 'pmpro-courses' ); ?></a>
+						<a class="button button-primary" id="pmpro_courses_save"><?php _e( 'Add to Course', 'pmpro-courses' ); ?></a>
 					</td>
 				</tr>
 			</tbody>

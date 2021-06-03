@@ -44,7 +44,7 @@ function pmpro_courses_update_course_callback(){
 
 	if( !empty( $_REQUEST['action'] ) ){
 
-		if( $_REQUEST['action'] == 'pmproc_update_course' ){
+		if( $_REQUEST['action'] == 'pmpro_courses_update_course' ){
 			$course = intval( $_REQUEST['course'] );
 			$lesson = intval( $_REQUEST['lesson'] );
 			$order = intval( $_REQUEST['order'] );
@@ -64,13 +64,13 @@ function pmpro_courses_update_course_callback(){
 	}
 
 }
-add_action( 'wp_ajax_pmproc_update_course', 'pmpro_courses_update_course_callback' );
+add_action( 'wp_ajax_pmpro_courses_update_course', 'pmpro_courses_update_course_callback' );
 
 function pmpro_courses_remove_course_callback(){
 
 	if( !empty( $_REQUEST['action'] ) ){
 
-		if( $_REQUEST['action'] == 'pmproc_remove_course' ){
+		if( $_REQUEST['action'] == 'pmpro_courses_remove_course' ){
 
 			$course = intval( $_REQUEST['course'] );
 			$lesson = intval( $_REQUEST['lesson'] );
@@ -84,7 +84,7 @@ function pmpro_courses_remove_course_callback(){
 	}
 
 }
-add_action( 'wp_ajax_pmproc_remove_course', 'pmpro_courses_remove_course_callback' );
+add_action( 'wp_ajax_pmpro_courses_remove_course', 'pmpro_courses_remove_course_callback' );
 
 /**
  * Adds columns to the Courses table.
@@ -184,7 +184,7 @@ function pmpro_courses_template_redirect() {
 }
 add_action( 'template_redirect', 'pmpro_courses_template_redirect' );
 
-function pmproc_course_links_my_account() {
+function pmpro_courses_course_links_my_account() {
 	global $pmpro_pages;
 	if ( isset( $pmpro_pages['pmpro_my_courses'] ) ) {
 		?>
@@ -194,4 +194,4 @@ function pmproc_course_links_my_account() {
 		<?php
 	}
 }
-add_action( 'pmpro_member_links_bottom', 'pmproc_course_links_my_account' );
+add_action( 'pmpro_member_links_bottom', 'pmpro_courses_course_links_my_account' );

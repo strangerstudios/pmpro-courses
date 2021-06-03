@@ -1,16 +1,16 @@
 
-function pmproc_editPost(post_id, order){
-	jQuery('#pmproc_post').val(post_id).trigger("change");
-	jQuery('#pmproc_order').val(order);
-	jQuery('#pmproc_order').focus();
-	jQuery('#pmproc_save').html('Save');
-	location.href = "#pmproc_edit_post";
+function pmpro_courses_edit_post(post_id, order){
+	jQuery('#pmpro_courses_post').val(post_id).trigger("change");
+	jQuery('#pmpro_courses_order').val(order);
+	jQuery('#pmpro_courses_order').focus();
+	jQuery('#pmpro_courses_save').html('Save');
+	location.href = "#pmpro_courses_edit_post";
 }
 
-function pmproc_removePost(post_id) {
+function pmpro_courses_remove_post(post_id) {
 	
 	var data = {
-		action: 'pmproc_remove_course',
+		action: 'pmpro_courses_remove_course',
 		course: pmpro_courses.course_id,
 		lesson: post_id
 	}
@@ -24,30 +24,29 @@ function pmproc_removePost(post_id) {
 		error: function(xml){
 			alert('Error removing lesson [1]');
 			//enable save button
-			jQuery('#pmproc_save').removeAttr('disabled');												
+			jQuery('#pmpro_courses_save').removeAttr('disabled');												
 		},
 		success: function(responseHTML){
 			if (responseHTML == 'error'){
 				alert('Error removing lesson [2]');
 				//enable save button
-				jQuery('#pmproc_save').removeAttr('disabled');	
+				jQuery('#pmpro_courses_save').removeAttr('disabled');	
 			}else{
-				jQuery('#pmproc_table tbody').html(responseHTML);
-				// pmproc_Setup();
+				jQuery('#pmpro_courses_table tbody').html(responseHTML);
 			}																						
 		}
 	});
 }
 
-function pmproc_updatePost() {
+function pmpro_courses_update_post() {
 
 	jQuery(this).attr('disabled', 'true');	
 
-	var lesson_id = jQuery('#pmproc_post').val();
-	var order = jQuery('#pmproc_order').val();
+	var lesson_id = jQuery('#pmpro_courses_post').val();
+	var order = jQuery('#pmpro_courses_order').val();
 
 	var data = {
-		action: 'pmproc_update_course',
+		action: 'pmpro_courses_update_course',
 		course: pmpro_courses.course_id,
 		lesson: lesson_id,
 		order: order
@@ -60,42 +59,42 @@ function pmproc_updatePost() {
 		error: function(xml){
 			alert('Error saving lesson to course [1]');
 			//enable save button
-			jQuery('#pmproc_save').html('Save');	
-			jQuery('#pmproc_save').removeAttr('disabled');												
+			jQuery('#pmpro_courses_save').html('Save');	
+			jQuery('#pmpro_courses_save').removeAttr('disabled');												
 		},
 		success: function(responseHTML){
 			if (responseHTML == 'error'){
 				alert('Error saving lesson to course [2]');
 				//enable save button
-				jQuery('#pmproc_save').html('Save');
-				jQuery('#pmproc_save').removeAttr('disabled');		
+				jQuery('#pmpro_courses_save').html('Save');
+				jQuery('#pmpro_courses_save').removeAttr('disabled');		
 			}else{
-				jQuery('#pmproc_table tbody').html(responseHTML);
-				jQuery('#pmproc_post').val(null).trigger('change');
-				jQuery('#pmproc_order').val('');
-				jQuery('#pmproc_save').html('Add to Course');
+				jQuery('#pmpro_courses_table tbody').html(responseHTML);
+				jQuery('#pmpro_courses_post').val(null).trigger('change');
+				jQuery('#pmpro_courses_order').val('');
+				jQuery('#pmpro_courses_save').html('Add to Course');
 			}																						
 		}
 	});
 }
 
-function pmproc_Setup() {
-	jQuery('#pmproc_post').select2({width: 'elements'});
+function pmpro_courses_setup() {
+	jQuery('#pmpro_courses_post').select2({width: 'elements'});
 	
-	jQuery('#pmproc_order').keypress(function (e) {
+	jQuery('#pmpro_courses_order').keypress(function (e) {
 		if (e.which == 13) {
-			pmproc_updatePost();
+			pmpro_courses_update_post();
 			return false;
 		}
 	});
 	
-	jQuery('#pmproc_save').click(function() {
+	jQuery('#pmpro_courses_save').click(function() {
 		if( jQuery(this).attr('disabled') !== 'true' ){
-			pmproc_updatePost();
+			pmpro_courses_update_post();
 		}
 	});
 }
 
 jQuery(document).ready(function(jQuery) {
-	pmproc_Setup();
+	pmpro_courses_setup();
 });
