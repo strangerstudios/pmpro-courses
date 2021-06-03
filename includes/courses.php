@@ -195,3 +195,20 @@ function pmpro_courses_course_links_my_account() {
 	}
 }
 add_action( 'pmpro_member_links_bottom', 'pmpro_courses_course_links_my_account' );
+
+/**
+ * Hide the prev/next links for courses.
+ * Hook in on init and remove_action(...) to disable this.
+ * @since .1
+ */
+function pmpro_courses_hide_adjacent_post_links_for_courses( $output, $format, $link, $adjacent_post, $adjacent ) {
+	global $post;
+	
+	if ( ! empty( $post ) && ! empty( $post->post_type ) && $post->post_type == 'pmpro_course' ) {
+		$output = '';
+	}
+	
+	return $output;
+}
+add_action( 'previous_post_link', 'pmpro_courses_hide_adjacent_post_links_for_courses', 10, 5 );
+add_action( 'next_post_link', 'pmpro_courses_hide_adjacent_post_links_for_courses', 10, 5 );

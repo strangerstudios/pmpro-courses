@@ -52,3 +52,37 @@ function pmpro_courses_lessons_columns_content( $column, $post_id ) {
     }
 }
 add_action( 'manage_pmpro_lesson_posts_custom_column' , 'pmpro_courses_lessons_columns_content', 10, 2 );
+
+/**
+ * Hide some prev/next links for lessons.
+ * We only want to show links for lessons in the same course.
+ * Hook in on init and remove_action(...) to disable this.
+ * @since .1
+ */
+function pmpro_courses_hide_adjacent_post_links_for_lessons( $output, $format, $link, $adjacent_post, $adjacent ) {
+	global $post;
+	
+	// No post or adjacent post. Probably no link.
+	if ( empty( $post ) || empty( $adjacent_post ) ) {
+		return $output;
+	}
+	
+	// Not a lesson. Bail.
+	if ( empty( $post->post_type ) || $post->post_type != 'pmpro_lesson' ) {
+		return $output;
+	}
+	
+	// Lesson without a course. Hide the link.
+	if ( empty( $post->post_parent ) || $post->post_parent == $post->ID ) {
+		return '';
+	}
+	
+	// Lessons from different courses. Hide the link.
+	if ( $post->post_parent !== $adjacent_post->post_parent ) {
+		return '';
+	}
+		
+	return $output;
+}
+add_action( 'previous_post_link', 'pmpro_courses_hide_adjacent_post_links_for_lessons', 10, 5 );
+add_action( 'next_post_link', 'pmpro_courses_hide_adjacent_post_links_for_lessons', 10, 5 );
