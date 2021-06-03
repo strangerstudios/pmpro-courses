@@ -58,7 +58,7 @@ function pmpro_courses_get_lessons( $course ) {
 /**
  * Get the next order # for a lesson in a course.
  */
-function pmproc_get_next_lesson_order( $course ) {
+function pmpro_courses_get_next_lesson_order( $course ) {
 	// In case a full post object is passed in.
 	if ( is_object( $course ) ) {
 		$course = $course->ID;
@@ -118,7 +118,7 @@ function pmpro_courses_get_lesson_count( $course_id ) {
 	return intval( $results );
 }
 
-function pmproc_get_courses( $posts_per_page = 5, $user_id = false ){
+function pmpro_courses_get_courses( $posts_per_page = 5, $user_id = false ){
 
 	global $wpdb;
 

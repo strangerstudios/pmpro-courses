@@ -9,7 +9,7 @@ function pmpro_my_courses_shortcode_courses( $atts ) {
 
 	$course_limit = isset( $atts['limit'] ) ? intval( $atts['limit'] ) : 5;
 
-	$courses = pmproc_get_courses( $course_limit, get_current_user_id() );
+	$courses = pmpro_courses_get_courses( $course_limit, get_current_user_id() );
 	
 	//load custom or default templates
 	if ( file_exists($custom_file ) ) {

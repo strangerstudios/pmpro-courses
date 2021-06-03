@@ -51,7 +51,7 @@ function pmpro_courses_update_course_callback(){
 			
 			// If no order, set to the max.
 			if ( empty( $order ) ) {
-				$order = pmproc_get_next_lesson_order( $course );
+				$order = pmpro_courses_get_next_lesson_order( $course );
 			}			
 			
 			wp_update_post( array( 'ID' => $lesson, 'post_parent' => $course, 'menu_order' => $order ) );

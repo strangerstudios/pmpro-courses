@@ -19,10 +19,10 @@ table.pmpro-metabox-items tbody tr td label {
 }
 
 /* Metabox for list of lessons in the course */
-table#pmproc_table.pmpro-metabox-items {
+table#pmpro_courses_table.pmpro-metabox-items {
 	margin: 14px 0;
 }
-table#pmproc_table.pmpro-metabox-items tbody tr td {
+table#pmpro_courses_table.pmpro-metabox-items tbody tr td {
 	vertical-align: middle;
 }
 

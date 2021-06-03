@@ -97,7 +97,7 @@ function pmpro_courses_course_cpt_lessons() {
 		}
 		?>	
 		<div class="message error"><p><?php //echo $this->error; ?></p></div>
-		<table id="pmproc_table" class="wp-list-table widefat striped pmpro-metabox-items">
+		<table id="pmpro_courses_table" class="wp-list-table widefat striped pmpro-metabox-items">
 			<thead>
 				<th><?php _e( 'Order', 'pmpro-courses' ); ?></th>
 				<th width="50%"><?php _e( 'Title', 'pmpro-courses' ); ?></th>
