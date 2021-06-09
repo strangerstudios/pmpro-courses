@@ -184,18 +184,6 @@ function pmpro_courses_template_redirect() {
 }
 add_action( 'template_redirect', 'pmpro_courses_template_redirect' );
 
-function pmpro_courses_course_links_my_account() {
-	global $pmpro_pages;
-	if ( isset( $pmpro_pages['pmpro_my_courses'] ) ) {
-		?>
-		<li>
-			<a href="<?php the_permalink( $pmpro_pages['pmpro_my_courses'] ); ?>"><?php _e('My Courses', 'pmpro-courses'); ?></a>
-		</li>
-		<?php
-	}
-}
-add_action( 'pmpro_member_links_bottom', 'pmpro_courses_course_links_my_account' );
-
 /**
  * Hide the prev/next links for courses.
  * Hook in on init and remove_action(...) to disable this.

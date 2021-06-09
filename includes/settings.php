@@ -1,22 +1,8 @@
 <?php
-function pmpro_courses_pages( $pages ) {
-	$pages['pmpro_my_courses'] = array(
-			'label' => __('My Courses Page', 'pmpro-courses'),
-			'title' => __('My Courses', 'pmpro-courses'),
-			'hint' => __('Include the shortcode [pmpro_my_courses] on the page.', 'pmpro-courses' ),
-			'content' => '[pmpro_my_courses]'
-		
-	);
-	$pages['pmpro_all_courses'] = array(
-			'label' => __('All Courses Page', 'pmpro-courses'),
-			'title' => __('All Courses', 'pmpro-courses'),
-			'hint' => __('Include the shortcode [pmpro_all_courses] on the page.', 'pmpro-courses' ),
-			'content' => '[pmpro_all_courses]'
-		
-	);
-	return $pages;
-}
-add_filter( 'pmpro_extra_page_settings', 'pmpro_courses_pages', 10, 1 );
+/**
+ * Admin settings page for Courses for Membership Add On.
+ * 
+ */
 
 /**
  * Add a Course page for settings under the Memberships menu.
