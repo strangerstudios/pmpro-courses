@@ -15,8 +15,10 @@ function pmpro_courses_settings_page() {
 		// Add New Lesson menu page under Courses menu.
 		add_submenu_page( 'edit.php?post_type=pmpro_course', __('Paid Memberships Pro Courses - Add New Lesson', 'pmpro-courses'), __('Add New Lesson', 'pmpro-courses'), 'manage_options', 'post-new.php?post_type=pmpro_lesson', '', 5 );
 		
-		// Mirror the Settings menu item under Courses to go to same page under Memberships menu.
-		add_submenu_page( 'edit.php?post_type=pmpro_course', __('Paid Memberships Pro Courses - Settings', 'pmpro-courses'), __('Settings', 'pmpro-courses'), 'manage_options', 'admin.php?page=pmpro-courses-settings', '', 10 );
+		// Mirror the Settings menu item under Courses to go to same page under Memberships menu if PMPro is active.
+		if ( defined( 'PMPRO_DIR' ) ) {
+			add_submenu_page( 'edit.php?post_type=pmpro_course', __('Paid Memberships Pro Courses - Settings', 'pmpro-courses'), __('Settings', 'pmpro-courses'), 'manage_options', 'admin.php?page=pmpro-courses-settings', '', 10 );
+		}
 	}	
 }
 add_action( 'admin_menu', 'pmpro_courses_settings_page' );

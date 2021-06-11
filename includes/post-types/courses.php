@@ -80,7 +80,9 @@ add_action( 'init', 'pmpro_courses_course_cpt', 0 );
  * Define the metaboxes.
  */
 function pmpro_courses_course_cpt_define_meta_boxes() {
-	add_meta_box( 'pmpro_page_meta', __( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'pmpro_course', 'side');
+	if ( function_exists( 'pmpro_page_meta' ) ) {
+		add_meta_box( 'pmpro_page_meta', __( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'pmpro_course', 'side');
+	}
 	add_meta_box( 'pmpro_courses_lessons', __( 'Lessons', 'pmpro-courses'), 'pmpro_courses_course_cpt_lessons', 'pmpro_course', 'normal' );	
 }
 add_action('admin_menu', 'pmpro_courses_course_cpt_define_meta_boxes', 20);
