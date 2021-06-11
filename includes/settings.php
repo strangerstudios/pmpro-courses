@@ -1,22 +1,8 @@
 <?php
-function pmpro_courses_pages( $pages ) {
-	$pages['pmpro_my_courses'] = array(
-			'label' => __('My Courses Page', 'pmpro-courses'),
-			'title' => __('My Courses', 'pmpro-courses'),
-			'hint' => __('Include the shortcode [pmpro_my_courses] on the page.', 'pmpro-courses' ),
-			'content' => '[pmpro_my_courses]'
-		
-	);
-	$pages['pmpro_all_courses'] = array(
-			'label' => __('All Courses Page', 'pmpro-courses'),
-			'title' => __('All Courses', 'pmpro-courses'),
-			'hint' => __('Include the shortcode [pmpro_all_courses] on the page.', 'pmpro-courses' ),
-			'content' => '[pmpro_all_courses]'
-		
-	);
-	return $pages;
-}
-add_filter( 'pmpro_extra_page_settings', 'pmpro_courses_pages', 10, 1 );
+/**
+ * Admin settings page for Courses for Membership Add On.
+ * 
+ */
 
 /**
  * Add a Course page for settings under the Memberships menu.
@@ -29,8 +15,10 @@ function pmpro_courses_settings_page() {
 		// Add New Lesson menu page under Courses menu.
 		add_submenu_page( 'edit.php?post_type=pmpro_course', __('Paid Memberships Pro Courses - Add New Lesson', 'pmpro-courses'), __('Add New Lesson', 'pmpro-courses'), 'manage_options', 'post-new.php?post_type=pmpro_lesson', '', 5 );
 		
-		// Mirror the Settings menu item under Courses to go to same page under Memberships menu.
-		add_submenu_page( 'edit.php?post_type=pmpro_course', __('Paid Memberships Pro Courses - Settings', 'pmpro-courses'), __('Settings', 'pmpro-courses'), 'manage_options', 'admin.php?page=pmpro-courses-settings', '', 10 );
+		// Mirror the Settings menu item under Courses to go to same page under Memberships menu if PMPro is active.
+		if ( defined( 'PMPRO_DIR' ) ) {
+			add_submenu_page( 'edit.php?post_type=pmpro_course', __('Paid Memberships Pro Courses - Settings', 'pmpro-courses'), __('Settings', 'pmpro-courses'), 'manage_options', 'admin.php?page=pmpro-courses-settings', '', 10 );
+		}
 	}	
 }
 add_action( 'admin_menu', 'pmpro_courses_settings_page' );

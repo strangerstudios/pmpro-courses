@@ -91,8 +91,10 @@ add_action( 'wp_ajax_pmpro_courses_remove_course', 'pmpro_courses_remove_course_
  */
 function pmpro_courses_columns($columns) {
     $columns['pmpro_courses_num_lessons'] = __( 'Lesson Count', 'pmpro-courses' );
-    $columns['pmpro_courses_level'] = __( 'Level', 'pmpro-courses' );
-    return $columns;
+    if ( function_exists( 'pmpro_getAllLevels' ) ) {
+		$columns['pmpro_courses_level'] = __( 'Level', 'pmpro-courses' );
+    }
+	return $columns;
 }
 add_filter( 'manage_pmpro_course_posts_columns', 'pmpro_courses_columns' );
 
@@ -104,6 +106,9 @@ function pmpro_courses_columns_content( $column, $course_id ) {
 			printf( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ), number_format_i18n( $lesson_count ) );
 			break;
 		case 'pmpro_courses_level' :
+			if ( ! function_exists( 'pmpro_getAllLevels' ) ) {
+				break;
+			}
 			$membership_levels = pmpro_getAllLevels( true, true );
 			$course_levels = $wpdb->get_col( "SELECT membership_id FROM {$wpdb->pmpro_memberships_pages} WHERE page_id = '" . intval( $course_id ) . "'" );
 			$level_names = array();
@@ -183,18 +188,6 @@ function pmpro_courses_template_redirect() {
 	}
 }
 add_action( 'template_redirect', 'pmpro_courses_template_redirect' );
-
-function pmpro_courses_course_links_my_account() {
-	global $pmpro_pages;
-	if ( isset( $pmpro_pages['pmpro_my_courses'] ) ) {
-		?>
-		<li>
-			<a href="<?php the_permalink( $pmpro_pages['pmpro_my_courses'] ); ?>"><?php _e('My Courses', 'pmpro-courses'); ?></a>
-		</li>
-		<?php
-	}
-}
-add_action( 'pmpro_member_links_bottom', 'pmpro_courses_course_links_my_account' );
 
 /**
  * Hide the prev/next links for courses.

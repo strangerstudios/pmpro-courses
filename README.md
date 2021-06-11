@@ -1,3 +1,6 @@
+![](pmpro-courses-banner.jpg)
+
+
 # [Paid Memberships Pro - Courses](https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/) #
 [comment]: # (Generate badges from shields.io, only works for .org plugins to get other stats etc. We'd have to create our own endpoints for Premium plugins)
 
