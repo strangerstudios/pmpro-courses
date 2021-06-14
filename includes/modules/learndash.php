@@ -72,6 +72,10 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 		global $post;
 		
 		// Use post global or queried object if no $post_id was passed in.
+		if( ! is_admin() )
+			$queried_object = get_queried_object();
+		else
+			$queried_object = NULL;
 		// Copied from PMPro includes/content.php.
 		if( ! $post_id && ! empty( $post ) && ! empty( $post->ID ) ) {
 			$post_id = $post->ID;
