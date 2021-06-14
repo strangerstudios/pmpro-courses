@@ -101,13 +101,13 @@ function pmpro_courses_course_cpt_lessons() {
 		<div class="message error"><p><?php //echo $this->error; ?></p></div>
 		<table id="pmpro_courses_table" class="wp-list-table widefat striped pmpro-metabox-items">
 			<thead>
-				<th><?php _e( 'Order', 'pmpro-courses' ); ?></th>
-				<th width="50%"><?php _e( 'Title', 'pmpro-courses' ); ?></th>
-				<th width="20%"><?php _e( 'Actions', 'pmpro-courses' ); ?></th>
+				<th><?php esc_html_e( 'Order', 'pmpro-courses' ); ?></th>
+				<th width="50%"><?php esc_html_e( 'Title', 'pmpro-courses' ); ?></th>
+				<th width="20%"><?php esc_html_e( 'Actions', 'pmpro-courses' ); ?></th>
 			</thead>
 			<tbody>
 			<?php 				
-				echo pmpro_courses_build_lesson_html( pmpro_courses_get_lessons( $post->ID ) );
+				echo pmpro_courses_get_lessons_table_html( pmpro_courses_get_lessons( $post->ID ) );
 			?>
 			</tbody>
 		</table>
@@ -117,14 +117,14 @@ function pmpro_courses_course_cpt_lessons() {
 			<tbody>
 				<tr>
 					<td>
-						<label for="pmpro_courses_post"><?php _e( 'Lesson', 'pmpro-courses' ); ?></label>
+						<label for="pmpro_courses_post"><?php esc_html_e( 'Lesson', 'pmpro-courses' ); ?></label>
 						<select id="pmpro_courses_post" name="pmpro_courses_post">
 							<option value=""></option>
 							<?php
-								$all_lessons = get_posts( array( 'post_type' => 'pmpro_lesson', 'post_status' => 'publish', 'orderby' => 'menu_order', 'order' => 'ASC' ) );
+								$all_lessons = get_posts( array( 'post_type' => 'pmpro_lesson', 'posts_per_page' => -1, 'post_status' => 'publish', 'orderby' => 'menu_order', 'order' => 'ASC' ) );
 								foreach ( $all_lessons as $lesson ) {
 									?>
-									<option value="<?php echo intval( $lesson->ID ); ?>"><?php echo esc_html( $lesson->post_title ); ?>
+									<option value="<?php echo intval( $lesson->ID ); ?>"><?php esc_html_e( $lesson->post_title ); ?>
 									(#<?php echo $lesson->ID;?>)
 									</option>
 									<?php
@@ -133,15 +133,44 @@ function pmpro_courses_course_cpt_lessons() {
 						</select>
 					</td>
 					<td width="20%">
-						<label for="pmpro_courses_order"><?php _e( 'Order', 'pmpro-courses' ); ?></label>
+						<label for="pmpro_courses_order"><?php esc_html_e( 'Order', 'pmpro-courses' ); ?></label>
 						<input id="pmpro_courses_order" name="pmpro_courses_order" type="text" size="5" />
 					</td>
 					<td width="20%">
-						<a class="button button-primary" id="pmpro_courses_save"><?php _e( 'Add to Course', 'pmpro-courses' ); ?></a>
+						<a class="button button-primary" id="pmpro_courses_save"><?php esc_html_e( 'Add to Course', 'pmpro-courses' ); ?></a>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 		<?php
 	// }
+}
+
+function pmpro_courses_get_lessons_table_html( $lessons ){
+
+	$ret = "";
+
+	if( !empty( $lessons ) ){
+		
+		$count = 1;
+
+		foreach ( $lessons as $lesson ) {
+
+			$ret .= "<tr>";
+			$ret .= "<td>".$lesson->menu_order."</td>";
+			$ret .= "<td><a href='".admin_url( 'post.php?post=' . $lesson->ID.'&action=edit' ) . "' title='" . __('Edit', 'pmpro-courses') .' '. $lesson->post_title. "' target='_BLANK'>". $lesson->post_title ."</a></td>";
+			$ret .= "<td>";
+			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_edit_post(".$lesson->ID.",".$lesson->menu_order."); void(0);'>".__( 'edit', 'pmpro-courses' )."</a>";
+			$ret .= " ";
+			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_remove_post(".$lesson->ID."); void(0);'>".__( 'remove', 'pmpro-courses' )."</a>";
+			$ret .= "</td>";
+			$ret .= "</tr>";
+
+			$count++;
+		}
+
+	} 
+
+	return $ret;
+
 }

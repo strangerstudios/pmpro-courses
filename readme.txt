@@ -2,7 +2,7 @@
 Contributors: strangerstudios
 Tags: pmpro, membership, elearning, course, learning management system
 Requires at least: 5.0
-Tested up to: 5.6
+Tested up to: 5.7.2
 Stable tag: 0.1
 
 Creates courses and lessons for members only or integrates your Paid Memberships Pro site with LearnDash and LifterLMS.

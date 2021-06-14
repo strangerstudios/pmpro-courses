@@ -5,16 +5,6 @@
 function pmpro_courses_the_content_course( $filtered_content, $original_content ) {
 	global $post;
 	if ( is_singular( 'pmpro_course' ) ) {
-		// Look for a /paid-memberships-pro/pmpro-courses/lessons.php template in the active theme.
-		$custom_dir = get_stylesheet_directory()."/paid-memberships-pro/pmpro-courses/";
-		$custom_file = $custom_dir."lessons.php";
-
-		// Load custom or default templates.
-		if( file_exists($custom_file ) ){
-			$include_file = $custom_file;
-		} else {
-			$include_file = PMPRO_COURSES_DIR . "/templates/lessons.php";
-		}
 
 		ob_start();
 		// Show non-member text if needed.
@@ -29,8 +19,9 @@ function pmpro_courses_the_content_course( $filtered_content, $original_content 
 			}
 		}
 		
-		// lessons template
-		include $include_file;
+		// Echo the lessons HTML.
+		echo pmpro_courses_get_lessons_html( $post->ID );
+
 		$after_the_content = ob_get_contents();
 		ob_end_clean();
 
@@ -56,7 +47,7 @@ function pmpro_courses_update_course_callback(){
 			
 			wp_update_post( array( 'ID' => $lesson, 'post_parent' => $course, 'menu_order' => $order ) );
 						
-			echo pmpro_courses_build_lesson_html( pmpro_courses_get_lessons( $course ) );
+			echo pmpro_courses_get_lessons_table_html( pmpro_courses_get_lessons( $course ) );
 			
 			wp_die();
 		}
@@ -77,7 +68,7 @@ function pmpro_courses_remove_course_callback(){
 			
 			wp_update_post( array( 'ID' => $lesson, 'post_parent' => '' ) );
 			
-			echo pmpro_courses_build_lesson_html( pmpro_courses_get_lessons( $course ) );
+			echo pmpro_courses_get_lessons_table_html( pmpro_courses_get_lessons( $course ) );
 			
 			wp_die();
 		}

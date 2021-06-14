@@ -67,8 +67,13 @@
 	border-top: 1px solid #CCC;
 	list-style: none;
 	margin: 0;
-	padding: 15px 0;
+	padding: 0;
 }
+.pmpro_courses.pmpro-courses-no-access ol.pmpro_courses-list li.pmpro_courses-list-item,
+.pmpro_courses.pmpro-courses-no-access ul.pmpro_courses-list li.pmpro_courses-list-item {
+	padding:  15px 3px;
+}
+
 .pmpro_courses ol.pmpro_courses-list li.pmpro_courses-list-item h4.pmpro_courses-list-item-title,
 .pmpro_courses ul.pmpro_courses-list li.pmpro_courses-list-item h4.pmpro_courses-list-item-title {
 	margin: 0;
@@ -76,10 +81,7 @@
 }
 
 /* Course-specific list styles */
-.pmpro_courses-courses ul.pmpro_courses-list li.pmpro_courses-list-item {
-	padding: 0;
-}
-.pmpro_courses-courses ul.pmpro_courses-list li.pmpro_courses-list-item a.pmpro_courses-list-link {
+.pmpro_courses-courses ul.pmpro_courses-list li.pmpro_courses-list-item .pmpro_courses-list-item-link {
 	border: none;
 	display: grid;
 	grid-column-gap: 5px;
@@ -88,20 +90,17 @@
 	padding: 15px 3px;
 	text-decoration: none;
 }
-.pmpro_courses-courses ul.pmpro_courses-list li.pmpro_courses-list-item a.pmpro_courses-list-link:hover {
-	background-color: rgba( 0, 0, 0, 0.05 );
-	border: none;
-	text-decoration: none;
+.pmpro_courses-courses ul.pmpro_courses-list li.pmpro_courses-list-item a.pmpro_courses-list-item-link:hover .pmpro_courses-list-item-title {
+	text-decoration: underline;	
 }
-.pmpro_courses-courses ul.pmpro_courses-list li.pmpro_courses-list-item h4.pmpro_courses-list-item-title {
+.pmpro_courses-courses ul.pmpro_courses-list li.pmpro_courses-list-item .pmpro_courses-list-item-title {
+	align-self: center;
 	grid-area: lessonTitle;
-	text-decoration: underline;
 }
-.pmpro_courses-courses ul.pmpro_courses-list li.pmpro_courses-list-item .pmpro_courses-list-item-count {
-	align-self: start;
-	grid-area: lessonCount;
+.pmpro_courses-courses ul.pmpro_courses-list li.pmpro_courses-list-item .pmpro_courses-course-lesson-count {
+	align-self: center;
 	color: #666;
-	text-decoration: none;
+	grid-area: lessonCount;
 }
 
 /* Lesson-specific list styles */
@@ -111,6 +110,7 @@
 	grid-column-gap: 5px;
 	grid-template-areas: 'lessonTitle lessonStatus';
 	grid-template-columns: auto 50px;
+	padding: 15px 3px;
 	text-decoration: none;
 }
 .pmpro_courses-lessons ol.pmpro_courses-list li.pmpro_courses-list-item .pmpro_courses-list-item-link:hover .pmpro_courses-list-item-title {

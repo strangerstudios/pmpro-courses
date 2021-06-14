@@ -92,7 +92,6 @@ class PMPro_Courses_Module {
         require_once PMPRO_COURSES_DIR . '/includes/courses.php';
         require_once PMPRO_COURSES_DIR . '/includes/lessons.php';
         require_once PMPRO_COURSES_DIR . '/includes/progress.php';
-        require_once PMPRO_COURSES_DIR . '/includes/widgets.php';
         require_once PMPRO_COURSES_DIR . '/includes/shortcodes/all-courses.php';
         require_once PMPRO_COURSES_DIR . '/includes/shortcodes/my-courses.php';
         
