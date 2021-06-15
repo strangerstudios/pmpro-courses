@@ -84,8 +84,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 		$ld_non_course_cpts = array( 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz', 'sfwd-question', 'sfwd-certificates', 'groups', 'sfwd-assignment' );				
 		
 		// Check if this is a course or other non-LD CPT.
-		$mypost = get_post( $post_id );		
-		if ( ! in_array( $mypost->post_type, $ld_non_course_cpts ) ) {
+		if ( ! in_array( get_post_type( $post_id ), $ld_non_course_cpts ) ) {
 			// Let PMPro handle these CPTs.
 			return PMPro_Courses_LearnDash::pmpro_has_membership_access( $post_id, $user_id );
 		} else {
