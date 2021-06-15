@@ -134,13 +134,8 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	public static function template_redirect() {		
 		global $post, $pmpro_pages;
 
-		if( ! empty( $post ) && is_singular() ) {		
-			// Only check if a LearnDash CPT.
-			$ld_cpts = array( 'sfwd-courses', 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz', 'sfwd-question', 'sfwd-certificates', 'groups', 'sfwd-assignment' );
-			if ( ! in_array( $post->post_type, $ld_cpts ) ) {
-				return;
-			}
-			
+		// Only check if a LearnDash CPT.
+		if( ! empty( $post ) && is_singular( array( 'sfwd-courses', 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz', 'sfwd-question', 'sfwd-certificates', 'groups', 'sfwd-assignment' ) ) ) {		
 			// Check access for this course or lesson.
 			$access = PMPro_Courses_LearnDash::has_access_to_post( $post->ID );
 
