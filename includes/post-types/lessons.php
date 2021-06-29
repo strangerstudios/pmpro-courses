@@ -95,7 +95,11 @@ function pmpro_courses_lesson_course_metabox( $post ) {
  */
 function pmpro_courses_save_lessons_meta( $post_id ){
 	if( 'pmpro_lesson' === get_post_type() ){
-		wp_update_post( $post_id, 'parent_post', intval( $_REQUEST['pmpro_courses_parent'] ) );
+		wp_update_post(
+			array( 'ID' => $post_id,
+			'post_parent' => intval( $_REQUEST['pmpro_courses_parent'] )
+			)
+		);
 	}
 }
 add_action( 'save_post', 'pmpro_courses_save_lessons_meta', 10, 1 );
