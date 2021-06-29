@@ -1,19 +1,17 @@
 === Paid Memberships Pro - Courses for Membership Add On ===
 Contributors: strangerstudios
 Tags: pmpro, membership, elearning, course, learning management system
-Requires at least: 5.0
-Tested up to: 5.6
-Stable tag: 0.1
+Requires at least: 5.4
+Tested up to: 5.8
+Stable tag: 1.0
 
-Creates courses and lessons for members only or integrates your Paid Memberships Pro site with LearnDash and LifterLMS.
+Create courses and lessons for members only or integrates your Paid Memberships Pro site with LearnDash and LifterLMS.
 
 == Description ==
 
-Creates courses and lessons for members only or integrates your Paid Memberships Pro site with LearnDash or LifterLMS.
-
 This plugin offers extended functionality for [membership websites using the Paid Memberships Pro plugin](https://wordpress.org/plugins/paid-memberships-pro/) available for free in the WordPress plugin repository. 
 
-Choose from the built-in course and lessons module. You can create basic courses with lessons that require membership to access. The built-in module also offers course progress tracking.
+Using the built-in course and lessons module, you can create basic courses with lessons that require membership to access. The built-in module also offers course progress tracking.
 
 Membership sites using LearnDash or LifterLMS as their LMS can use this integration plugin to restrict course access by membership level.
 
@@ -41,5 +39,5 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 
 == Changelog ==
 
-= 0.1 =
+= 1.0 =
 * Initial release.
