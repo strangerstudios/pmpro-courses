@@ -34,7 +34,7 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
 		$modules[] = array(
 			'name' => __('LifterLMS', 'pmpro-courses'),
 			'slug' => 'lifterlms',
-			'description' => __( 'Lifter LMS', 'pmpro-courses' ),
+			'description' => __( 'Integrate with the LifterLMS plugin for WordPress.', 'pmpro-courses' ),
 		);
 		
 		return $modules;
