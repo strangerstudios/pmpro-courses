@@ -46,7 +46,7 @@ function pmpro_courses_settings_save() {
 		}
 		
 		// Flush rewrite rules in case core module was activated/deactivated.
-		flush_rewrite_rules();
+		set_transient( 'pmpro_courses_flush_rewrite_rules', 1 );
 	}
 }
 add_action( 'admin_init', 'pmpro_courses_settings_save' );

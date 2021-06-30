@@ -9,7 +9,7 @@ function pmpro_courses_admin_notice_activation_hook() {
 	set_transient( 'pmpro-courses-admin-notice', true, 5 );
 	
 	// Trigger a rewrite rule flush in case the default module is on.
-	define( 'PMPRO_COURSES_FLUSH_REWRITE_RULES', true );
+	set_transient( 'pmpro_courses_flush_rewrite_rules', 1 );
 }
 register_activation_hook( PMPRO_COURSES_BASENAME, 'pmpro_courses_admin_notice_activation_hook' );
 

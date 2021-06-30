@@ -52,14 +52,26 @@ function pmpro_courses_admin_init() {
 		// Save DB version.
 		update_option( 'pmpro_courses_db_version', 1 );
 	}
-	
-	// Flush rewrite rules if we just activated.
-	if ( defined( 'PMPRO_COURSES_FLUSH_REWRITE_RULES' ) && PMPRO_COURSES_FLUSH_REWRITE_RULES ) {
-		flush_rewrite_rules();
-	}
 }
 add_action( 'admin_init', 'pmpro_courses_admin_init' );
 
+/**
+ * Maybe flush rewrite rules.
+ * Fires on admin_init 5 to run after CPTs are set up,
+ * but before the settings are saved.
+ * @since 1.0
+ */
+function pmpro_courses_flush_rewrite_rules() {
+	$flush = get_transient( 'pmpro_courses_flush_rewrite_rules' );
+	if ( ! empty( $flush ) ) {
+		global $wp_rewrite;
+		$wp_rewrite->flush_rules();
+		$wp_rewrite->init();
+		delete_transient( 'pmpro_courses_flush_rewrite_rules' );
+	}
+}
+add_action( 'admin_init', 'pmpro_courses_flush_rewrite_rules', 5 );
+ 
 /**
  * Tie into GlotPress
  *
