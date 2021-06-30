@@ -52,6 +52,11 @@ function pmpro_courses_admin_init() {
 		// Save DB version.
 		update_option( 'pmpro_courses_db_version', 1 );
 	}
+	
+	// Flush rewrite rules if we just activated.
+	if ( defined( 'PMPRO_COURSES_FLUSH_REWRITE_RULES' ) && PMPRO_COURSES_FLUSH_REWRITE_RULES ) {
+		flush_rewrite_rules();
+	}
 }
 add_action( 'admin_init', 'pmpro_courses_admin_init' );
 

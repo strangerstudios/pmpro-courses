@@ -44,6 +44,9 @@ function pmpro_courses_settings_save() {
 		} else {
 			update_option( 'pmpro_courses_modules', array() );
 		}
+		
+		// Flush rewrite rules in case core module was activated/deactivated.
+		flush_rewrite_rules();
 	}
 }
 add_action( 'admin_init', 'pmpro_courses_settings_save' );
