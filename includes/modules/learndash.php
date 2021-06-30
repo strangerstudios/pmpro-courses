@@ -71,16 +71,16 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	public static function has_access_to_post( $post_id = null, $user_id = null ) {
 		global $post;
 
-		// Use post global or queried object if no $post_id was passed in.
+		// Use loop/global post if no $post_id was passed in.
 		if( ! $post_id ){
 			$post_id = get_the_ID();
 		}
-if ( ! $post_id ) {
-    $queried_object = get_queried_object;
-    if ( ! empty( $queried_object->ID ) ) {
-        $post_id = $queried_object->ID;
-    }
-}
+
+		// Fallback on queried object if called out of loop
+		if ( ! $post_id ) {
+			$post_id = get_queried_object_id();
+		}
+		
 		// No post, return true.
 		if( ! $post_id ) {
 			return true;
