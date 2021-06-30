@@ -45,11 +45,16 @@ function pmpro_courses_lessons_columns( $columns ) {
 add_filter( 'manage_pmpro_lesson_posts_columns', 'pmpro_courses_lessons_columns' );
 
 function pmpro_courses_lessons_columns_content( $column, $post_id ) {
-    switch ( $column ) {
-        case 'pmpro_course_assigned' :
-            echo pmpro_courses_get_edit_course_link( wp_get_post_parent_id( $post_id ) ); 
-            break;
-    }
+	switch ( $column ) {
+		case 'pmpro_course_assigned' :
+			$lesson_parent = wp_get_post_parent_id( $post_id );
+			if ( empty( $lesson_parent ) ) {
+				esc_html_e( '&#8212;', 'pmpro-courses' );
+			} else {
+				echo pmpro_courses_get_edit_course_link( wp_get_post_parent_id( $post_id ) ); 
+			}
+			break;
+	}
 }
 add_action( 'manage_pmpro_lesson_posts_custom_column' , 'pmpro_courses_lessons_columns_content', 10, 2 );
 
