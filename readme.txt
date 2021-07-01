@@ -37,6 +37,13 @@ Please post it in the issues section of GitHub and we'll fix it as soon as we ca
 
 Please visit [our support site at https://www.paidmembershipspro.com](http://www.paidmembershipspro.com/) for more documentation and our support forums.
 
+== Screenshots ==
+
+1. Settings page to enable course modules for built-in CPT, LearnDash, and LifterLMS.
+2. Courses post type screen shows number of lessons and required membership levels.
+3. Edit a single course to add public overview content, add and reorder lessons, categorize the courese, and add membership requirements.
+4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
+
 == Changelog ==
 
 = 1.0 =
