@@ -70,13 +70,15 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	 */
 	public static function has_access_to_post( $post_id = null, $user_id = null ) {
 		global $post;
-		
-		// Use post global or queried object if no $post_id was passed in.
-		// Copied from PMPro includes/content.php.
-		if( ! $post_id && ! empty( $post ) && ! empty( $post->ID ) ) {
-			$post_id = $post->ID;
-		} elseif( ! $post_id && ! empty( $queried_object ) && ! empty( $queried_object->ID ) ) {
-			$post_id = $queried_object->ID;
+
+		// Use loop/global post if no $post_id was passed in.
+		if( ! $post_id ){
+			$post_id = get_the_ID();
+		}
+
+		// Fallback on queried object if called out of loop
+		if ( ! $post_id ) {
+			$post_id = get_queried_object_id();
 		}
 		
 		// No post, return true.
@@ -87,8 +89,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 		$ld_non_course_cpts = array( 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz', 'sfwd-question', 'sfwd-certificates', 'groups', 'sfwd-assignment' );				
 		
 		// Check if this is a course or other non-LD CPT.
-		$mypost = get_post( $post_id );		
-		if ( ! in_array( $mypost->post_type, $ld_non_course_cpts ) ) {
+		if ( ! in_array( get_post_type( $post_id ), $ld_non_course_cpts ) ) {
 			// Let PMPro handle these CPTs.
 			return PMPro_Courses_LearnDash::pmpro_has_membership_access( $post_id, $user_id );
 		} else {
@@ -134,13 +135,8 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	public static function template_redirect() {		
 		global $post, $pmpro_pages;
 
-		if( ! empty( $post ) && is_singular() ) {		
-			// Only check if a LearnDash CPT.
-			$ld_cpts = array( 'sfwd-courses', 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz', 'sfwd-question', 'sfwd-certificates', 'groups', 'sfwd-assignment' );
-			if ( ! in_array( $post->post_type, $ld_cpts ) ) {
-				return;
-			}
-			
+		// Only check if a LearnDash CPT.
+		if( ! empty( $post ) && is_singular( array( 'sfwd-courses', 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz', 'sfwd-question', 'sfwd-certificates', 'groups', 'sfwd-assignment' ) ) ) {		
 			// Check access for this course or lesson.
 			$access = PMPro_Courses_LearnDash::has_access_to_post( $post->ID );
 
