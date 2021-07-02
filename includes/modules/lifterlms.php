@@ -3,7 +3,7 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
 	public $slug = 'lifterlms';
 	
 	/**
-	 * Initial setup for the LearnDash module.
+	 * Initial setup for the LifterLMS module.
 	 * @since 1.0
 	 */
 	public function init() {		
@@ -11,13 +11,13 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
 	}
 	
 	/**
-     * Initial setup for the LearnDash module when active.
+     * Initial setup for the LifterLMS module when active.
      * @since 1.0
      */
     public function init_active() {
         add_action('admin_menu', array( 'PMPro_Courses_LifterLMS', 'admin_menu' ), 20);
         
-		// If Lifter is not active, we're done here.
+		// If LifterLMS is not active, we're done here.
 		if ( ! class_exists( 'LifterLMS' ) ) {
 			return;
 		}
@@ -27,7 +27,7 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
     }
 	
 	/**
-	 * Add LearnDash to the modules list.
+	 * Add LifterLMS to the modules list.
 	 */
 	public static function add_module( $modules ){
 
@@ -41,7 +41,7 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
 	}
 	
 	/**
-	 * Add Require Membership box to LearnDash courses.
+	 * Add Require Membership box to LifterLMS courses.
 	 */
 	public static function admin_menu() {
 		if( function_exists( 'pmpro_page_meta' ) ){
