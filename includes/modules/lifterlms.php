@@ -44,7 +44,9 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
 	 * Add Require Membership box to LearnDash courses.
 	 */
 	public static function admin_menu() {
-		add_meta_box( 'pmpro_page_meta', __( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'course', 'side');
+		if( function_exists( 'pmpro_page_meta' ) ){
+			add_meta_box( 'pmpro_page_meta', __( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'course', 'side');
+		}
 	}
 		
 	
