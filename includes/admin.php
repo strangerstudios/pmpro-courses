@@ -25,7 +25,7 @@ function pmpro_courses_admin_notice() {
 			<p>
 			<?php 
 				_e( 'Thank you for activating.', 'pmpro-courses' );
-				echo ' <a href="' . get_admin_url( null, 'edit.php?post_type=pmpro_course' ) . '">';
+				echo ' <a href="' . esc_url( get_admin_url( null, 'edit.php?post_type=pmpro_course' ) ) . '">';
 				_e( 'Click here to add your first course.', 'pmpro-courses' );
 				echo '</a>';
 			?>
