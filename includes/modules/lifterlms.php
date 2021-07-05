@@ -35,7 +35,7 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
 			'name' => __('LifterLMS', 'pmpro-courses'),
 			'slug' => 'lifterlms',
 			'title' => __( 'Integrate with the LifterLMS plugin for WordPress.', 'pmpro-courses' ),
-			'description' => sprintf( __( 'Refer to our <a href="%s" title="LifterLMS Documentation - Courses for Membership Add On" target="_blank">LifterLMS documentation</a> for help protecting courses using this module.', 'pmpro-courses' ), 'https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-lifterlms#lifterlms-module' ),
+			'description' => '<a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-lifterlms#lifterlms-module" target="_blank">' . __( 'Read the LifterLMS Integration documentation &raquo;', 'pmpro-courses' ) . '</a>',
 		);
 		
 		return $modules;
