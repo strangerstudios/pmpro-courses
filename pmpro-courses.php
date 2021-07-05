@@ -102,12 +102,12 @@ function pmpro_courses_admin_styles( $hook ) {
 
 		$localize = array(
 			'course_id'      => $post_id,
-			'save'           => __( 'Save', 'pmpro-courses' ),
-			'saving'         => __( 'Saving...', 'pmpro-courses' ),
-			'saving_error_1' => __( 'Error saving lesson [1]', 'pmpro-courses' ),
-			'saving_error_2' => __( 'Error saving lesson [2]', 'pmpro-courses' ),
-			'remove_error_1' => __( 'Error removing lesson [1]', 'pmpro-courses' ),
-			'remove_error_2' => __( 'Error removing lesson [2]', 'pmpro-courses' ),
+			'save'           => esc_html__( 'Save', 'pmpro-courses' ),
+			'saving'         => esc_html__( 'Saving...', 'pmpro-courses' ),
+			'saving_error_1' => esc_html__( 'Error saving lesson [1]', 'pmpro-courses' ),
+			'saving_error_2' => esc_html__( 'Error saving lesson [2]', 'pmpro-courses' ),
+			'remove_error_1' => esc_html__( 'Error removing lesson [1]', 'pmpro-courses' ),
+			'remove_error_2' => esc_html__( 'Error removing lesson [2]', 'pmpro-courses' ),
 		);
 
 		wp_localize_script( 'pmpro_courses', 'pmpro_courses', $localize );
