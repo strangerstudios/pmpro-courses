@@ -105,12 +105,6 @@ function pmpro_courses_get_user_lesson_status( $lid, $cid, $user_id = null ) {
  * Display a button that allows a user to mark a lesson as complete.
  */
 function pmpro_courses_complete_button( $lid, $cid, $user_id = null ) {
-	// Filter to hide the completion button.
-	$show_complete_button = apply_filters( 'pmpro_courses_button_show_complete', true );
-	if ( empty( $show_complete_button ) ) {
-		return;
-	}
-
 	// If no user_id passed, try to get the ID for the current user.
 	if ( empty( $user_id ) ) {
 		$user_id = get_current_user_id();
@@ -123,11 +117,6 @@ function pmpro_courses_complete_button( $lid, $cid, $user_id = null ) {
 
 	// Get the user's status for this lesson.
 	$lesson_status = pmpro_courses_get_user_lesson_status( $lid, $cid, $user_id );
-
-	if ( empty( $lesson_status ) ) {
-		return;
-	}
-
 	if ( $lesson_status === 'complete' ) {
 		$content = '<p><input class="pmpro_courses_lesson_toggle" id="pmpro_courses_lesson' . esc_attr( $lid ) . '_toggle" data-lid="' . esc_attr( $lid ) . '" data-cid="' . esc_attr( $cid ) . '" type="checkbox" checked="checked" /> <label for="pmpro_courses_lesson' . esc_attr( $lid ) . '_toggle">' . __( 'Completed', 'pmpro-courses' ) . '</label></p>';
 	} else {		

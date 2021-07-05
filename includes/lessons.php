@@ -9,16 +9,12 @@ function pmpro_courses_the_content_lesson( $content ) {
 
 		$after_the_content = '<hr class="styled-separator is-style-wide" aria-hidden="true" />';
 
-		// Show a link to mark the lesson complete or incomplete.
-		$show_complete_button = apply_filters( 'pmpro_courses_show_complete_button', true );
-		if ( $show_complete_button ) {
-			$lesson_status = pmpro_courses_get_user_lesson_status( $post->ID, $course_id );
-			if ( ! empty( $lesson_status ) ) {
-				$after_the_content .= '<div class="pmpro_courses_lesson-status">';
-				$after_the_content .= pmpro_courses_complete_button( $post->ID, $course_id );
-				$after_the_content .= '</div>';
-				$after_the_content .= '<hr class="styled-separator is-style-wide" aria-hidden="true" />';
-			}
+		// Show a link to mark the lesson complete or incomplete.	
+		$complete_button = pmpro_courses_complete_button( $post->ID, $course_id );
+		if ( ! empty( $complete_button ) ) {			
+			$after_the_content .= '<div class="pmpro_courses_lesson-status">';
+			$after_the_content .= $complete_button;
+			$after_the_content .= '</div>';			
 		}
 
 		if ( ! empty( $course_id ) ) {
