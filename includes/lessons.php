@@ -7,7 +7,7 @@ function pmpro_courses_the_content_lesson( $content ) {
 	if ( is_singular( 'pmpro_lesson' ) ) {
 		$course_id = wp_get_post_parent_id( $post->ID );
 
-		$after_the_content = '<hr class="styled-separator is-style-wide" aria-hidden="true" />';
+		$after_the_content = '';
 
 		// Show a link to mark the lesson complete or incomplete.	
 		$complete_button = pmpro_courses_complete_button( $post->ID, $course_id );
@@ -20,7 +20,7 @@ function pmpro_courses_the_content_lesson( $content ) {
 		if ( ! empty( $course_id ) ) {
 			$after_the_content .= sprintf(
 				/* translators: %s: link to the course for this lesson. */
-				'<p>' . esc_html__( 'Course: %s', 'pmpro-courses' ) . ' </span></p>',
+				'<div class="pmpro_courses_lesson-back-to-course">' . esc_html__( 'Course: %s', 'pmpro-courses' ) . '</div>',
 				'<a href="' . get_permalink( $course_id ) . '" title="' . get_the_title( $course_id ) . '">' . get_the_title( $course_id ) . '</a>'
 			);
 		}
