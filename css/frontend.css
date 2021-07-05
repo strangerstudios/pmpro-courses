@@ -126,24 +126,8 @@
 }
 
 /* Additional content added to single Lesson page */
-.pmpro_lesson-status {  }
-.pmpro_lesson-navigation {
-	display: grid;
-	grid-column-gap: 5px;
-	grid-template-areas: 'lessonPrev lessonNext';
-	grid-template-columns: 1fr 1fr;
-	margin: 2em 0;
-}
-.pmpro_lesson-navigation .pmpro_lesson-navigation-label {
-	display: block;
-	font-size: 70%;
-	text-transform: uppercase;
-}
-.pmpro_lesson-navigation .nav-prev {
-	grid-area: 'lessonPrev';
-}
-.pmpro_lesson-navigation .nav-next {
-	grid-area: 'lessonNext';
-	text-align: right;
+.pmpro_courses_lesson-status,
+.pmpro_courses_lesson-back-to-course {
+	margin: 30px 0;
 }
 
