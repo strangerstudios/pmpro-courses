@@ -22,7 +22,14 @@ function pmpro_courses_admin_notice() {
 	// Check transient, if available display notice.
 	if ( get_transient( 'pmpro-courses-admin-notice' ) ) { ?>
 		<div class="updated notice is-dismissible">
-			<p><?php printf( __( 'Thank you for activating. <a href="%s">Click here to add your first course</a>.', 'pmpro-courses' ), get_admin_url( null, 'edit.php?post_type=pmpro_course' ) ); ?></p>
+			<p>
+			<?php 
+				_e( 'Thank you for activating.', 'pmpro-courses' );
+				echo ' <a href="' . get_admin_url( null, 'edit.php?post_type=pmpro_course' ) . '">';
+				_e( 'Click here to add your first course.', 'pmpro-courses' );
+				echo '</a>';
+			?>
+			</p>
 		</div>
 		<?php
 		// Delete transient, only display this notice once.
