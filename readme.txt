@@ -1,5 +1,5 @@
 === Paid Memberships Pro - Courses for Membership Add On ===
-Contributors: strangerstudios
+Contributors: strangerstudios, kimannwall, jarryd-long
 Tags: pmpro, membership, elearning, course, learning management system
 Requires at least: 5.4
 Tested up to: 5.8
