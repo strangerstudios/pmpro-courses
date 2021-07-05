@@ -34,10 +34,10 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	public static function add_module( $modules ){
 
 		$modules[] = array(
-			'name' => __('LearnDash', 'pmpro-courses'),
+			'name' => esc_html__('LearnDash', 'pmpro-courses'),
 			'slug' => 'learndash',
-			'title'	=> __( 'Integrate with the LearnDash plugin for WordPress.', 'pmpro-courses' ),
-			'description' => '<a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-learndash#learndash-module" target="_blank">' . __( 'Read the LearnDash Integration documentation &raquo;', 'pmpro-courses' ) . '</a>',
+			'title'	=> esc_html__( 'Integrate with the LearnDash plugin for WordPress.', 'pmpro-courses' ),
+			'description' => '<a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-learndash#learndash-module" target="_blank">' . esc_html__( 'Read the LearnDash Integration documentation &raquo;', 'pmpro-courses' ) . '</a>',
 		);
 		
 		return $modules;
@@ -48,7 +48,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	 */
 	public static function admin_menu() {
 		if( function_exists( 'pmpro_page_meta' ) ){
-			add_meta_box( 'pmpro_page_meta', __( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'sfwd-courses', 'side');
+			add_meta_box( 'pmpro_page_meta', esc_html__( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'sfwd-courses', 'side');
 		}
 	}
 

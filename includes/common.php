@@ -140,7 +140,7 @@ function pmpro_courses_get_courses_html( $courses ) {
 					<li id="pmpro_courses-course-<?php echo intval( $course->ID ); ?>" class="pmpro_courses-list-item">
 						<a class="pmpro_courses-list-item-link" href="<?php echo esc_url( get_permalink( $course->ID ) ); ?>">
 							<div class="pmpro_courses-list-item-title">
-								<?php esc_html_e( $course->post_title ); ?>
+								<?php echo esc_html( $course->post_title ); ?>
 							</div>
 							<?php
 								$lesson_count = pmpro_courses_get_lesson_count( $course->ID );
@@ -213,7 +213,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 
 	// Build the HTML to output a list of lessons.
 	?>
-	<div class="pmpro_courses pmpro_courses-lessons <?php esc_html_e( $pmpro_courses_lesson_access_class ); ?>">
+	<div class="pmpro_courses pmpro_courses-lessons <?php echo esc_attr( $pmpro_courses_lesson_access_class ); ?>">
 		<h3 class="pmpro_courses-title"><?php esc_html_e( 'Lessons', 'pmpro-courses' ); ?></h3>
 		<ol class="pmpro_courses-list">
 			<?php
@@ -227,7 +227,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 							}
 						?>
 							<div class="pmpro_courses-list-item-title">
-								<?php esc_html_e( $lesson->post_title ); ?>
+								<?php echo esc_html( $lesson->post_title ); ?>
 							</div>
 							<?php
 								if ( is_user_logged_in() && ! empty( $hasaccess ) ) {

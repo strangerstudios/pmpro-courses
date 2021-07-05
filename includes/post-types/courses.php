@@ -6,32 +6,32 @@
 function pmpro_courses_course_cpt() {
 
 	$labels  = array(
-		'name'                  => _x( 'Courses', 'Post Type General Name', 'pmpro-courses' ),
-		'singular_name'         => _x( 'Course', 'Post Type Singular Name', 'pmpro-courses' ),
-		'menu_name'             => __( 'Courses', 'pmpro-courses' ),
-		'name_admin_bar'        => __( 'Course', 'pmpro-courses' ),
-		'archives'              => __( 'Course Archives', 'pmpro-courses' ),
-		'attributes'            => __( 'Course Attributes', 'pmpro-courses' ),
-		'all_items'             => __( 'All Courses', 'pmpro-courses' ),
-		'add_new_item'          => __( 'Add New Course', 'pmpro-courses' ),
-		'add_new'               => __( 'Add New Course', 'pmpro-courses' ),
-		'new_item'              => __( 'New Course', 'pmpro-courses' ),
-		'edit_item'             => __( 'Edit Course', 'pmpro-courses' ),
-		'update_item'           => __( 'Update Course', 'pmpro-courses' ),
-		'view_item'             => __( 'View Course', 'pmpro-courses' ),
-		'view_items'            => __( 'View Courses', 'pmpro-courses' ),
-		'search_items'          => __( 'Search Courses', 'pmpro-courses' ),
-		'not_found'             => __( 'Course not found', 'pmpro-courses' ),
-		'not_found_in_trash'    => __( 'Course not found in Trash', 'pmpro-courses' ),
-		'featured_image'        => __( 'Featured Image', 'pmpro-courses' ),
-		'set_featured_image'    => __( 'Set course featured image', 'pmpro-courses' ),
-		'remove_featured_image' => __( 'Remove featured image', 'pmpro-courses' ),
-		'use_featured_image'    => __( 'Use as course featured image', 'pmpro-courses' ),
-		'insert_into_item'      => __( 'Insert into course', 'pmpro-courses' ),
-		'uploaded_to_this_item' => __( 'Uploaded to this course', 'pmpro-courses' ),
-		'items_list'            => __( 'PMPro Courses list', 'pmpro-courses' ),
-		'items_list_navigation' => __( 'Courses list navigation', 'pmpro-courses' ),
-		'filter_items_list'     => __( 'Filter Courses list', 'pmpro-courses' ),
+		'name'                  => esc_html_x( 'Courses', 'Post Type General Name', 'pmpro-courses' ),
+		'singular_name'         => esc_html_x( 'Course', 'Post Type Singular Name', 'pmpro-courses' ),
+		'menu_name'             => esc_html__( 'Courses', 'pmpro-courses' ),
+		'name_admin_bar'        => esc_html__( 'Course', 'pmpro-courses' ),
+		'archives'              => esc_html__( 'Course Archives', 'pmpro-courses' ),
+		'attributes'            => esc_html__( 'Course Attributes', 'pmpro-courses' ),
+		'all_items'             => esc_html__( 'All Courses', 'pmpro-courses' ),
+		'add_new_item'          => esc_html__( 'Add New Course', 'pmpro-courses' ),
+		'add_new'               => esc_html__( 'Add New Course', 'pmpro-courses' ),
+		'new_item'              => esc_html__( 'New Course', 'pmpro-courses' ),
+		'edit_item'             => esc_html__( 'Edit Course', 'pmpro-courses' ),
+		'update_item'           => esc_html__( 'Update Course', 'pmpro-courses' ),
+		'view_item'             => esc_html__( 'View Course', 'pmpro-courses' ),
+		'view_items'            => esc_html__( 'View Courses', 'pmpro-courses' ),
+		'search_items'          => esc_html__( 'Search Courses', 'pmpro-courses' ),
+		'not_found'             => esc_html__( 'Course not found', 'pmpro-courses' ),
+		'not_found_in_trash'    => esc_html__( 'Course not found in Trash', 'pmpro-courses' ),
+		'featured_image'        => esc_html__( 'Featured Image', 'pmpro-courses' ),
+		'set_featured_image'    => esc_html__( 'Set course featured image', 'pmpro-courses' ),
+		'remove_featured_image' => esc_html__( 'Remove featured image', 'pmpro-courses' ),
+		'use_featured_image'    => esc_html__( 'Use as course featured image', 'pmpro-courses' ),
+		'insert_into_item'      => esc_html__( 'Insert into course', 'pmpro-courses' ),
+		'uploaded_to_this_item' => esc_html__( 'Uploaded to this course', 'pmpro-courses' ),
+		'items_list'            => esc_html__( 'PMPro Courses list', 'pmpro-courses' ),
+		'items_list_navigation' => esc_html__( 'Courses list navigation', 'pmpro-courses' ),
+		'filter_items_list'     => esc_html__( 'Filter Courses list', 'pmpro-courses' ),
 	);
 	$rewrite = array(
 		'slug'       => 'course',
@@ -40,8 +40,8 @@ function pmpro_courses_course_cpt() {
 		'feeds'      => false,
 	);
 	$args    = array(
-		'label'               => __( 'Course', 'pmpro-courses' ),
-		'description'         => __( 'Courses and lessons for members.', 'pmpro-courses' ),
+		'label'               => esc_html__( 'Course', 'pmpro-courses' ),
+		'description'         => esc_html__( 'Courses and lessons for members.', 'pmpro-courses' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields', 'page-attributes' ),
 		'hierarchical'        => true,
@@ -67,7 +67,7 @@ function pmpro_courses_course_cpt() {
 	    'pmpro_course_category',
 	    'pmpro_course',
 	    array(
-			'label' => __( 'Course Categories' ),
+			'label' => esc_html__( 'Course Categories' ),
 			'rewrite' => array( 'slug' => 'course-category' ),
 		    'hierarchical' => true,
 			'show_in_rest' => true,
@@ -81,9 +81,9 @@ add_action( 'init', 'pmpro_courses_course_cpt', 0 );
  */
 function pmpro_courses_course_cpt_define_meta_boxes() {
 	if ( function_exists( 'pmpro_page_meta' ) ) {
-		add_meta_box( 'pmpro_page_meta', __( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'pmpro_course', 'side');
+		add_meta_box( 'pmpro_page_meta', esc_html__( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'pmpro_course', 'side');
 	}
-	add_meta_box( 'pmpro_courses_lessons', __( 'Lessons', 'pmpro-courses'), 'pmpro_courses_course_cpt_lessons', 'pmpro_course', 'normal' );	
+	add_meta_box( 'pmpro_courses_lessons', esc_html__( 'Lessons', 'pmpro-courses'), 'pmpro_courses_course_cpt_lessons', 'pmpro_course', 'normal' );	
 }
 add_action('admin_menu', 'pmpro_courses_course_cpt_define_meta_boxes', 20);
 
@@ -112,7 +112,7 @@ function pmpro_courses_course_cpt_lessons() {
 			</tbody>
 		</table>
 
-		<h3><?php _e( 'Add Lessons', 'pmpro-courses' ); ?> <?php /*<a class="button button-secondary" href="<?php echo admin_url( 'post-new.php?post_type=pmpro_lesson' ); ?>" target="_blank"><?php _e( 'Create New Lesson','pmpro-courses' ); ?></a> */ ?></h3>
+		<h3><?php esc_html_e( 'Add Lessons', 'pmpro-courses' ); ?></h3>
 		<table id="newmeta" class="wp-list-table pmpro-metabox-items">
 			<tbody>
 				<tr>
@@ -157,12 +157,12 @@ function pmpro_courses_get_lessons_table_html( $lessons ){
 		foreach ( $lessons as $lesson ) {
 
 			$ret .= "<tr>";
-			$ret .= "<td>".$lesson->menu_order."</td>";
-			$ret .= "<td><a href='".admin_url( 'post.php?post=' . $lesson->ID.'&action=edit' ) . "' title='" . __('Edit', 'pmpro-courses') .' '. $lesson->post_title. "' target='_BLANK'>". $lesson->post_title ."</a></td>";
+			$ret .= "<td>" . esc_html( $lesson->menu_order) . "</td>";
+			$ret .= "<td><a href='".admin_url( 'post.php?post=' . intval( $lesson->ID ) . '&action=edit' ) . "' title='" . esc_attr__('Edit', 'pmpro-courses') .' '. esc_attr( $lesson->post_title ). "' target='_BLANK'>". esc_html( $lesson->post_title ) ."</a></td>";
 			$ret .= "<td>";
-			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_edit_post(".$lesson->ID.",".$lesson->menu_order."); void(0);'>".__( 'edit', 'pmpro-courses' )."</a>";
+			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_edit_post(" . intval( $lesson->ID ) . "," . intval( $lesson->menu_order ) . "); void(0);'>". esc_html__( 'edit', 'pmpro-courses' )."</a>";
 			$ret .= " ";
-			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_remove_post(".$lesson->ID."); void(0);'>".__( 'remove', 'pmpro-courses' )."</a>";
+			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_remove_post(". intval( $lesson->ID ) ."); void(0);'>". esc_html__( 'remove', 'pmpro-courses' )."</a>";
 			$ret .= "</td>";
 			$ret .= "</tr>";
 

@@ -32,10 +32,10 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
 	public static function add_module( $modules ){
 
 		$modules[] = array(
-			'name' => __('LifterLMS', 'pmpro-courses'),
+			'name' => esc_html__('LifterLMS', 'pmpro-courses'),
 			'slug' => 'lifterlms',
-			'title' => __( 'Integrate with the LifterLMS plugin for WordPress.', 'pmpro-courses' ),
-			'description' => '<a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-lifterlms#lifterlms-module" target="_blank">' . __( 'Read the LifterLMS Integration documentation &raquo;', 'pmpro-courses' ) . '</a>',
+			'title' => esc_html__( 'Integrate with the LifterLMS plugin for WordPress.', 'pmpro-courses' ),
+			'description' => '<a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-lifterlms#lifterlms-module" target="_blank">' . esc_html__( 'Read the LifterLMS Integration documentation &raquo;', 'pmpro-courses' ) . '</a>',
 		);
 		
 		return $modules;
@@ -46,7 +46,7 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
 	 */
 	public static function admin_menu() {
 		if( function_exists( 'pmpro_page_meta' ) ){
-			add_meta_box( 'pmpro_page_meta', __( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'course', 'side');
+			add_meta_box( 'pmpro_page_meta', esc_html__( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'course', 'side');
 		}
 	}
 		
