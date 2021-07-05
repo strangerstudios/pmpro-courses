@@ -53,7 +53,7 @@ function pmpro_courses_lesson_cpt() {
 		'show_in_admin_bar'   => true,
 		'show_in_nav_menus'   => true,
 		'can_export'          => true,
-		'exclude_from_search' => false,
+		'exclude_from_search' => true,
 		'publicly_queryable'  => true,
 		'rewrite'             => $rewrite,
 		'capability_type'     => 'page',
