@@ -94,7 +94,8 @@ class PMPro_Courses_Module {
         require_once PMPRO_COURSES_DIR . '/includes/progress.php';
         require_once PMPRO_COURSES_DIR . '/includes/shortcodes/all-courses.php';
         require_once PMPRO_COURSES_DIR . '/includes/shortcodes/my-courses.php';
-        
-        add_filter( 'pmpro_membership_content_filter', 'pmpro_courses_the_content_course', 10, 2 );
+                
+        add_filter( 'pmpro_membership_content_filter', 'pmpro_courses_show_course_content_and_lessons', 10, 2 );
+        add_filter( 'the_content', 'pmpro_courses_add_lessons_to_course' );        
     }
 }

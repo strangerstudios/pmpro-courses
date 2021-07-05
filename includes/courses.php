@@ -1,13 +1,13 @@
 <?php 
 /**
  * Content filter to show additional course information on the single course page.
+ * Hooked into `pmpro_membership_content_filter` in modules/default.php.
  */
-function pmpro_courses_the_content_course( $filtered_content, $original_content ) {
+function pmpro_courses_show_course_content_and_lessons( $filtered_content, $original_content ) {
 	global $post;
-	if ( is_singular( 'pmpro_course' ) ) {
-
-		ob_start();
+	if ( is_singular( 'pmpro_course' ) ) {		
 		// Show non-member text if needed.
+		$no_access_message = '';
 		$hasaccess = pmpro_has_membership_access(NULL, NULL, true);
 		if( is_array( $hasaccess ) ) {
 			//returned an array to give us the membership level values
@@ -15,20 +15,38 @@ function pmpro_courses_the_content_course( $filtered_content, $original_content 
 			$post_membership_levels_names = $hasaccess[2];
 			$hasaccess = $hasaccess[0];
 			if ( ! $hasaccess ) {
-				echo pmpro_get_no_access_message( '', $post_membership_levels_ids, $post_membership_levels_names );
+				$no_access_message = pmpro_get_no_access_message( '', $post_membership_levels_ids, $post_membership_levels_names );
 			}
 		}
-		
-		// Echo the lessons HTML.
-		echo pmpro_courses_get_lessons_html( $post->ID );
 
-		$after_the_content = ob_get_contents();
-		ob_end_clean();
-
-		// Return the content after appending the new post section.
-		return $original_content . $after_the_content;
+		if ( $hasaccess || pmpro_courses_show_course_content_to_nonmembers() ) {
+			return $original_content . $no_access_message;
+		}
 	}
 	return $filtered_content;	// Probably false.
+}
+
+/**
+ * Content filter to show lessons at the end of a PMPro course single post.
+ */
+function pmpro_courses_add_lessons_to_course( $content ) {
+	global $post;
+	if ( is_singular( 'pmpro_course' ) ) {
+		$content .= pmpro_courses_get_lessons_html( $post->ID );
+	}
+	return $content;
+}
+
+/**
+ * Should we override PMPro to show the full course content to non-members?
+ *
+ * By default, PMPro Courses will override PMPro to show the full course
+ * content, even to non-members. Set this filter to false to change this.
+ * If this filter is set to false, the PMPro excerpt setting will be honored.
+ */
+function pmpro_courses_show_course_content_to_nonmembers() {
+	$show = apply_filters( 'pmpro_courses_show_course_content_to_nonmembers', true );
+	return $show;
 }
 
 /**
