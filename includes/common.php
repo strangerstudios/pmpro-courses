@@ -8,7 +8,8 @@ function pmpro_courses_get_modules() {
 		array(
 			'name' => __( 'Default', 'pmpro-courses' ),
 			'slug' => 'default',
-			'description' => __( 'The Course and Lesson post types bundled with PMPro Courses.', 'pmpro-courses' ),
+			'title' => __( 'The Course and Lesson post types bundled with PMPro Courses.', 'pmpro-courses' ),
+			'description' => sprintf( __( 'Refer to our <a href="%s" title="Documentation - Courses for Membership Add On" target="_blank">Default Course and Lesson documentation</a> for help protecting courses using this module.', 'pmpro-courses' ), 'https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-default#default-module' ),
 		)
 	);
 	$modules = apply_filters( 'pmpro_courses_modules', $modules );

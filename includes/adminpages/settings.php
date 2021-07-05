@@ -18,6 +18,14 @@
 					if( in_array( $module['slug'], $saved ) ){
 						$checked = true;
 					}
+
+					$allowed_module_description_html = array(
+						'a' => array (
+							'href' => array(),
+							'target' => array(),
+							'title' => array(),
+						),
+					);
 					?>
 					<tr>
 						<th scope="row" valign="top">
@@ -25,7 +33,8 @@
 						</th>
 						<td>
                             <input type='checkbox' name='pmpro_courses_modules[]' value='<?php echo esc_attr( $module['slug'] ); ?>' id='<?php echo esc_attr( $module['slug'] ); ?>' <?php if( $checked ){ echo 'checked="true"'; } ?>/>
-                            <label for="<?php echo esc_attr( $module['slug'] ); ?>"><?php echo esc_html( $module['description'] );?></label>
+                            <label for="<?php echo esc_attr( $module['slug'] ); ?>"><?php echo esc_html( $module['title'] );?></label>
+                            <p class="description"><?php echo wp_kses( $module['description'], $allowed_module_description_html ); ?></p>
                         </td>
 					</tr>
 					<?php
