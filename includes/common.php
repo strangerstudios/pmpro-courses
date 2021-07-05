@@ -85,7 +85,7 @@ function pmpro_courses_get_lesson_count( $course_id ) {
 	global $wpdb;
 
 	$sql = "SELECT count(*) FROM $wpdb->posts ";
-	$sql .= " WHERE post_parent = '$course_id' AND post_type = 'pmpro_lesson'";
+	$sql .= " WHERE post_parent = '" . esc_sql( $course_id ) . "' AND post_type = 'pmpro_lesson'";
 	$results = $wpdb->get_var( $sql );
 	return intval( $results );
 }
