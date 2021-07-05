@@ -36,7 +36,8 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 		$modules[] = array(
 			'name' => __('LearnDash', 'pmpro-courses'),
 			'slug' => 'learndash',
-			'description' => __( 'Integrate with the LearnDash plugin for WordPress.', 'pmpro-courses' ),
+			'title'	=> __( 'Integrate with the LearnDash plugin for WordPress.', 'pmpro-courses' ),
+			'description' => '<a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-learndash#learndash-module" target="_blank">' . __( 'Read the LearnDash Integration documentation &raquo;', 'pmpro-courses' ) . '</a>',
 		);
 		
 		return $modules;
