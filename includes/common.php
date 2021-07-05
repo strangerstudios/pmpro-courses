@@ -6,10 +6,10 @@
 function pmpro_courses_get_modules() {
 	$modules = array(
 		array(
-			'name' => __( 'Default', 'pmpro-courses' ),
+			'name' => esc_html__( 'Default', 'pmpro-courses' ),
 			'slug' => 'default',
-			'title' => __( 'The Course and Lesson post types bundled with PMPro Courses.', 'pmpro-courses' ),
-			'description' => '<a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-default#default-module" target="_blank">' . __( 'Read the Default Course and Lesson documentation &raquo;', 'pmpro-courses' ) . '</a>',
+			'title' => esc_html__( 'The Course and Lesson post types bundled with PMPro Courses.', 'pmpro-courses' ),
+			'description' => '<a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-default#default-module" target="_blank">' . esc_html__( 'Read the Default Course and Lesson documentation &raquo;', 'pmpro-courses' ) . '</a>',
 		)
 	);
 	$modules = apply_filters( 'pmpro_courses_modules', $modules );
@@ -140,13 +140,13 @@ function pmpro_courses_get_courses_html( $courses ) {
 					<li id="pmpro_courses-course-<?php echo intval( $course->ID ); ?>" class="pmpro_courses-list-item">
 						<a class="pmpro_courses-list-item-link" href="<?php echo esc_url( get_permalink( $course->ID ) ); ?>">
 							<div class="pmpro_courses-list-item-title">
-								<?php echo esc_html( $course->post_title ); ?>
+								<?php esc_html_e( $course->post_title ); ?>
 							</div>
 							<?php
 								$lesson_count = pmpro_courses_get_lesson_count( $course->ID );
 								if ( ! empty( $lesson_count ) ) { ?>
 								<span class="pmpro_courses-course-lesson-count">
-									<?php printf( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ), number_format_i18n( $lesson_count ) ); ?>
+									<?php printf( esc_html( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ), number_format_i18n( $lesson_count ) ) ); ?>
 								</span>
 							<?php } ?>
 						</a>

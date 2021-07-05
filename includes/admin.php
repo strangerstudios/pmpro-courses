@@ -24,9 +24,9 @@ function pmpro_courses_admin_notice() {
 		<div class="updated notice is-dismissible">
 			<p>
 			<?php 
-				_e( 'Thank you for activating.', 'pmpro-courses' );
+				esc_html_e( 'Thank you for activating.', 'pmpro-courses' );
 				echo ' <a href="' . esc_url( get_admin_url( null, 'edit.php?post_type=pmpro_course' ) ) . '">';
-				_e( 'Click here to add your first course.', 'pmpro-courses' );
+				esc_html_e( 'Click here to add your first course.', 'pmpro-courses' );
 				echo '</a>';
 			?>
 			</p>
@@ -46,7 +46,7 @@ add_action( 'admin_notices', 'pmpro_courses_admin_notice' );
 function pmpro_courses_plugin_action_links( $links ) {
 	if ( current_user_can( 'manage_options' ) ) {
 		$new_links = array(
-			'<a href="' . esc_url( get_admin_url( null, 'admin.php?page=pmpro-courses-settings' ) ) . '">' . __( 'Settings', 'pmpro-courses' ) . '</a>',
+			'<a href="' . esc_url( get_admin_url( null, 'admin.php?page=pmpro-courses-settings' ) ) . '">' . esc_html__( 'Settings', 'pmpro-courses' ) . '</a>',
 		);
 	}
 	return array_merge( $new_links, $links );
@@ -62,8 +62,8 @@ add_filter( 'plugin_action_links_' . PMPRO_COURSES_BASENAME, 'pmpro_courses_plug
 function pmpro_courses_plugin_row_meta( $links, $file ) {
 	if ( strpos( $file, 'pmpro-courses.php' ) !== false ) {
 		$new_links = array(
-			'<a href="' . esc_url( 'https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/' ) . '" title="' . esc_attr( __( 'View Documentation', 'pmpro' ) ) . '">' . __( 'Docs', 'pmpro-courses' ) . '</a>',
-			'<a href="' . esc_url( 'https://www.paidmembershipspro.com/support/' ) . '" title="' . esc_attr( __( 'Visit Customer Support Forum', 'pmpro' ) ) . '">' . __( 'Support', 'pmpro-courses' ) . '</a>',
+			'<a href="' . esc_url( 'https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/' ) . '" title="' . esc_attr__( 'View Documentation', 'pmpro' ) . '">' . esc_html__( 'Docs', 'pmpro-courses' ) . '</a>',
+			'<a href="' . esc_url( 'https://www.paidmembershipspro.com/support/' ) . '" title="' . esc_attr__( 'Visit Customer Support Forum', 'pmpro' ) . '">' . esc_html__( 'Support', 'pmpro-courses' ) . '</a>',
 		);
 		$links = array_merge( $links, $new_links );
 	}

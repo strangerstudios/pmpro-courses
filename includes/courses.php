@@ -105,9 +105,9 @@ add_action( 'wp_ajax_pmpro_courses_remove_course', 'pmpro_courses_remove_course_
  * Adds columns to the Courses table.
  */
 function pmpro_courses_columns($columns) {
-    $columns['pmpro_courses_num_lessons'] = __( 'Lesson Count', 'pmpro-courses' );
+    $columns['pmpro_courses_num_lessons'] = esc_html__( 'Lesson Count', 'pmpro-courses' );
     if ( function_exists( 'pmpro_getAllLevels' ) ) {
-		$columns['pmpro_courses_level'] = __( 'Level', 'pmpro-courses' );
+		$columns['pmpro_courses_level'] = esc_html__( 'Level', 'pmpro-courses' );
     }
 	return $columns;
 }
