@@ -31,6 +31,9 @@ function pmpro_courses_the_content_course( $filtered_content, $original_content 
 	return $filtered_content;	// Probably false.
 }
 
+/**
+ * AJAX callback to add/edit a lesson to a course from the edit course page.
+ */
 function pmpro_courses_update_course_callback(){
 
 	if( !empty( $_REQUEST['action'] ) ){
@@ -57,6 +60,9 @@ function pmpro_courses_update_course_callback(){
 }
 add_action( 'wp_ajax_pmpro_courses_update_course', 'pmpro_courses_update_course_callback' );
 
+/**
+ * AJAX callback to remove a lesson from a course on the edit course page.
+ */
 function pmpro_courses_remove_course_callback(){
 
 	if( !empty( $_REQUEST['action'] ) ){
@@ -89,6 +95,9 @@ function pmpro_courses_columns($columns) {
 }
 add_filter( 'manage_pmpro_course_posts_columns', 'pmpro_courses_columns' );
 
+/**
+ * Callback for column content on the Courses table.
+ */
 function pmpro_courses_columns_content( $column, $course_id ) {
 	global $wpdb;
 	switch ( $column ) {
@@ -132,6 +141,10 @@ function pmpro_courses_get_edit_course_link( $course ) {
 	return '<a href="' . esc_url( add_query_arg( array( 'post' => $course->ID, 'action' => 'edit' ), admin_url( 'post.php' ) ) ) . '">' . esc_html( $course->post_title ) . '</a>';
 }
 
+/**
+ * When a non-member tries to access a member lesson,
+ * redirect to the parent course page. 
+ */
 function pmpro_courses_template_redirect() {
 	global $post, $pmpro_pages;
 
