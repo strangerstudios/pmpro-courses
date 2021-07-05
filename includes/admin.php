@@ -46,7 +46,7 @@ add_action( 'admin_notices', 'pmpro_courses_admin_notice' );
 function pmpro_courses_plugin_action_links( $links ) {
 	if ( current_user_can( 'manage_options' ) ) {
 		$new_links = array(
-			'<a href="' . get_admin_url( null, 'admin.php?page=pmpro-courses-settings' ) . '">' . __( 'Settings', 'pmpro-courses' ) . '</a>',
+			'<a href="' . esc_url( get_admin_url( null, 'admin.php?page=pmpro-courses-settings' ) ) . '">' . __( 'Settings', 'pmpro-courses' ) . '</a>',
 		);
 	}
 	return array_merge( $new_links, $links );
