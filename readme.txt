@@ -4,6 +4,8 @@ Tags: pmpro, membership, elearning, course, learning management system
 Requires at least: 5.4
 Tested up to: 5.8
 Stable tag: 1.0
+License: GPLv3
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Create courses and lessons for members only or integrate your Paid Memberships Pro site with LearnDash and LifterLMS.
 
