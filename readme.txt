@@ -3,7 +3,7 @@ Contributors: strangerstudios, kimannwall, jarryd-long
 Tags: pmpro, membership, elearning, course, learning management system
 Requires at least: 5.4
 Tested up to: 5.8
-Stable tag: 1.0
+Stable tag: 1.0.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -82,6 +82,8 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 1.0.1 - 2021-07-15 =
+* BUG FIX: Now waiting until plugin_loaded before loading modules to make sure other LMS plugins are active.
 
 = 1.0 =
 * Initial release.
