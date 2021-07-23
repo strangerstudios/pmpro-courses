@@ -93,13 +93,15 @@ function pmpro_courses_lesson_course_metabox( $post ) {
 /**
  * Save meta data for lessons from the edit lesson page.
  */
-function pmpro_courses_save_lessons_meta( $post_id ){
-	if( 'pmpro_lesson' === get_post_type() ){
-		wp_update_post(
-			array( 'ID' => $post_id,
-			'post_parent' => intval( $_REQUEST['pmpro_courses_parent'] )
-			)
-		);
+function pmpro_courses_save_lessons_meta( $post_id, $post ) {
+	if( 'pmpro_lesson' === get_post_type() ) {
+		if ( intval( $_REQUEST['pmpro_courses_parent'] ) !== $post->post_parent ) {
+			wp_update_post(
+				array( 'ID' => $post_id,
+				'post_parent' => intval( $_REQUEST['pmpro_courses_parent'] )
+				)
+			);
+		}		
 	}
 }
-add_action( 'save_post', 'pmpro_courses_save_lessons_meta', 10, 1 );
+add_action( 'save_post', 'pmpro_courses_save_lessons_meta', 10, 2 );
