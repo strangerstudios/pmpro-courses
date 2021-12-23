@@ -2,8 +2,9 @@
 Contributors: strangerstudios, kimannwall, jarryd-long
 Tags: pmpro, membership, elearning, course, learning management system
 Requires at least: 5.4
-Tested up to: 5.8
-Stable tag: 1.0.2
+Tested up to: 5.8.2
+Stable tag: 1.0.3
+Requires PHP: 5.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -13,7 +14,7 @@ Create courses and lessons for members only or integrate your Paid Memberships P
 
 = Create courses and lessons for members only or integrate your Paid Memberships Pro site with LearnDash and LifterLMS. =
 
-This plugin offers extended functionality for [membership websites using the Paid Memberships Pro plugin](https://wordpress.org/plugins/paid-memberships-pro/) available for free in the WordPress plugin repository. 
+This plugin offers extended functionality for [membership websites using the Paid Memberships Pro plugin](https://wordpress.org/plugins/paid-memberships-pro/) available for free in the WordPress plugin repository.
 
 Use the default module to organize course content, protect access by membership level, and track lesson completion by user.
 
@@ -82,6 +83,10 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 1.0.3 - 2021-12-23
+* BUG FIX: Fixed issues with saving course module settings.
+* Now requiring PHP 5.6+ to match minimum requirements for Paid Memberships Pro.
+
 = 1.0.2 - 2021-07-23
 * BUG FIX: Fixed issues with saving lessons from the edit post page.
 
