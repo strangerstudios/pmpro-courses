@@ -3,7 +3,7 @@
  * Plugin Name: Paid Memberships Pro - Courses for Membership Add On
  * Plugin URI: https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/
  * Description: Create courses and lessons for members. Integrates LMS plugins with Paid Memberships Pro.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Paid Memberships Pro
  * Author URI: https://www.paidmembershipspro.com
  * Text Domain: pmpro-courses
@@ -40,18 +40,18 @@ function pmpro_courses_admin_init() {
 	if ( $db_version < 1 ) {
 		// Figure out which modules to enable.
 		$modules = array();
-		
+
 		// Turn on LearnDash if it's already active.
 		if( defined( 'LEARNDASH_VERSION' ) ) {
 			$modules[] = 'learndash';
 		}
-		
+
 		// If no other modules are active, install our core Courses and Lessons.
 		if ( empty( $modules ) ) {
 			$modules[] = 'default';
 		}
 		update_option( 'pmpro_courses_modules', $modules );
-		
+
 		// Save DB version.
 		update_option( 'pmpro_courses_db_version', 1 );
 	}
@@ -74,7 +74,7 @@ function pmpro_courses_flush_rewrite_rules() {
 	}
 }
 add_action( 'admin_init', 'pmpro_courses_flush_rewrite_rules', 5 );
- 
+
 /**
  * Tie into GlotPress
  *
@@ -89,7 +89,7 @@ add_action( 'plugins_loaded', 'pmpro_courses_load_textdomain' );
  * Enqueue Admin Scripts and Styles
  */
 function pmpro_courses_admin_styles( $hook ) {
-	
+
 	if ( in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'pmpro_course' == get_post_type() ) {
 
 		wp_enqueue_style( 'pmpro-courses-admin', plugins_url( 'css/admin.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
@@ -126,9 +126,9 @@ function pmpro_courses_frontend_styles(){
 
 	global $post;
 
-	if( 
+	if(
 		is_singular( array( 'pmpro_course', 'pmpro_lesson' ) ) ||
-		( $post && has_shortcode( $post->post_content, 'pmpro_all_courses' ) ) || 
+		( $post && has_shortcode( $post->post_content, 'pmpro_all_courses' ) ) ||
 		( $post && has_shortcode( $post->post_content, 'pmpro_my_courses' ) )
 	){
 		wp_enqueue_script( 'jquery' );
