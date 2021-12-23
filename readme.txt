@@ -3,7 +3,7 @@ Contributors: strangerstudios, kimannwall, jarryd-long
 Tags: pmpro, membership, elearning, course, learning management system
 Requires at least: 5.4
 Tested up to: 5.8.2
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 Requires PHP: 5.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -83,6 +83,9 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 1.0.4 - 2021-12-23
+* SECURITY: Added an additional permissions check before saving settings.
+
 = 1.0.3 - 2021-12-23
 * BUG FIX: Fixed issues with saving course module settings.
 * Now requiring PHP 5.6+ to match minimum requirements for Paid Memberships Pro.
