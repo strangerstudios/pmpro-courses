@@ -28,29 +28,38 @@ function pmpro_courses_settings() {
 }
 
 function pmpro_courses_settings_save() {
-	if ( isset( $_REQUEST['pmpro_courses_save_settings'] ) ) {
-		if ( ! empty( $_REQUEST['pmpro_courses_modules'] ) ) {
-			// Make sure they are valid modules.
-			$all_modules      = pmpro_courses_get_modules();
-			$all_module_slugs = wp_list_pluck( $all_modules, 'slug' );
+	// Check permissions.
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	
+	// Check if form is being submitted.		
+	if ( ! isset( $_REQUEST['pmpro_courses_save_settings'] ) ) {
+		return;
+	}
+	
+	// Save settings.
+	if ( ! empty( $_REQUEST['pmpro_courses_modules'] ) ) {
+		// Make sure they are valid modules.
+		$all_modules      = pmpro_courses_get_modules();
+		$all_module_slugs = wp_list_pluck( $all_modules, 'slug' );
 
-			$active_modules = [];
+		$active_modules = [];
 
-			foreach( $_REQUEST['pmpro_courses_modules'] as $active_module ) {
-				if ( in_array( $active_module, $all_module_slugs, true ) ) {
-					$active_modules[] = $active_module;
-				}
+		foreach( $_REQUEST['pmpro_courses_modules'] as $active_module ) {
+			if ( in_array( $active_module, $all_module_slugs, true ) ) {
+				$active_modules[] = $active_module;
 			}
-
-			// Save the option.
-			update_option( 'pmpro_courses_modules', $active_modules );
-		} else {
-			update_option( 'pmpro_courses_modules', [] );
 		}
 
-		// Flush rewrite rules in case core module was activated/deactivated.
-		set_transient( 'pmpro_courses_flush_rewrite_rules', 1 );
+		// Save the option.
+		update_option( 'pmpro_courses_modules', $active_modules );
+	} else {
+		update_option( 'pmpro_courses_modules', [] );
 	}
+
+	// Flush rewrite rules in case core module was activated/deactivated.
+	set_transient( 'pmpro_courses_flush_rewrite_rules', 1 );	
 }
 add_action( 'admin_init', 'pmpro_courses_settings_save' );
 
