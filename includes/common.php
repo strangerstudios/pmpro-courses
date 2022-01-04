@@ -146,7 +146,7 @@ function pmpro_courses_get_courses_html( $courses ) {
 								$lesson_count = pmpro_courses_get_lesson_count( $course->ID );
 								if ( ! empty( $lesson_count ) ) { ?>
 								<span class="pmpro_courses-course-lesson-count">
-									<?php printf( esc_html( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ), number_format_i18n( $lesson_count ) ) ); ?>
+								<?php printf( esc_html( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ) ), number_format_i18n( $lesson_count ) ); ?>
 								</span>
 							<?php } ?>
 						</a>
