@@ -2,8 +2,8 @@
 Contributors: strangerstudios, kimannwall, jarryd-long
 Tags: pmpro, membership, elearning, course, learning management system
 Requires at least: 5.4
-Tested up to: 5.8.2
-Stable tag: 1.0.4
+Tested up to: 5.9
+Stable tag: 1.0.5
 Requires PHP: 5.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -83,14 +83,21 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
-= 1.0.4 - 2021-12-23
+
+= 1.0.5 - 2022-01-31 =
+* BUG FIX: Fixed an issue where lesson count wasn't showing inside both shortcodes. (printf too few arguments).
+* ENHANCEMENT: Improved padding for table header cells to match .widefat td in the lessons metabox.
+* ENHANCEMENT: Added the WP POT/PO/MO Generator action for localizing.
+* ENHANCEMENT: Tested up to WordPress 5.9.
+
+= 1.0.4 - 2021-12-23 =
 * SECURITY: Added an additional permissions check before saving settings.
 
-= 1.0.3 - 2021-12-23
+= 1.0.3 - 2021-12-23 =
 * BUG FIX: Fixed issues with saving course module settings.
 * Now requiring PHP 5.6+ to match minimum requirements for Paid Memberships Pro.
 
-= 1.0.2 - 2021-07-23
+= 1.0.2 - 2021-07-23 =
 * BUG FIX: Fixed issues with saving lessons from the edit post page.
 
 = 1.0.1 - 2021-07-15 =
