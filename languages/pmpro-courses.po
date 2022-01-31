@@ -1,0 +1,443 @@
+# Copyright (C) 2022 Paid Memberships Pro
+# This file is distributed under the same license as the Paid Memberships Pro - Courses for Membership Add On plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 1.0.5\n"
+"Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
+"Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
+"Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2022-01-31T11:07:44+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.6.0\n"
+"X-Domain: pmpro-courses\n"
+
+#. Plugin Name of the plugin
+msgid "Paid Memberships Pro - Courses for Membership Add On"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Create courses and lessons for members. Integrates LMS plugins with Paid Memberships Pro."
+msgstr ""
+
+#. Author of the plugin
+msgid "Paid Memberships Pro"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.paidmembershipspro.com"
+msgstr ""
+
+#: includes/admin.php:27
+msgid "Thank you for activating."
+msgstr ""
+
+#: includes/admin.php:29
+msgid "Click here to add your first course."
+msgstr ""
+
+#: includes/admin.php:49
+#: includes/settings.php:20
+msgid "Settings"
+msgstr ""
+
+#: includes/admin.php:65
+msgid "Docs"
+msgstr ""
+
+#: includes/admin.php:66
+msgid "Support"
+msgstr ""
+
+#: includes/adminpages/settings.php:5
+msgid "Courses for Membership Settings"
+msgstr ""
+
+#: includes/adminpages/settings.php:7
+msgid "Which modules would you like to enable?"
+msgstr ""
+
+#: includes/adminpages/settings.php:9
+msgid "Modules"
+msgstr ""
+
+#: includes/adminpages/settings.php:45
+msgid "Save Settings"
+msgstr ""
+
+#: includes/common.php:9
+msgid "Default"
+msgstr ""
+
+#: includes/common.php:11
+msgid "The Course and Lesson post types bundled with PMPro Courses."
+msgstr ""
+
+#: includes/common.php:12
+msgid "Read the Default Course and Lesson documentation &raquo;"
+msgstr ""
+
+#: includes/common.php:136
+#: includes/post-types/courses.php:11
+#: includes/settings.php:12
+msgid "Courses"
+msgstr ""
+
+#: includes/common.php:149
+#: includes/courses.php:124
+msgid "%s Lesson"
+msgid_plural "%s Lessons"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/common.php:217
+#: includes/post-types/courses.php:86
+#: includes/post-types/lessons.php:12
+msgid "Lessons"
+msgstr ""
+
+#: includes/courses.php:108
+msgid "Lesson Count"
+msgstr ""
+
+#: includes/courses.php:110
+msgid "Level"
+msgstr ""
+
+#. translators: %s: link to the course for this lesson.
+#: includes/lessons.php:23
+msgid "Course: %s"
+msgstr ""
+
+#: includes/lessons.php:38
+#: includes/post-types/courses.php:12
+#: includes/post-types/courses.php:43
+#: includes/post-types/lessons.php:71
+#: includes/post-types/lessons.php:80
+msgid "Course"
+msgstr ""
+
+#: includes/lessons.php:48
+msgid "&#8212;"
+msgstr ""
+
+#: includes/modules/default.php:30
+msgid "Unserializing instances of this class is forbidden."
+msgstr ""
+
+#: includes/modules/learndash.php:37
+msgid "LearnDash"
+msgstr ""
+
+#: includes/modules/learndash.php:39
+msgid "Integrate with the LearnDash plugin for WordPress."
+msgstr ""
+
+#: includes/modules/learndash.php:40
+msgid "Read the LearnDash Integration documentation &raquo;"
+msgstr ""
+
+#: includes/modules/learndash.php:51
+#: includes/modules/lifterlms.php:49
+#: includes/post-types/courses.php:84
+msgid "Require Membership"
+msgstr ""
+
+#: includes/modules/lifterlms.php:35
+msgid "LifterLMS"
+msgstr ""
+
+#: includes/modules/lifterlms.php:37
+msgid "Integrate with the LifterLMS plugin for WordPress."
+msgstr ""
+
+#: includes/modules/lifterlms.php:38
+msgid "Read the LifterLMS Integration documentation &raquo;"
+msgstr ""
+
+#: includes/post-types/courses.php:9
+msgctxt "Post Type General Name"
+msgid "Courses"
+msgstr ""
+
+#: includes/post-types/courses.php:10
+msgctxt "Post Type Singular Name"
+msgid "Course"
+msgstr ""
+
+#: includes/post-types/courses.php:13
+msgid "Course Archives"
+msgstr ""
+
+#: includes/post-types/courses.php:14
+msgid "Course Attributes"
+msgstr ""
+
+#: includes/post-types/courses.php:15
+msgid "All Courses"
+msgstr ""
+
+#: includes/post-types/courses.php:16
+#: includes/post-types/courses.php:17
+msgid "Add New Course"
+msgstr ""
+
+#: includes/post-types/courses.php:18
+msgid "New Course"
+msgstr ""
+
+#: includes/post-types/courses.php:19
+msgid "Edit Course"
+msgstr ""
+
+#: includes/post-types/courses.php:20
+msgid "Update Course"
+msgstr ""
+
+#: includes/post-types/courses.php:21
+msgid "View Course"
+msgstr ""
+
+#: includes/post-types/courses.php:22
+msgid "View Courses"
+msgstr ""
+
+#: includes/post-types/courses.php:23
+msgid "Search Courses"
+msgstr ""
+
+#: includes/post-types/courses.php:24
+msgid "Course not found"
+msgstr ""
+
+#: includes/post-types/courses.php:25
+msgid "Course not found in Trash"
+msgstr ""
+
+#: includes/post-types/courses.php:26
+#: includes/post-types/lessons.php:27
+msgid "Featured Image"
+msgstr ""
+
+#: includes/post-types/courses.php:27
+msgid "Set course featured image"
+msgstr ""
+
+#: includes/post-types/courses.php:28
+#: includes/post-types/lessons.php:29
+msgid "Remove featured image"
+msgstr ""
+
+#: includes/post-types/courses.php:29
+msgid "Use as course featured image"
+msgstr ""
+
+#: includes/post-types/courses.php:30
+msgid "Insert into course"
+msgstr ""
+
+#: includes/post-types/courses.php:31
+msgid "Uploaded to this course"
+msgstr ""
+
+#: includes/post-types/courses.php:32
+msgid "PMPro Courses list"
+msgstr ""
+
+#: includes/post-types/courses.php:33
+msgid "Courses list navigation"
+msgstr ""
+
+#: includes/post-types/courses.php:34
+msgid "Filter Courses list"
+msgstr ""
+
+#: includes/post-types/courses.php:44
+msgid "Courses and lessons for members."
+msgstr ""
+
+#: includes/post-types/courses.php:104
+#: includes/post-types/courses.php:136
+msgid "Order"
+msgstr ""
+
+#: includes/post-types/courses.php:105
+msgid "Title"
+msgstr ""
+
+#: includes/post-types/courses.php:106
+msgid "Actions"
+msgstr ""
+
+#: includes/post-types/courses.php:115
+msgid "Add Lessons"
+msgstr ""
+
+#: includes/post-types/courses.php:120
+#: includes/post-types/lessons.php:13
+#: includes/post-types/lessons.php:44
+msgid "Lesson"
+msgstr ""
+
+#: includes/post-types/courses.php:140
+msgid "Add to Course"
+msgstr ""
+
+#: includes/post-types/courses.php:161
+msgid "Edit"
+msgstr ""
+
+#: includes/post-types/courses.php:163
+msgid "edit"
+msgstr ""
+
+#: includes/post-types/courses.php:165
+msgid "remove"
+msgstr ""
+
+#: includes/post-types/lessons.php:10
+msgctxt "Post Type General Name"
+msgid "Lessons"
+msgstr ""
+
+#: includes/post-types/lessons.php:11
+msgctxt "Post Type Singular Name"
+msgid "Lesson"
+msgstr ""
+
+#: includes/post-types/lessons.php:14
+msgid "Lesson Archives"
+msgstr ""
+
+#: includes/post-types/lessons.php:15
+msgid "Lesson Attributes"
+msgstr ""
+
+#: includes/post-types/lessons.php:16
+msgid "All Lessons"
+msgstr ""
+
+#: includes/post-types/lessons.php:17
+#: includes/post-types/lessons.php:18
+#: includes/settings.php:16
+msgid "Add New Lesson"
+msgstr ""
+
+#: includes/post-types/lessons.php:19
+msgid "New Lesson"
+msgstr ""
+
+#: includes/post-types/lessons.php:20
+msgid "Edit Lesson"
+msgstr ""
+
+#: includes/post-types/lessons.php:21
+msgid "Update Lesson"
+msgstr ""
+
+#: includes/post-types/lessons.php:22
+msgid "View Lesson"
+msgstr ""
+
+#: includes/post-types/lessons.php:23
+msgid "View Lessons"
+msgstr ""
+
+#: includes/post-types/lessons.php:24
+msgid "Search Lesson"
+msgstr ""
+
+#: includes/post-types/lessons.php:25
+msgid "Lesson not found"
+msgstr ""
+
+#: includes/post-types/lessons.php:26
+msgid "Lesson not found in Trash"
+msgstr ""
+
+#: includes/post-types/lessons.php:28
+msgid "Set lesson featured image"
+msgstr ""
+
+#: includes/post-types/lessons.php:30
+msgid "Use as lesson featured image"
+msgstr ""
+
+#: includes/post-types/lessons.php:31
+msgid "Insert into lesson"
+msgstr ""
+
+#: includes/post-types/lessons.php:32
+msgid "Uploaded to this lesson"
+msgstr ""
+
+#: includes/post-types/lessons.php:33
+msgid "PMPro Lessons list"
+msgstr ""
+
+#: includes/post-types/lessons.php:34
+msgid "Lessons list navigation"
+msgstr ""
+
+#: includes/post-types/lessons.php:35
+msgid "Filter Lessons list"
+msgstr ""
+
+#: includes/post-types/lessons.php:45
+msgid "Lessons for Paid Memberships Pro Courses"
+msgstr ""
+
+#: includes/post-types/lessons.php:85
+msgid "None"
+msgstr ""
+
+#: includes/progress.php:121
+msgid "Completed"
+msgstr ""
+
+#: includes/progress.php:123
+msgid "Mark Complete"
+msgstr ""
+
+#: includes/settings.php:12
+#: includes/settings.php:20
+msgid "Paid Memberships Pro Courses - Settings"
+msgstr ""
+
+#: includes/settings.php:16
+msgid "Paid Memberships Pro Courses - Add New Lesson"
+msgstr ""
+
+#: includes/settings.php:68
+msgid "Settings saved successfully."
+msgstr ""
+
+#: pmpro-courses.php:108
+msgid "Save"
+msgstr ""
+
+#: pmpro-courses.php:109
+msgid "Saving..."
+msgstr ""
+
+#: pmpro-courses.php:110
+msgid "Error saving lesson [1]"
+msgstr ""
+
+#: pmpro-courses.php:111
+msgid "Error saving lesson [2]"
+msgstr ""
+
+#: pmpro-courses.php:112
+msgid "Error removing lesson [1]"
+msgstr ""
+
+#: pmpro-courses.php:113
+msgid "Error removing lesson [2]"
+msgstr ""
