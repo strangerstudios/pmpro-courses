@@ -84,7 +84,7 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 
 == Changelog ==
 
-= 1.0.5 - 2022-01-30 =
+= 1.0.5 - 2022-01-31 =
 * BUG FIX: Fixed an issue where lesson count wasn't showing inside both shortcodes. (printf too few arguments).
 * ENHANCEMENT: Improved padding for table header cells to match .widefat td in the lessons metabox.
 * ENHANCEMENT: Added the WP POT/PO/MO Generator action for localizing.
