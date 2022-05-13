@@ -2,53 +2,55 @@
 class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 
 	public $slug = 'tutorlms';
-	
+
 	/**
 	 * Initial setup for the TutorLMS module.
+	 *
 	 * @since 1.0
 	 */
-	public function init() {		
+	public function init() {
 		add_filter( 'pmpro_courses_modules', array( 'PMPro_Courses_TutorLMS', 'add_module' ), 10, 1 );
 	}
-	
-	/**
-     * Initial setup for the TutorLMS module when active.
-     * @since 1.0
-     */
-    public function init_active() {
 
-        add_action('admin_menu', array( 'PMPro_Courses_TutorLMS', 'admin_menu' ), 20);
-        
+	/**
+	 * Initial setup for the TutorLMS module when active.
+	 *
+	 * @since 1.0
+	 */
+	public function init_active() {
+
+		add_action( 'admin_menu', array( 'PMPro_Courses_TutorLMS', 'admin_menu' ), 20 );
+
 		// If TutorLMS is not active, we're done here.
 		if ( ! function_exists( 'tutor_utils' ) ) {
 			return;
 		}
-		
+
 		add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_TutorLMS', 'pmpro_membership_content_filter' ), 10, 2 );
 		add_action( 'template_redirect', array( 'PMPro_Courses_TutorLMS', 'template_redirect' ) );
-    }
-	
+	}
+
 	/**
 	 * Add TutorLMS to the modules list.
 	 */
-	public static function add_module( $modules ){
+	public static function add_module( $modules ) {
 
 		$modules[] = array(
-			'name' => esc_html__('TutorLMS', 'pmpro-courses'),
-			'slug' => 'tutorlms',
-			'title' => esc_html__( 'Integrate with the TutorLMS plugin for WordPress.', 'pmpro-courses' ),
+			'name'        => esc_html__( 'TutorLMS', 'pmpro-courses' ),
+			'slug'        => 'tutorlms',
+			'title'       => esc_html__( 'Integrate with the TutorLMS plugin for WordPress.', 'pmpro-courses' ),
 			'description' => '<a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-TutorLMS#tutorlms-module" target="_blank">' . esc_html__( 'Read the TutorLMS Integration documentation &raquo;', 'pmpro-courses' ) . '</a>',
 		);
-		
+
 		return $modules;
 	}
-	
+
 	/**
 	 * Add Require Membership box to TutorLMS courses.
 	 */
 	public static function admin_menu() {
-		if( function_exists( 'pmpro_page_meta' ) ){
-			add_meta_box( 'pmpro_page_meta', esc_html__( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'courses', 'side');
+		if ( function_exists( 'pmpro_page_meta' ) ) {
+			add_meta_box( 'pmpro_page_meta', esc_html__( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'courses', 'side' );
 		}
 	}
 
@@ -56,19 +58,19 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	 * If a course requires membership, redirect its lessons
 	 * to the main course page.
 	 */
-	public static function template_redirect() {		
+	public static function template_redirect() {
 		global $post, $pmpro_pages;
 
 		// Only check if a LearnDash CPT.
-		if( ! empty( $post ) && is_singular( array( 'courses', 'topics', 'lesson', 'tutor_quiz' ) ) ) {		
+		if ( ! empty( $post ) && is_singular( array( 'courses', 'topics', 'lesson', 'tutor_quiz' ) ) ) {
 			// Check access for this course or lesson.
-			$access = PMPro_Courses_TutorLMS::has_access_to_post( $post->ID );
+			$access = self::has_access_to_post( $post->ID );
 
 			// They have access. Let em in.
 			if ( $access ) {
 				return;
 			}
-			
+
 			// Make sure we don't redirect away from the levels page if they have odd settings.
 			if ( intval( $pmpro_pages['levels'] ) == $post->ID ) {
 				return;
@@ -76,8 +78,8 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 			// No access.
 			if ( $post->post_type == 'courses' ) {
 				// Don't redirect courses unless a url is passed in filter.
-				$redirect_to = apply_filters( 'pmpro_courses_course_redirect_to', null );				
-			} else {				
+				$redirect_to = apply_filters( 'pmpro_courses_course_redirect_to', null );
+			} else {
 				// Send lessons and other content to the parent course.
 				$course_id = intval( tutor_utils()->get_course_id_by( 'lesson', $post->ID ) );
 				if ( ! empty( $course_id ) ) {
@@ -87,11 +89,11 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 				}
 				$redirect_to = apply_filters( 'pmpro_courses_lesson_redirect_to', $redirect_to );
 			}
-			
+
 			if ( $redirect_to ) {
 				wp_redirect( $redirect_to );
 				exit;
-			}	
+			}
 		}
 	}
 
@@ -109,7 +111,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 		global $post;
 
 		// Use loop/global post if no $post_id was passed in.
-		if( ! $post_id ){
+		if ( ! $post_id ) {
 			$post_id = get_the_ID();
 		}
 
@@ -117,17 +119,17 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 		if ( ! $post_id ) {
 			$post_id = get_queried_object_id();
 		}
-		
+
 		// No post, return true.
-		if( ! $post_id ) {
+		if ( ! $post_id ) {
 			return true;
 		}
-		
-		$tutor_non_course_cpts = array( 'lesson', 'topic', 'tutor_quiz' );				
+
+		$tutor_non_course_cpts = array( 'lesson', 'topic', 'tutor_quiz' );
 		// Check if this is a course or other non-LD CPT.
 		if ( ! in_array( get_post_type( $post_id ), $tutor_non_course_cpts ) ) {
 			// Let PMPro handle these CPTs.
-			return PMPro_Courses_TutorLMS::pmpro_has_membership_access( $post_id, $user_id );
+			return self::pmpro_has_membership_access( $post_id, $user_id );
 		} else {
 			// Let admins in.
 			if ( current_user_can( 'manage_options' ) ) {
@@ -141,17 +143,17 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 
 			if ( ! empty( $course_id ) && $public_course == 'no' ) {
 				// Access same as course.
-				return PMPro_Courses_TutorLMS::pmpro_has_membership_access( $course_id, $user_id );
+				return self::pmpro_has_membership_access( $course_id, $user_id );
 			} elseif ( ! empty( $course_id ) ) {
 				// Let TUT handle it through enrollment.
 				return true;
 			} else {
 				// A LearnDash CPT with no course. Let PMPro handle it.
-				return PMPro_Courses_TutorLMS::pmpro_has_membership_access( $post_id, $user_id ); 
+				return self::pmpro_has_membership_access( $post_id, $user_id );
 			}
 		}
 	}
-	
+
 	/**
 	 * Run pmpro_has_membership_access without our hooks active.
 	 */
@@ -168,40 +170,40 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	 */
 	public static function pmpro_has_membership_access_filter( $hasaccess, $mypost, $myuser, $post_membership_levels ) {
 		// Don't need to check if already restricted.
-		if ( !  $hasaccess ) {
+		if ( ! $hasaccess ) {
 			return $hasaccess;
 		}
-				
-		return PMPro_Courses_TutorLMS::has_access_to_post( $mypost->ID, $myuser->ID );
+
+		return self::has_access_to_post( $mypost->ID, $myuser->ID );
 	}
-	
+
 	/**
 	 * Override PMPro's the_content filter.
 	 * We want to show course content even if it requires membership.
 	 * Still showing the non-member text at the bottom.
 	 */
-	public static function pmpro_membership_content_filter( $filtered_content, $original_content ) {	
-		
+	public static function pmpro_membership_content_filter( $filtered_content, $original_content ) {
+
 		if ( is_singular( 'courses' ) ) {
 			// Show non-member text if needed.
 			ob_start();
 			// Get hasaccess ourselves so we get level ids and names.
-			$hasaccess = pmpro_has_membership_access(NULL, NULL, true);
-			if( is_array( $hasaccess ) ) {
-				//returned an array to give us the membership level values
-				$post_membership_levels_ids = $hasaccess[1];
+			$hasaccess = pmpro_has_membership_access( null, null, true );
+			if ( is_array( $hasaccess ) ) {
+				// returned an array to give us the membership level values
+				$post_membership_levels_ids   = $hasaccess[1];
 				$post_membership_levels_names = $hasaccess[2];
-				$hasaccess = $hasaccess[0];
+				$hasaccess                    = $hasaccess[0];
 				if ( ! $hasaccess ) {
 					echo pmpro_get_no_access_message( '', $post_membership_levels_ids, $post_membership_levels_names );
 				}
 			}
-			
+
 			$after_the_content = ob_get_contents();
-			ob_end_clean();			
-			return $original_content . $after_the_content;		
+			ob_end_clean();
+			return $original_content . $after_the_content;
 		} else {
-			return $filtered_content;	// Probably false.
+			return $filtered_content;   // Probably false.
 		}
 	}
 
@@ -210,31 +212,31 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	 */
 	public static function get_courses_for_levels( $level_ids ) {
 		global $wpdb;
-		
+
 		// In case a level object was passed in.
 		if ( is_object( $level_ids ) ) {
 			$level_ids = $level_ids->ID;
 		}
-		
+
 		// Make sure we have an array of ids.
 		if ( ! is_array( $level_ids ) ) {
 			$level_ids = array( $level_ids );
 		}
-		
+
 		if ( empty( $level_ids ) ) {
 			return array();
 		}
-		
-		$sqlQuery = "SELECT mp.page_id 
+
+		$sqlQuery   = "SELECT mp.page_id 
 					 FROM $wpdb->pmpro_memberships_pages mp
 					 	LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID
-					 WHERE mp.membership_id IN(" . implode(',', $level_ids ) . ")
+					 WHERE mp.membership_id IN(" . implode( ',', $level_ids ) . ")
 					 	AND p.post_type = 'courses' 
 						AND p.post_status = 'publish'
 					 GROUP BY mp.page_id";
 		$course_ids = $wpdb->get_col( $sqlQuery );
-		
+
 		return $course_ids;
 	}
-		
+
 }
