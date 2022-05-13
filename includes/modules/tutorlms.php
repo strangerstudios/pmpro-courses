@@ -26,7 +26,6 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 		
 		add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_TutorLMS', 'pmpro_membership_content_filter' ), 10, 2 );
 		add_action( 'template_redirect', array( 'PMPro_Courses_TutorLMS', 'template_redirect' ) );
-        add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_TutorLMS', 'pmpro_after_all_membership_level_changes' ) );
     }
 	
 	/**
@@ -132,7 +131,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 		} else {
 			// Let admins in.
 			if ( current_user_can( 'manage_options' ) ) {
-				// return true; ///Change back
+				return true;
 			}
 
 			$course_id = intval( tutor_utils()->get_course_id_by( 'lesson', $post_id ) );
@@ -237,42 +236,5 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 		
 		return $course_ids;
 	}
-	
-	/**
-	 * When users change levels, enroll/unenroll them from
-	 * any associated private courses.
-	 */
-	public static function pmpro_after_all_membership_level_changes( $pmpro_old_user_levels ) {		
-		foreach ( $pmpro_old_user_levels as $user_id => $old_levels ) {
-			// Get current courses.
-			$current_levels = pmpro_getMembershipLevelsForUser( $user_id );
-			if ( ! empty( $current_levels ) ) {
-				$current_levels = wp_list_pluck( $current_levels, 'ID' );
-			} else {
-				$current_levels = array();
-			}
-			$current_courses = PMPro_Courses_TutorLMS::get_courses_for_levels( $current_levels );
-			
-			// Get old courses.
-			$old_levels = wp_list_pluck( $old_levels, 'ID' );
-			$old_courses = PMPro_Courses_TutorLMS::get_courses_for_levels( $old_levels );
-			
-			// Unenroll the user in any courses they used to have, but lost.
-			$courses_to_unenroll = array_diff( $old_courses, $current_courses );
-			foreach( $courses_to_unenroll as $course_id ) {
-				if ( llms_is_user_enrolled( $user_id, $course_id ) ) {
-					// Unenroll student
-					llms_unenroll_student( $user_id, $course_id );					
-				}
-			}
-			
-			// Enroll the user in any courses for their current levels.
-			$courses_to_enroll = array_diff( $current_courses, $old_courses );
-			foreach( $courses_to_enroll as $course_id ) {
-				if ( ! llms_is_user_enrolled( $user_id, $course_id ) ) {
-					llms_enroll_student( $user_id, $course_id );
-				}
-			}
-		}
-	}
+		
 }
