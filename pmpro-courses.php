@@ -30,7 +30,7 @@ function pmpro_courses_setup_modules() {
 	require_once PMPRO_COURSES_DIR . '/includes/modules/lifterlms.php';
 	$lifterlms_module = new PMPro_Courses_LifterLMS();
 	require_once PMPRO_COURSES_DIR . '/includes/modules/tutorlms.php';
-	$lifterlms_module = new PMPro_Courses_TutorLMS();
+	$tutorlms_module = new PMPro_Courses_TutorLMS();
 }
 add_action( 'plugins_loaded', 'pmpro_courses_setup_modules' );
 

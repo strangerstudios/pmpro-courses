@@ -61,7 +61,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	public static function template_redirect() {
 		global $post, $pmpro_pages;
 
-		// Only check if a LearnDash CPT.
+		// Only check if a TutorLMS CPT.
 		if ( ! empty( $post ) && is_singular( array( 'courses', 'topics', 'lesson', 'tutor_quiz' ) ) ) {
 			// Check access for this course or lesson.
 			$access = self::has_access_to_post( $post->ID );
@@ -98,13 +98,13 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	}
 
 	/**
-	 * Check if a user has access to a LD course, lesson, etc.
+	 * Check if a user has access to a TutorLMS course, lesson, etc.
 	 * For courses, the default PMPro check works.
-	 * For other LD CPTs, we first find the course_id.
+	 * For other TutorLMS CPTs, we first find the course_id.
 	 * For public courses, access to lessons/etc is
 	 * the same as access for the associated course.
 	 * For private courses (with assignedments),
-	 * access is true to let LD handle it.
+	 * access is true to let TutorLMS handle it.
 	 */
 	public static function has_access_to_post( $post_id = null, $user_id = null ) {
 
@@ -126,7 +126,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 		}
 
 		$tutor_non_course_cpts = array( 'lesson', 'topic', 'tutor_quiz' );
-		// Check if this is a course or other non-LD CPT.
+		// Check if this is a course or other non-TutorLMS CPT.
 		if ( ! in_array( get_post_type( $post_id ), $tutor_non_course_cpts ) ) {
 			// Let PMPro handle these CPTs.
 			return self::pmpro_has_membership_access( $post_id, $user_id );
@@ -148,7 +148,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 				// Let TUT handle it through enrollment.
 				return true;
 			} else {
-				// A LearnDash CPT with no course. Let PMPro handle it.
+				// A TutorLMS CPT with no course. Let PMPro handle it.
 				return self::pmpro_has_membership_access( $post_id, $user_id );
 			}
 		}
@@ -166,7 +166,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 
 	/**
 	 * Filter PMPro access so check on lessons and
-	 * other LD post types checks the associated course.
+	 * other TutorLMS post types checks the associated course.
 	 */
 	public static function pmpro_has_membership_access_filter( $hasaccess, $mypost, $myuser, $post_membership_levels ) {
 		// Don't need to check if already restricted.
@@ -205,38 +205,6 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 		} else {
 			return $filtered_content;   // Probably false.
 		}
-	}
-
-	/**
-	 * Get courses associated with a level.
-	 */
-	public static function get_courses_for_levels( $level_ids ) {
-		global $wpdb;
-
-		// In case a level object was passed in.
-		if ( is_object( $level_ids ) ) {
-			$level_ids = $level_ids->ID;
-		}
-
-		// Make sure we have an array of ids.
-		if ( ! is_array( $level_ids ) ) {
-			$level_ids = array( $level_ids );
-		}
-
-		if ( empty( $level_ids ) ) {
-			return array();
-		}
-
-		$sqlQuery   = "SELECT mp.page_id 
-					 FROM $wpdb->pmpro_memberships_pages mp
-					 	LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID
-					 WHERE mp.membership_id IN(" . implode( ',', $level_ids ) . ")
-					 	AND p.post_type = 'courses' 
-						AND p.post_status = 'publish'
-					 GROUP BY mp.page_id";
-		$course_ids = $wpdb->get_col( $sqlQuery );
-
-		return $course_ids;
-	}
+	}	
 
 }
