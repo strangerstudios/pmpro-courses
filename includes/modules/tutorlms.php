@@ -28,6 +28,8 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 
 		add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_TutorLMS', 'pmpro_membership_content_filter' ), 10, 2 );
 		add_action( 'template_redirect', array( 'PMPro_Courses_TutorLMS', 'template_redirect' ) );
+
+		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_TutorLMS', 'pmpro_after_all_membership_level_changes' ) );		
 	}
 
 	/**
@@ -204,6 +206,77 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 			return $original_content . $after_the_content;
 		} else {
 			return $filtered_content;   // Probably false.
+		}
+	}
+
+	/**
+	 * Get courses associated with a level.
+	 */
+	public static function get_courses_for_levels( $level_ids ) {
+		global $wpdb;
+		
+		// In case a level object was passed in.
+		if ( is_object( $level_ids ) ) {
+			$level_ids = $level_ids->ID;
+		}
+		
+		// Make sure we have an array of ids.
+		if ( ! is_array( $level_ids ) ) {
+			$level_ids = array( $level_ids );
+		}
+		
+		if ( empty( $level_ids ) ) {
+			return array();
+		}
+		
+		$sqlQuery = "SELECT mp.page_id 
+					 FROM $wpdb->pmpro_memberships_pages mp
+					 	LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID
+					 WHERE mp.membership_id IN(" . implode(',', $level_ids ) . ")
+					 	AND p.post_type = 'courses' 
+						AND p.post_status = 'publish'
+					 GROUP BY mp.page_id";
+		$course_ids = $wpdb->get_col( $sqlQuery );
+		
+		return $course_ids;
+	}
+
+	/**
+	 * When users change levels, enroll/unenroll them from
+	 * any associated private courses.
+	 */
+	public static function pmpro_after_all_membership_level_changes( $pmpro_old_user_levels ) {
+		foreach ( $pmpro_old_user_levels as $user_id => $old_levels ) {
+			// Get current courses.
+			$current_levels = pmpro_getMembershipLevelsForUser( $user_id );
+			if ( ! empty( $current_levels ) ) {
+				$current_levels = wp_list_pluck( $current_levels, 'ID' );
+			} else {
+				$current_levels = array();
+			}
+			$current_courses = PMPro_Courses_TutorLMS::get_courses_for_levels( $current_levels );
+			
+			// Get old courses.
+			$old_levels = wp_list_pluck( $old_levels, 'ID' );
+			$old_courses = PMPro_Courses_TutorLMS::get_courses_for_levels( $old_levels );
+			
+			// Unenroll the user in any courses they used to have, but lost.
+			$courses_to_unenroll = array_diff( $old_courses, $current_courses );
+			foreach( $courses_to_unenroll as $course_id ) {
+				if ( tutor_utils()->is_enrolled( $course_id, $user_id ) ) {
+					// True param here at the end tells it to remove.
+					tutor_utils()->cancel_course_enrol( $course_id, $user_id );
+				}
+			}
+
+			// Enroll the user in any courses for their current levels.
+			$courses_to_enroll = array_diff( $current_courses, $old_courses );
+			foreach( $courses_to_enroll as $course_id ) {
+				if ( ! tutor_utils()->is_enrolled( $course_id, $user_id ) ) {
+					tutor_utils()->do_enroll( $user_id, 0, $course_id );
+				}
+			}
+			
 		}
 	}	
 
