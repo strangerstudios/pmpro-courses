@@ -110,8 +110,6 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	 */
 	public static function has_access_to_post( $post_id = null, $user_id = null ) {
 
-		global $post;
-
 		// Use loop/global post if no $post_id was passed in.
 		if ( ! $post_id ) {
 			$post_id = get_the_ID();
