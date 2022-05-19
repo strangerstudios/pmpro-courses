@@ -246,8 +246,6 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 		);		
 		
 		return $course_ids;
-		
-		return $course_ids;
 	}
 
 	/**
