@@ -68,7 +68,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 			// Check access for this course or lesson.
 			$access = self::has_access_to_post( $post->ID );
 
-			// They have access. Let em in.
+			// They have access. Let them in.
 			if ( $access ) {
 				return;
 			}
@@ -147,7 +147,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 				// Access same as course.
 				return self::pmpro_has_membership_access( $course_id, $user_id );
 			} elseif ( ! empty( $course_id ) ) {
-				// Let TUT handle it through enrollment.
+				// Let TutorLMS handle it through enrollment.
 				return true;
 			} else {
 				// A TutorLMS CPT with no course. Let PMPro handle it.
@@ -229,14 +229,20 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 			return array();
 		}
 		
-		$sqlQuery = "SELECT mp.page_id 
-					 FROM $wpdb->pmpro_memberships_pages mp
-					 	LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID
-					 WHERE mp.membership_id IN(" . implode(',', $level_ids ) . ")
-					 	AND p.post_type = 'courses' 
-						AND p.post_status = 'publish'
-					 GROUP BY mp.page_id";
-		$course_ids = $wpdb->get_col( $sqlQuery );
+		$course_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"
+					SELECT mp.page_id 
+					FROM $wpdb->pmpro_memberships_pages mp 
+					LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID 
+					WHERE mp.membership_id IN(%s) 
+					AND p.post_type = 'courses' 
+					AND p.post_status = 'publish' 
+					GROUP BY mp.page_id
+				",
+				implode(',', $level_ids )
+			)
+		);		
 		
 		return $course_ids;
 	}
