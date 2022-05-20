@@ -129,9 +129,9 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 			return true;
 		}
 
-		$tutor_non_course_cpts = array( 'lesson', 'question' );
+		$sensei_non_course_cpts = array( 'lesson', 'question' );
 		// Check if this is a course or other non-SenseiLMS CPT.
-		if ( ! in_array( get_post_type( $post_id ), $tutor_non_course_cpts ) ) {
+		if ( ! in_array( get_post_type( $post_id ), $sensei_non_course_cpts ) ) {
 			// Let PMPro handle these CPTs.
 			return self::pmpro_has_membership_access( $post_id, $user_id );
 		} else {
