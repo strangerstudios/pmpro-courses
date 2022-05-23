@@ -38,10 +38,10 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	public static function add_module( $modules ) {
 
 		$modules[] = array(
-			'name'        => esc_html__( 'TutorLMS', 'pmpro-courses' ),
+			'name'        => esc_html__( 'Tutor LMS', 'pmpro-courses' ),
 			'slug'        => 'tutorlms',
-			'title'       => esc_html__( 'Integrate with the TutorLMS plugin for WordPress.', 'pmpro-courses' ),
-			'description' => '<a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-TutorLMS#tutorlms-module" target="_blank">' . esc_html__( 'Read the TutorLMS Integration documentation &raquo;', 'pmpro-courses' ) . '</a>',
+			'title'       => esc_html__( 'Integrate with the Tutor LMS plugin for WordPress.', 'pmpro-courses' ),
+			'description' => '<a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-TutorLMS#tutorlms-module" target="_blank">' . esc_html__( 'Read the Tutor LMS Integration documentation &raquo;', 'pmpro-courses' ) . '</a>',
 		);
 
 		return $modules;
