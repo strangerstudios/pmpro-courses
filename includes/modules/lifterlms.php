@@ -101,14 +101,20 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
 			return array();
 		}
 		
-		$sqlQuery = "SELECT mp.page_id 
-					 FROM $wpdb->pmpro_memberships_pages mp
-					 	LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID
-					 WHERE mp.membership_id IN(" . implode(',', $level_ids ) . ")
-					 	AND p.post_type = 'course' 
-						AND p.post_status = 'publish'
-					 GROUP BY mp.page_id";
-		$course_ids = $wpdb->get_col( $sqlQuery );
+		$course_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"
+					SELECT mp.page_id 
+					FROM $wpdb->pmpro_memberships_pages mp 
+					LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID 
+					WHERE mp.membership_id IN(%s) 
+					AND p.post_type = 'course' 
+					AND p.post_status = 'publish' 
+					GROUP BY mp.page_id
+				",
+				implode(',', $level_ids )
+			)
+		);
 		
 		return $course_ids;
 	}
