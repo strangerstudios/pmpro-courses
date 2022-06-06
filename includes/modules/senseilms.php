@@ -27,7 +27,6 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 		}
 
 		add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_SenseiLMS', 'pmpro_membership_content_filter' ), 1, 2 );
-		add_filter( 'render_block', array( 'PMPro_Courses_SenseiLMS', 'pmpro_membership_content_block_filter' ), 10, 2 );
 		add_action( 'template_redirect', array( 'PMPro_Courses_SenseiLMS', 'template_redirect' ) );
 
 		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_SenseiLMS', 'pmpro_after_all_membership_level_changes' ) );		
@@ -217,32 +216,6 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 		} else {
 			return $filtered_content;   // Probably false.
 		}
-	}
-
-	/**
-	 * Hook into the block being rendered.
-	 */
-	public static function pmpro_membership_content_block_filter( $block_content, $block ) {
-
-		if ( is_singular( 'course' ) ) {
-
-			if( $block['blockName'] == 'sensei-lms/button-take-course' ) {
-
-				global $post, $current_user;
-
-				$hasaccess = self::has_access_to_post( $post->ID, $current_user->ID );
-
-				if ( $hasaccess ) {
-					//You don't have access so show the button
-					return $block_content;
-				}
-
-			}
-
-		}
-
-		return $block_content;
-
 	}
 
 	/**
