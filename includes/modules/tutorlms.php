@@ -65,6 +65,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 
 		// Only check if a TutorLMS CPT.
 		if ( ! empty( $post ) && is_singular( array( 'courses', 'topics', 'lesson', 'tutor_quiz' ) ) ) {
+
 			// Check access for this course or lesson.
 			$access = self::has_access_to_post( $post->ID );
 
@@ -125,11 +126,14 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 			return true;
 		}
 
+		// Let's assume they have access, in case Tutor LMS has enrollment settings etc.
+		$access = true;
 		$tutor_non_course_cpts = array( 'lesson', 'topic', 'tutor_quiz' );
-		// Check if this is a course or other non-TutorLMS CPT.
+
+		// Check if this is other TutorLMS CPT's.
 		if ( ! in_array( get_post_type( $post_id ), $tutor_non_course_cpts ) ) {
 			// Let PMPro handle these CPTs.
-			return self::pmpro_has_membership_access( $post_id, $user_id );
+			$access = self::pmpro_has_membership_access( $post_id, $user_id );
 		} else {
 			// Let admins in.
 			if ( current_user_can( 'manage_options' ) ) {
@@ -141,17 +145,18 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 			// Check course.
 			$public_course = get_post_meta( $course_id, '_tutor_is_public_course', true );
 
-			if ( ! empty( $course_id ) && $public_course == 'no' ) {
-				// Access same as course.
-				return self::pmpro_has_membership_access( $course_id, $user_id );
+			// If the course is public, but requires level let us handle the restriction.
+			if ( ! empty( $course_id ) && $public_course == 'yes' ) {
+				$access = self::pmpro_has_membership_access( $course_id, $user_id );
 			} elseif ( ! empty( $course_id ) ) {
-				// Let TutorLMS handle it through enrollment.
-				return true;
+				//Let TutorLMS handle it through enrollment.
+				$access = true;
 			} else {
 				// A TutorLMS CPT with no course. Let PMPro handle it.
-				return self::pmpro_has_membership_access( $post_id, $user_id );
+				$access = self::pmpro_has_membership_access( $post_id, $user_id );
 			}
 		}
+		return $access;
 	}
 
 	/**
@@ -205,6 +210,8 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 		} else {
 			return $filtered_content;   // Probably false.
 		}
+
+		return $filtered_content; // In case we don't get here.
 	}
 
 	/**
