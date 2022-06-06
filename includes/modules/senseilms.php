@@ -26,7 +26,8 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 			return;
 		}
 
-		add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_SenseiLMS', 'pmpro_membership_content_filter' ), 10, 2 );
+		add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_SenseiLMS', 'pmpro_membership_content_filter' ), 1, 2 );
+		add_filter( 'render_block', array( 'PMPro_Courses_SenseiLMS', 'pmpro_membership_content_block_filter' ), 10, 2 );
 		add_action( 'template_redirect', array( 'PMPro_Courses_SenseiLMS', 'template_redirect' ) );
 
 		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_SenseiLMS', 'pmpro_after_all_membership_level_changes' ) );		
@@ -82,13 +83,17 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 				// Don't redirect courses unless a url is passed in filter.
 				$redirect_to = apply_filters( 'pmpro_courses_course_redirect_to', null );
 			} else {
+
+				global $current_user;
+
 				// Send lessons and other content to the parent course.
 				$meta = get_post_meta( $post->ID );
 
 				$course_id = Sensei()->lesson->get_course_id( $post->ID );
 
-				$is_user_taking_course = Sensei_Utils::user_started_course( $course_id, $current_user->ID );
-				if ( ! empty( $course_id ) ) {
+				$is_user_taking_course = Sensei()->course->is_user_enrolled( $course_id, $current_user->ID );
+
+				if ( ! $is_user_taking_course ) {
 					$redirect_to = get_permalink( $course_id );
 				} else {
 					$redirect_to = null;
@@ -140,9 +145,15 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 				return true;
 			}
 
+			global $current_user;
+
 			$course_id = Sensei()->lesson->get_course_id( $post_id );
 
-			if ( ! empty( $course_id ) ) {
+			$is_user_taking_course = Sensei()->course->is_user_enrolled( $course_id, $current_user->ID );
+
+			if ( $is_user_taking_course ) {
+				return true;
+			} else if ( ! empty( $course_id ) ) {
 				// Access same as course.
 				return self::pmpro_has_membership_access( $course_id, $user_id );
 			} elseif ( !empty( $course_id ) ) {
@@ -206,6 +217,32 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 		} else {
 			return $filtered_content;   // Probably false.
 		}
+	}
+
+	/**
+	 * Hook into the block being rendered.
+	 */
+	public static function pmpro_membership_content_block_filter( $block_content, $block ) {
+
+		if ( is_singular( 'course' ) ) {
+
+			if( $block['blockName'] == 'sensei-lms/button-take-course' ) {
+
+				global $post, $current_user;
+
+				$hasaccess = self::has_access_to_post( $post->ID, $current_user->ID );
+
+				if ( $hasaccess ) {
+					//You don't have access so show the button
+					return $block_content;
+				}
+
+			}
+
+		}
+
+		return $block_content;
+
 	}
 
 	/**
