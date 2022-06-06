@@ -31,6 +31,8 @@ function pmpro_courses_setup_modules() {
 	$lifterlms_module = new PMPro_Courses_LifterLMS();
 	require_once PMPRO_COURSES_DIR . '/includes/modules/senseilms.php';
 	$senseilms_module = new PMPro_Courses_SenseiLMS();
+	require_once PMPRO_COURSES_DIR . '/includes/modules/tutorlms.php';
+	$tutorlms_module = new PMPro_Courses_TutorLMS();
 }
 add_action( 'plugins_loaded', 'pmpro_courses_setup_modules' );
 
