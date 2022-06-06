@@ -29,6 +29,8 @@ function pmpro_courses_setup_modules() {
 	$learndash_module = new PMPro_Courses_LearnDash();
 	require_once PMPRO_COURSES_DIR . '/includes/modules/lifterlms.php';
 	$lifterlms_module = new PMPro_Courses_LifterLMS();
+	require_once PMPRO_COURSES_DIR . '/includes/modules/tutorlms.php';
+	$tutorlms_module = new PMPro_Courses_TutorLMS();
 }
 add_action( 'plugins_loaded', 'pmpro_courses_setup_modules' );
 
