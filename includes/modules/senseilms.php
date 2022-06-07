@@ -155,9 +155,6 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 			} elseif ( ! empty( $course_id ) ) {
 				// Access same as course.
 				return self::pmpro_has_membership_access( $course_id, $user_id );
-			} elseif ( ! empty( $course_id ) ) {
-				// Let SenseiLMS handle it through enrollment.
-				return true;
 			} else {
 				// A SenseiLMS CPT with no course. Let PMPro handle it.
 				return self::pmpro_has_membership_access( $post_id, $user_id );
