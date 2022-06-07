@@ -29,7 +29,7 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 		add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_SenseiLMS', 'pmpro_membership_content_filter' ), 1, 2 );
 		add_action( 'template_redirect', array( 'PMPro_Courses_SenseiLMS', 'template_redirect' ) );
 
-		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_SenseiLMS', 'pmpro_after_all_membership_level_changes' ) );		
+		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_SenseiLMS', 'pmpro_after_all_membership_level_changes' ) );
 	}
 
 	/**
@@ -152,10 +152,10 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 
 			if ( $is_user_taking_course ) {
 				return true;
-			} else if ( ! empty( $course_id ) ) {
+			} elseif ( ! empty( $course_id ) ) {
 				// Access same as course.
 				return self::pmpro_has_membership_access( $course_id, $user_id );
-			} elseif ( !empty( $course_id ) ) {
+			} elseif ( ! empty( $course_id ) ) {
 				// Let SenseiLMS handle it through enrollment.
 				return true;
 			} else {
@@ -223,21 +223,21 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 	 */
 	public static function get_courses_for_levels( $level_ids ) {
 		global $wpdb;
-		
+
 		// In case a level object was passed in.
 		if ( is_object( $level_ids ) ) {
 			$level_ids = $level_ids->ID;
 		}
-		
+
 		// Make sure we have an array of ids.
 		if ( ! is_array( $level_ids ) ) {
 			$level_ids = array( $level_ids );
 		}
-		
+
 		if ( empty( $level_ids ) ) {
 			return array();
 		}
-		
+
 		$course_ids = $wpdb->get_col(
 			$wpdb->prepare(
 				"
@@ -249,10 +249,10 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 					AND p.post_status = 'publish' 
 					GROUP BY mp.page_id
 				",
-				implode(',', $level_ids )
+				implode( ',', $level_ids )
 			)
-		);		
-		
+		);
+
 		return $course_ids;
 	}
 
@@ -269,15 +269,15 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 			} else {
 				$current_levels = array();
 			}
-			$current_courses = PMPro_Courses_SenseiLMS::get_courses_for_levels( $current_levels );
-			
+			$current_courses = self::get_courses_for_levels( $current_levels );
+
 			// Get old courses.
-			$old_levels = wp_list_pluck( $old_levels, 'ID' );
-			$old_courses = PMPro_Courses_SenseiLMS::get_courses_for_levels( $old_levels );
-					
+			$old_levels  = wp_list_pluck( $old_levels, 'ID' );
+			$old_courses = self::get_courses_for_levels( $old_levels );
+
 			// Unenroll the user in any courses they used to have, but lost.
 			$courses_to_unenroll = array_diff( $old_courses, $current_courses );
-			foreach( $courses_to_unenroll as $course_id ) {
+			foreach ( $courses_to_unenroll as $course_id ) {
 				$is_user_taking_course = Sensei_Course::is_user_enrolled( $course_id, $user_id );
 
 				if ( $is_user_taking_course ) {
@@ -287,15 +287,14 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 
 			// Enroll the user in any courses for their current levels.
 			$courses_to_enroll = array_diff( $current_courses, $old_courses );
-			foreach( $courses_to_enroll as $course_id ) {
+			foreach ( $courses_to_enroll as $course_id ) {
 				$is_user_taking_course = Sensei_Course::is_user_enrolled( $course_id, $user_id );
-				if ( !$is_user_taking_course ) {
+				if ( ! $is_user_taking_course ) {
 					$manual_enrolment_provider = Sensei_Course_Enrolment_Manager::instance()->get_manual_enrolment_provider();
-					$manual_enrolment_provider->enrol_learner( $user_id, $course_id );					
+					$manual_enrolment_provider->enrol_learner( $user_id, $course_id );
 				}
 			}
-			
 		}
-	}	
+	}
 
 }
