@@ -61,7 +61,7 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 	 * to the main course page.
 	 */
 	public static function template_redirect() {
-		global $post, $pmpro_pages;
+		global $post, $pmpro_pages, $current_user;
 
 		// Only check if a SenseiLMS CPT.
 		if ( ! empty( $post ) && is_singular( array( 'course', 'question', 'lesson' ) ) ) {
@@ -82,8 +82,6 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 				// Don't redirect courses unless a url is passed in filter.
 				$redirect_to = apply_filters( 'pmpro_courses_course_redirect_to', null );
 			} else {
-
-				global $current_user;
 
 				// Send lessons and other content to the parent course.
 				$meta = get_post_meta( $post->ID );
@@ -144,7 +142,7 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 				return true;
 			}
 
-			$is_user_taking_course = Sensei()->course->is_user_enrolled( $post_id, $current_user->ID );
+			$is_user_taking_course = Sensei()->course->is_user_enrolled( $post_id, $user_id );
 
 			if ( $is_user_taking_course ) {
 				return true;
@@ -163,7 +161,7 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 	 */
 	public static function pmpro_has_membership_access( $post_id = null, $user_id = null ) {
 		remove_filter( 'pmpro_has_membership_access_filter', array( 'PMPro_Courses_SenseiLMS', 'pmpro_has_membership_access_filter' ), 10, 4 );
-		$hasaccess = pmpro_has_membership_access( $post_id, $user_id );		
+		$hasaccess = pmpro_has_membership_access( $post_id, $user_id );
 		add_filter( 'pmpro_has_membership_access_filter', array( 'PMPro_Courses_SenseiLMS', 'pmpro_has_membership_access_filter' ), 10, 4 );
 		return $hasaccess;
 	}
@@ -191,11 +189,11 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 
 			global $post, $current_user;
 
-			//Check if they're enrolled first, if they are, we should automatically give access.
+			// Check if they're enrolled first, if they are, we should automatically give access.
 			$is_user_taking_course = Sensei()->course->is_user_enrolled( $post->ID, $current_user->ID );
 
-			if( $is_user_taking_course ) {
-				return $original_content;				
+			if ( $is_user_taking_course ) {
+				return $original_content;
 			}
 			// Show non-member text if needed.
 			ob_start();
