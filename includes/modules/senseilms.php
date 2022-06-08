@@ -26,7 +26,7 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 			return;
 		}
 
-		add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_SenseiLMS', 'pmpro_membership_content_filter' ), 1, 2 );
+		add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_SenseiLMS', 'pmpro_membership_content_filter' ), 10, 2 );
 		add_action( 'template_redirect', array( 'PMPro_Courses_SenseiLMS', 'template_redirect' ) );
 
 		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_SenseiLMS', 'pmpro_after_all_membership_level_changes' ) );
@@ -144,11 +144,7 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 				return true;
 			}
 
-			global $current_user;
-
-			$course_id = Sensei()->lesson->get_course_id( $post_id );
-
-			$is_user_taking_course = Sensei()->course->is_user_enrolled( $course_id, $current_user->ID );
+			$is_user_taking_course = Sensei()->course->is_user_enrolled( $post_id, $current_user->ID );
 
 			if ( $is_user_taking_course ) {
 				return true;
@@ -167,7 +163,7 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 	 */
 	public static function pmpro_has_membership_access( $post_id = null, $user_id = null ) {
 		remove_filter( 'pmpro_has_membership_access_filter', array( 'PMPro_Courses_SenseiLMS', 'pmpro_has_membership_access_filter' ), 10, 4 );
-		$hasaccess = pmpro_has_membership_access( $post_id, $user_id );
+		$hasaccess = pmpro_has_membership_access( $post_id, $user_id );		
 		add_filter( 'pmpro_has_membership_access_filter', array( 'PMPro_Courses_SenseiLMS', 'pmpro_has_membership_access_filter' ), 10, 4 );
 		return $hasaccess;
 	}
@@ -181,7 +177,6 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 		if ( ! $hasaccess ) {
 			return $hasaccess;
 		}
-
 		return self::has_access_to_post( $mypost->ID, $myuser->ID );
 	}
 
@@ -193,6 +188,15 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 	public static function pmpro_membership_content_filter( $filtered_content, $original_content ) {
 
 		if ( is_singular( 'course' ) ) {
+
+			global $post, $current_user;
+
+			//Check if they're enrolled first, if they are, we should automatically give access.
+			$is_user_taking_course = Sensei()->course->is_user_enrolled( $post->ID, $current_user->ID );
+
+			if( $is_user_taking_course ) {
+				return $original_content;				
+			}
 			// Show non-member text if needed.
 			ob_start();
 			// Get hasaccess ourselves so we get level ids and names.
