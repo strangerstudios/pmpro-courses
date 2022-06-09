@@ -1,9 +1,9 @@
-=== Premium Courses & eLearning for Members with Paid Memberships Pro, LearnDash, & LifterLMS ===
+=== Premium Courses & eLearning for Members with Paid Memberships Pro, LearnDash, LifterLMS, SenseiLMS & TutorLMS ===
 Contributors: strangerstudios, paidmembershipspro, kimannwall, jarryd-long
 Tags: course, education, elearning, lms, membership, pmpro
 Requires at least: 5.4
-Tested up to: 5.9
-Stable tag: 1.0.5
+Tested up to: 6.0
+Stable tag: 1.1
 Requires PHP: 5.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -121,6 +121,12 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+
+= 1.1 - 2022-06-09 =
+* SECURITY: Improved security by preparing, sanitization and escaping of variables.
+* ENHANCEMENT: Added integration for SenseiLMS.
+* ENHANCEMENT: Added integration for TutorLMS.
+* REFACTOR: Removed unused variables and tidied up code where possible.
 
 = 1.0.5 - 2022-01-31 =
 * BUG FIX: Fixed an issue where lesson count wasn't showing inside both shortcodes. (printf too few arguments).
