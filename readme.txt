@@ -107,7 +107,7 @@ The default (built-in) module does not rely on enrollment and will not require a
 
 = I found a bug in the plugin. =
 
-Please post it in the issues section of GitHub and we'll fix it as soon as we can. Thanks for helping. [https://github.com/strangerstudios/pmpro-mailchimp/issues](https://github.com/strangerstudios/pmpro-courses/issues)
+Please post it in the issues section of GitHub and we'll fix it as soon as we can. Thanks for helping. [https://github.com/strangerstudios/pmpro-courses/issues](https://github.com/strangerstudios/pmpro-courses/issues)
 
 = I need help installing, configuring, or customizing the plugin. =
 
