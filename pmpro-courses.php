@@ -20,7 +20,7 @@ define( 'PMPRO_COURSES_BASENAME', plugin_basename( __FILE__ ) );
 require_once PMPRO_COURSES_DIR . '/includes/common.php';
 require_once PMPRO_COURSES_DIR . '/includes/admin.php';
 require_once PMPRO_COURSES_DIR . '/includes/settings.php';
-
+require_once PMPRO_COURSES_DIR . '/blocks/blocks.php';
 // Modules.
 function pmpro_courses_setup_modules() {
 	require_once PMPRO_COURSES_DIR . '/includes/modules/default.php';

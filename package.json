@@ -1,0 +1,23 @@
+{
+  "name": "pmpro-courses",
+  "version": "1.1.0",
+  "description": "WordPress Membership Plugin - Courses",
+  "main": "webpack.config.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "wp-scripts start",
+    "build": "wp-scripts build"
+  },
+  "keywords": [
+    "wordpress",
+    "membership",
+    "pmpro"
+  ],
+  "author": "Stranger Studios",
+  "license": "GPL-2.0",
+  "devDependencies": {
+    "@wordpress/scripts": "^11.0.0"
+  }
+}
