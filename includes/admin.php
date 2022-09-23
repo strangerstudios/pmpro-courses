@@ -48,8 +48,10 @@ function pmpro_courses_plugin_action_links( $links ) {
 		$new_links = array(
 			'<a href="' . esc_url( get_admin_url( null, 'admin.php?page=pmpro-courses-settings' ) ) . '">' . esc_html__( 'Settings', 'pmpro-courses' ) . '</a>',
 		);
+
+		$links = array_merge( $new_links, $links );
 	}
-	return array_merge( $new_links, $links );
+	return $links;
 }
 add_filter( 'plugin_action_links_' . PMPRO_COURSES_BASENAME, 'pmpro_courses_plugin_action_links' );
 
