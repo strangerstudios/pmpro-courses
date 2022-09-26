@@ -50,13 +50,13 @@ function pmpro_courses_block_scripts() {
 	wp_enqueue_script(
 		'pmpro-block-my-courses-js',
 		plugins_url( 'blocks/build/my-courses/index.js', __DIR__ ),
-		[ 'wp-edit-post', 'wp-element', 'wp-components', 'wp-plugins', 'wp-data' ]
+		plugins_url( 'blocks/build/my-courses/index.asset.php')
 	);
 
 	wp_enqueue_script(
 		'pmpro-block-all-courses-js',
 		plugins_url( 'blocks/build/all-courses/index.js', __DIR__ ),
-		[ 'wp-edit-post', 'wp-element', 'wp-components', 'wp-plugins', 'wp-data' ]
+		plugins_url( 'blocks/build/all-courses/index.asset.php')
 	);
 }
 add_action( 'enqueue_block_editor_assets', 'pmpro_courses_block_scripts' );
