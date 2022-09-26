@@ -98,7 +98,7 @@ function pmpro_courses_get_courses( $posts_per_page = -1, $user_id = false ) {
 	// Set up args for query.
 	$args = array(
 		'post_type' => 'pmpro_course',
-		'posts_per_page' => -1,
+		'posts_per_page' => $posts_per_page,
 		'orderby' => 'menu_order',
 		'order' => 'ASC'
 	);
