@@ -1,12 +1,12 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 2,
-    "name": "pmpro-courses/my-courses",
+    "name": "pmpro-courses/all-courses",
     "version": "1.0.0",
-    "title": "PMPro Courses: My Courses",
+    "title": "PMPro Courses: All Courses",
     "category": "pmpro",
     "icon": "bank",
-    "description": "Show a list of courses a member has access.",
+    "description": "Show a list of all available PMPro courses.",
     "supports": {
         "html": false
     },

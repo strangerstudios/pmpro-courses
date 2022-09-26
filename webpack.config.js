@@ -17,6 +17,13 @@ config.entry = {
         'src',
         'my-courses',
         'index.js'
+    ),
+    'all-courses/index': path.resolve(
+        process.cwd(),
+        'blocks',
+        'src',
+        'all-courses',
+        'index.js'
     )
 };
 

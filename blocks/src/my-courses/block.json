@@ -3,10 +3,10 @@
     "apiVersion": 2,
     "name": "pmpro-courses/my-courses",
     "version": "1.0.0",
-    "title": "PMPro My Courses",
+    "title": "PMPro Courses: My Courses",
     "category": "pmpro",
     "icon": "bank",
-    "description": "Show a list of pmpro courses test123",
+    "description": "Show a list of courses a member has access.",
     "supports": {
         "html": false
     },

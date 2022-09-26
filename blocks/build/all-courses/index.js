@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./blocks/src/my-courses/edit.js":
-/*!***************************************!*\
-  !*** ./blocks/src/my-courses/edit.js ***!
-  \***************************************/
+/***/ "./blocks/src/all-courses/edit.js":
+/*!****************************************!*\
+  !*** ./blocks/src/all-courses/edit.js ***!
+  \****************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -20,7 +20,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /**
- * Edit function for "my-courses"
+ * Edit function for "all-courses"
  */
 
 
@@ -48,7 +48,7 @@ function Edit(_ref) {
     className: "pmpro-block-title"
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Paid Memberships Pro Courses', 'pmpro-courses')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "pmpro-block-subtitle"
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('My Courses', 'pmpro-courses')))];
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('All Courses', 'pmpro-courses')))];
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Edit);
@@ -105,13 +105,13 @@ module.exports = window["wp"]["i18n"];
 
 /***/ }),
 
-/***/ "./blocks/src/my-courses/block.json":
-/*!******************************************!*\
-  !*** ./blocks/src/my-courses/block.json ***!
-  \******************************************/
+/***/ "./blocks/src/all-courses/block.json":
+/*!*******************************************!*\
+  !*** ./blocks/src/all-courses/block.json ***!
+  \*******************************************/
 /***/ (function(module) {
 
-module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"pmpro-courses/my-courses","version":"1.0.0","title":"PMPro Courses: My Courses","category":"pmpro","icon":"bank","description":"Show a list of courses a member has access.","supports":{"html":false},"textdomain":"pmpro-courses","editorScript":"file:./index.js","attributes":{"limit":{"type":"string","default":"-1"}}}');
+module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"pmpro-courses/all-courses","version":"1.0.0","title":"PMPro Courses: All Courses","category":"pmpro","icon":"bank","description":"Show a list of all available PMPro courses.","supports":{"html":false},"textdomain":"pmpro-courses","editorScript":"file:./index.js","attributes":{"limit":{"type":"string","default":"-1"}}}');
 
 /***/ })
 
@@ -186,14 +186,14 @@ module.exports = JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 !function() {
-/*!****************************************!*\
-  !*** ./blocks/src/my-courses/index.js ***!
-  \****************************************/
+/*!*****************************************!*\
+  !*** ./blocks/src/all-courses/index.js ***!
+  \*****************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./edit */ "./blocks/src/my-courses/edit.js");
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./block.json */ "./blocks/src/my-courses/block.json");
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./edit */ "./blocks/src/all-courses/edit.js");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./block.json */ "./blocks/src/all-courses/block.json");
 /**
  * Registers a new block provided a unique name and an object defining its behavior.
  *
