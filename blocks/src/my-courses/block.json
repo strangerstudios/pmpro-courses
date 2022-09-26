@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 2,
+    "name": "pmpro-courses/my-courses",
+    "version": "1.0.0",
+    "title": "PMPro My Courses",
+    "category": "pmpro",
+    "icon": "bank",
+    "description": "Show a list of pmpro courses test123",
+    "supports": {
+        "html": false
+    },
+    "textdomain": "pmpro-courses",
+    "editorScript": "file:./index.js",
+    "attributes": {
+        "limit": {
+            "type": "string",
+            "default": "-1"
+        }
+    }
+}
