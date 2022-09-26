@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "title": "PMPro Courses: My Courses",
     "category": "pmpro",
-    "icon": "bank",
+    "icon": "media-default",
     "description": "Show a list of courses a member has access.",
     "supports": {
         "html": false

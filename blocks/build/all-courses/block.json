@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "title": "PMPro Courses: All Courses",
     "category": "pmpro",
-    "icon": "bank",
+    "icon": "admin-page",
     "description": "Show a list of all available PMPro courses.",
     "supports": {
         "html": false
