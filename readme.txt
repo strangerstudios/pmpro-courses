@@ -4,9 +4,9 @@ Tags: course, education, elearning, lms, membership, pmpro
 Requires at least: 5.4
 Tested up to: 6.0
 Stable tag: 1.1
-Requires PHP: 5.6
-License: GPLv3
-License URI: https://www.gnu.org/licenses/gpl-3.0.html
+Requires PHP: 7.0
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Create, protect, & sell courses with recurring subscriptions for Paid Memberships Pro, LearnDash, & LifterLMS.
 
@@ -121,6 +121,11 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 1.2 - 2022-09-27 =
+* ENHANCEMENT: Added blocks for "My Courses" and "All Courses" shortcodes. This works only when the default module is being used.
+* BUG FIX: Fixed an issue where lessons in TutorLMS weren't restricting correctly.
+* BUG FIX: Fixed an issue where the limit attribute wasn't filtering the courses content for [pmpro_my_courses] and [pmpro_all_courses].
+* BUG FIX: Fixed an issue for the plugin_action_links throwing an error for certain user roles.
 
 = 1.1 - 2022-06-09 =
 * SECURITY: Improved security by preparing, sanitization and escaping of variables.
