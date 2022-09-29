@@ -1,4 +1,4 @@
-=== Premium Courses & eLearning for Members with Paid Memberships Pro, LearnDash, LifterLMS, SenseiLMS & TutorLMS ===
+=== Premium Courses & eLearning with Paid Memberships Pro for LearnDash, LifterLMS, Sensei LMS & TutorLMS ===
 Contributors: strangerstudios, paidmembershipspro, kimannwall, jarryd-long
 Tags: course, education, elearning, lms, membership, pmpro
 Requires at least: 5.4
