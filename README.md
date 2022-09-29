@@ -8,7 +8,7 @@
 
 ### Welcome to the Paid Memberships Pro - Courses GitHub Repository
 
-This plugin allows you to create courses and lessons with restricted access by membership level. It also integrates LearnDash or LifterLMS with Paid Memberships Pro.
+This plugin allows you to create courses and lessons with restricted access by membership level. It also integrates LearnDash, LifterLMS, Sensei LMS, and TutorLMS with Paid Memberships Pro.
 
 For more information please visit [the Add On documentation page for this plugin](https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/).
 
