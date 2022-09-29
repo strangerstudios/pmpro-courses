@@ -8,7 +8,7 @@ Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Create, protect, & sell courses with recurring subscriptions for Paid Memberships Pro, LearnDash, & LifterLMS.
+Create, protect, & sell courses with recurring subscriptions for Paid Memberships Pro, LearnDash, LifterLMS, Sensei LMS, & TutorLMS.
 
 == Description ==
 
@@ -21,7 +21,9 @@ This is a multi-purpose plugin that offers native course functionality for Paid 
 * Accept free, one-time payment, or recurring subscriptions for course enrollment
 * Track lesson completion by user
 
-If you are already using a course platform or require more functionality, use the integrated modules for LearnDash and LifterLMS, two of the most popular WordPress learning management systems. This plugin will enroll and unenroll members from protected courses based on their active membership level and subscriptions.
+If you are already using a course platform or require more functionality, use the integrated modules for LearnDash, LifterLMS, Sensei LMS, and TutorLMS. These are the four most popular WordPress learning management systems—and they all integrate with Paid Memberships Pro through this free plugin.
+
+Courses for Membership automatically protects, enrolls, and unenrolls members from protected courses based on their active membership level or subscription.
 
 ### Courses and Lessons with PMPro
 
@@ -42,6 +44,18 @@ LifterLMS is an e-learning plugin for WordPress that is available for free in th
 LifterLMS includes their own features for course enrollment and course membership. You should use this Add On if you are not using their membership features and instead want PMPro to manage your members and membership registrations. This Add On is specifically written to enroll and unenroll members from the courses available for their level.
 
 Refer to our [LifterLMS documentation for help protecting courses](https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=wordpress-org&utm_medium=readme&utm_campaign=pmpro-courses&utm_content=courses-lifterlms#lifterlms-module) using this module.
+
+### Protect Sensei LMS Courses
+
+Sensei is an e-learning WordPress plugin by the makers of WooCommerce and Jetpack. The software includes courses, lessons, quizzes, and more. Our Courses for Membership Add On creates a bridge between the content protections of PMPro and the course functionality of Sensei.
+
+Refer to our [Sensei LMS documentation for help protecting courses](https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=wordpress-org&utm_medium=readme&utm_campaign=pmpro-courses&utm_content=courses-sensei#sensei) using this module.
+
+### Protect TutorLMS Courses
+
+TutorLMS is an e-learning WordPress plugin by Themeum. The software includes courses, lessons, a teacher and student dashboard, quizzes, and more. Our Courses for Membership Add On creates a bridge between the content protections of PMPro and the course functionality of TutorLMS.
+
+Refer to our [TutorLMS documentation for help protecting courses](https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=wordpress-org&utm_medium=readme&utm_campaign=pmpro-courses&utm_content=courses-tutorlms#tutor) using this module.
 
 Learn more about [protecting and selling courses for your membership](https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=wordpress-org&utm_medium=readme&utm_campaign=pmpro-courses) in our documentation site.
 
