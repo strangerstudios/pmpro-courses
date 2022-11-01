@@ -2,7 +2,7 @@
 Contributors: strangerstudios, paidmembershipspro, kimannwall, jarryd-long
 Tags: course, education, elearning, lms, membership, pmpro
 Requires at least: 5.4
-Tested up to: 6.0
+Tested up to: 6.1
 Stable tag: 1.2
 Requires PHP: 7.0
 License: GPLv2 or later
