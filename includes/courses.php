@@ -16,6 +16,13 @@ function pmpro_courses_show_course_content_and_lessons( $filtered_content, $orig
 			$hasaccess = $hasaccess[0];
 			if ( ! $hasaccess ) {
 				$no_access_message = pmpro_get_no_access_message( '', $post_membership_levels_ids, $post_membership_levels_names );
+
+				// If there's only one level, let's replace the levels join now with the checkout URL.
+				if ( count( $post_membership_levels_ids ) == 1 ) {
+					$checkout_link = pmpro_url( 'checkout', '?level=' . esc_attr( $post_membership_levels_ids[0] ) );
+					$levels_url = pmpro_url( 'levels' );
+					$no_access_message = str_replace( $levels_url, $checkout_link, $no_access_message );
+				}
 			}
 		}
 
