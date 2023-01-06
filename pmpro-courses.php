@@ -112,6 +112,7 @@ function pmpro_courses_admin_styles( $hook ) {
 			'course_id'      => $post_id,
 			'save'           => esc_html__( 'Save', 'pmpro-courses' ),
 			'saving'         => esc_html__( 'Saving...', 'pmpro-courses' ),
+			'adding'         => esc_html__( 'Adding...', 'pmpro-courses' ),
 			'saving_error_1' => esc_html__( 'Error saving lesson [1]', 'pmpro-courses' ),
 			'saving_error_2' => esc_html__( 'Error saving lesson [2]', 'pmpro-courses' ),
 			'remove_error_1' => esc_html__( 'Error removing lesson [1]', 'pmpro-courses' ),

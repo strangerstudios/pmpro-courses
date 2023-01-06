@@ -90,6 +90,8 @@ function pmpro_courses_setup() {
 	
 	jQuery('#pmpro_courses_save').click(function() {
 		if( jQuery(this).attr('disabled') !== 'true' ){
+			//Show that the courses is being 
+			jQuery( this ).html( pmpro_courses.adding );
 			pmpro_courses_update_post();
 		}
 	});
