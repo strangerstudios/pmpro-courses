@@ -135,6 +135,10 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 1.2.1 - 2023-01-19 =
+* ENHANCEMENT: If a course requires only one membership level, redirect directly to the checkout for that level instead of the level select page.
+* ENHANCEMENT: Added a small hint when adding a lesson to a course to indicate the lesson is being added to the course.
+
 = 1.2 - 2022-09-27 =
 * ENHANCEMENT: Added blocks for "My Courses" and "All Courses" shortcodes. This works only when the default module is being used.
 * BUG FIX: Fixed an issue where lessons in TutorLMS weren't restricting correctly.

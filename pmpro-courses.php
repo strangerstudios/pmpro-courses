@@ -3,7 +3,7 @@
  * Plugin Name: Paid Memberships Pro - Courses for Membership Add On
  * Plugin URI: https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/
  * Description: Create courses and lessons for members. Integrates LMS plugins with Paid Memberships Pro.
- * Version: 1.2
+ * Version: 1.2.1
  * Author: Paid Memberships Pro
  * Author URI: https://www.paidmembershipspro.com
  * Text Domain: pmpro-courses
