@@ -1,17 +1,17 @@
-# Copyright (C) 2022 Paid Memberships Pro
+# Copyright (C) 2023 Paid Memberships Pro
 # This file is distributed under the same license as the Paid Memberships Pro - Courses for Membership Add On plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 1.0.5\n"
+"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 1.2.1\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-01-31T11:07:44+00:00\n"
+"POT-Creation-Date: 2023-01-19T09:34:08+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.6.0\n"
+"X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: pmpro-courses\n"
 
 #. Plugin Name of the plugin
@@ -47,11 +47,11 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: includes/admin.php:65
+#: includes/admin.php:67
 msgid "Docs"
 msgstr ""
 
-#: includes/admin.php:66
+#: includes/admin.php:68
 msgid "Support"
 msgstr ""
 
@@ -90,7 +90,7 @@ msgid "Courses"
 msgstr ""
 
 #: includes/common.php:149
-#: includes/courses.php:124
+#: includes/courses.php:131
 msgid "%s Lesson"
 msgid_plural "%s Lessons"
 msgstr[0] ""
@@ -102,11 +102,11 @@ msgstr[1] ""
 msgid "Lessons"
 msgstr ""
 
-#: includes/courses.php:108
+#: includes/courses.php:115
 msgid "Lesson Count"
 msgstr ""
 
-#: includes/courses.php:110
+#: includes/courses.php:117
 msgid "Level"
 msgstr ""
 
@@ -145,6 +145,8 @@ msgstr ""
 
 #: includes/modules/learndash.php:51
 #: includes/modules/lifterlms.php:49
+#: includes/modules/senseilms.php:55
+#: includes/modules/tutorlms.php:55
 #: includes/post-types/courses.php:84
 msgid "Require Membership"
 msgstr ""
@@ -159,6 +161,30 @@ msgstr ""
 
 #: includes/modules/lifterlms.php:38
 msgid "Read the LifterLMS Integration documentation &raquo;"
+msgstr ""
+
+#: includes/modules/senseilms.php:41
+msgid "Sensei LMS"
+msgstr ""
+
+#: includes/modules/senseilms.php:43
+msgid "Integrate with the Sensei LMS plugin for WordPress."
+msgstr ""
+
+#: includes/modules/senseilms.php:44
+msgid "Read the Sensei LMS Integration documentation &raquo;"
+msgstr ""
+
+#: includes/modules/tutorlms.php:41
+msgid "Tutor LMS"
+msgstr ""
+
+#: includes/modules/tutorlms.php:43
+msgid "Integrate with the Tutor LMS plugin for WordPress."
+msgstr ""
+
+#: includes/modules/tutorlms.php:44
+msgid "Read the Tutor LMS Integration documentation &raquo;"
 msgstr ""
 
 #: includes/post-types/courses.php:9
@@ -180,6 +206,8 @@ msgid "Course Attributes"
 msgstr ""
 
 #: includes/post-types/courses.php:15
+#: blocks/build/all-courses/index.js:1
+#: blocks/src/all-courses/edit.js:25
 msgid "All Courses"
 msgstr ""
 
@@ -418,26 +446,80 @@ msgstr ""
 msgid "Settings saved successfully."
 msgstr ""
 
-#: pmpro-courses.php:108
+#: pmpro-courses.php:113
 msgid "Save"
 msgstr ""
 
-#: pmpro-courses.php:109
+#: pmpro-courses.php:114
 msgid "Saving..."
 msgstr ""
 
-#: pmpro-courses.php:110
+#: pmpro-courses.php:115
+msgid "Adding..."
+msgstr ""
+
+#: pmpro-courses.php:116
 msgid "Error saving lesson [1]"
 msgstr ""
 
-#: pmpro-courses.php:111
+#: pmpro-courses.php:117
 msgid "Error saving lesson [2]"
 msgstr ""
 
-#: pmpro-courses.php:112
+#: pmpro-courses.php:118
 msgid "Error removing lesson [1]"
 msgstr ""
 
-#: pmpro-courses.php:113
+#: pmpro-courses.php:119
 msgid "Error removing lesson [2]"
+msgstr ""
+
+#: blocks/build/all-courses/index.js:1
+#: blocks/build/my-courses/index.js:1
+#: blocks/src/all-courses/edit.js:16
+#: blocks/src/my-courses/edit.js:16
+msgid "Limit"
+msgstr ""
+
+#: blocks/build/all-courses/index.js:1
+#: blocks/build/my-courses/index.js:1
+#: blocks/src/all-courses/edit.js:19
+#: blocks/src/my-courses/edit.js:19
+msgid "How many courses should be displayed. Set the value to -1 to show all courses."
+msgstr ""
+
+#: blocks/build/all-courses/index.js:1
+#: blocks/build/my-courses/index.js:1
+#: blocks/src/all-courses/edit.js:24
+#: blocks/src/my-courses/edit.js:24
+msgid "Paid Memberships Pro Courses"
+msgstr ""
+
+#: blocks/build/my-courses/index.js:1
+#: blocks/src/my-courses/edit.js:25
+msgid "My Courses"
+msgstr ""
+
+#: blocks/build/all-courses/block.json
+#: blocks/src/all-courses/block.json
+msgctxt "block title"
+msgid "PMPro Courses: All Courses"
+msgstr ""
+
+#: blocks/build/all-courses/block.json
+#: blocks/src/all-courses/block.json
+msgctxt "block description"
+msgid "Show a list of all available PMPro courses."
+msgstr ""
+
+#: blocks/build/my-courses/block.json
+#: blocks/src/my-courses/block.json
+msgctxt "block title"
+msgid "PMPro Courses: My Courses"
+msgstr ""
+
+#: blocks/build/my-courses/block.json
+#: blocks/src/my-courses/block.json
+msgctxt "block description"
+msgid "Show a list of courses a member has access."
 msgstr ""
