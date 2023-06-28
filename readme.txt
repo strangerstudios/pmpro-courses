@@ -3,7 +3,7 @@ Contributors: strangerstudios, paidmembershipspro, kimannwall, jarryd-long
 Tags: course, education, elearning, lms, membership, pmpro
 Requires at least: 5.4
 Tested up to: 6.2
-Stable tag: 1.2
+Stable tag: 1.2.2
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -135,6 +135,11 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+
+= 1.2.2 - 2023-06-28 =
+* BUG FIX: Fixed and issue with TutorLMS integration. Clicking Preview lesson button was causing redirect instead of actually preview the lesson.
+* BUG FIX: Fixed an issue with default and LifterLMS modules enabled at the same time. LifterLMS courses were giving 404 errors due conflicts with default CPT and Lifter permalinks.
+
 = 1.2.1 - 2023-01-19 =
 * ENHANCEMENT: If a course requires only one membership level, redirect directly to the checkout for that level instead of the level select page.
 * ENHANCEMENT: Added a small hint when adding a lesson to a course to indicate the lesson is being added to the course.

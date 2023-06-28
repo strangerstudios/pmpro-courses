@@ -11,7 +11,7 @@ function pmpro_courses_course_cpt() {
 	 * If there is a collision, append a -2 to the slug.
 	 * 
 	 * @return string $rewrite_slug
-	 * @since TBD
+	 * @since 1.2.2
 	 */
 	function check_for_collision() {
 		$post_types = $GLOBALS['wp_post_types'];
