@@ -71,7 +71,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 				$topic = get_post( $post->post_parent );
 				$post_grand_parent = ! empty( $topic ) ? (int) $topic->post_parent : (int) $post->post_parent;
 
-				$access = self::has_access_to_post( $post_grand_parent );
+				$access = get_post_meta( $post->ID, '_is_preview', true ) || self::has_access_to_post( $post_grand_parent );
 			} else {
 				$access = self::has_access_to_post( $post->ID );
 			}			
