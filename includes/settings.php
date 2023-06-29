@@ -9,7 +9,7 @@
  */
 function pmpro_courses_settings_page() {
 	// Course settings page under Memberships menu.
-	add_submenu_page( 'pmpro-dashboard', esc_html__('Paid Memberships Pro Courses - Settings', 'pmpro-courses'), esc_html__('Courses', 'pmpro-courses'), 'manage_options', 'pmpro-courses-settings', 'pmpro_courses_settings' );
+	add_submenu_page( 'pmpro-dashboard', esc_html__('Paid Memberships Pro Courses - Settings', 'pmpro-courses'), esc_html__('Course Settings', 'pmpro-courses'), 'manage_options', 'pmpro-courses-settings', 'pmpro_courses_settings' );
 
 	if ( pmpro_courses_is_module_active( 'default' ) ) {
 		// Add New Lesson menu page under Courses menu.
@@ -59,7 +59,7 @@ function pmpro_courses_settings_save() {
 	}
 
 	// Flush rewrite rules in case core module was activated/deactivated.
-	set_transient( 'pmpro_courses_flush_rewrite_rules', 1 );	
+	set_transient( 'pmpro_courses_flush_rewrite_rules', 1 );
 }
 add_action( 'admin_init', 'pmpro_courses_settings_save' );
 
