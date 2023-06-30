@@ -42,3 +42,11 @@ table#newmeta tbody tr td a.button {
 table#newmeta {
 	margin-bottom: 1em;
 }
+
+/* Settings Form*/
+.form-table.pmpro-courses, .form-table.pmpro-courses tr.pmpro-courses-default, .form-table.pmpro-courses tr.pmpro-courses-lifterlms {
+	border-bottom: 1px solid #CCC;
+}
+.pmpro-courses-module-settings {
+	margin-top: 1em;
+}

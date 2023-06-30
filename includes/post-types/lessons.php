@@ -35,7 +35,7 @@ function pmpro_courses_lesson_cpt() {
 		'filter_items_list'     => esc_html__( 'Filter Lessons list', 'pmpro-courses' ),
 	);
 	$rewrite = array(
-		'slug'       => 'lesson',
+		'slug'       => pmpro_courses_unique_rewrite_slug( 'lesson' ),
 		'with_front' => true,
 		'pages'      => true,
 		'feeds'      => false,

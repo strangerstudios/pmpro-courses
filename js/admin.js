@@ -78,25 +78,58 @@ function pmpro_courses_update_post() {
 	});
 }
 
+/**
+ * Toggle the additional settings for a module.
+ */
+function pmpro_courses_toggle_module_settings(module) {
+	$module_tr = jQuery('tr.pmpro-courses-' + module);
+	$module_toggle = $module_tr.find('input[name="pmpro_courses_modules[]"]');
+	$module_settings = $module_tr.find('.pmpro-courses-module-settings');
+	if ( $module_toggle.is(':checked') ) {
+		$module_settings.show();
+	} else {
+		$module_settings.hide();
+	}
+}
+
 function pmpro_courses_setup() {
-	jQuery('#pmpro_courses_post').select2({width: 'elements'});
+	console.log( pmpro_courses );
 	
-	jQuery('#pmpro_courses_order').keypress(function (e) {
-		if (e.which == 13) {
-			pmpro_courses_update_post();
-			return false;
-		}
-	});
-	
-	jQuery('#pmpro_courses_save').click(function() {
-		if( jQuery(this).attr('disabled') !== 'true' ){
-			//Show that the courses is being 
-			jQuery( this ).html( pmpro_courses.adding );
-			pmpro_courses_update_post();
-		}
-	});
+	// Editing a course.
+	if ( pmpro_courses.editing_course ) {
+		jQuery('#pmpro_courses_post').select2({width: 'elements'});
+		
+		jQuery('#pmpro_courses_order').keypress(function (e) {
+			if (e.which == 13) {
+				pmpro_courses_update_post();
+				return false;
+			}
+		});
+		
+		jQuery('#pmpro_courses_save').click(function() {
+			if( jQuery(this).attr('disabled') !== 'true' ){
+				//Show that the courses is being 
+				jQuery( this ).html( pmpro_courses.adding );
+				pmpro_courses_update_post();
+			}
+		});
+	}
+
+	// Courses Settings page.
+	if ( pmpro_courses.on_settings_page ) {
+		// Hide module settings.
+		$module_settings = jQuery('.pmpro-courses-module-settings');
+		$module_settings.each(function() {
+			$module_name = $module_settings.attr('data-module');
+			$module_trigger = jQuery('input[name="pmpro_courses_modules[]"][value="' + $module_name + '"]');
+			$module_trigger.bind('click change', function() {
+				pmpro_courses_toggle_module_settings( $module_name );
+			});
+			pmpro_courses_toggle_module_settings( $module_name );
+		});
+	}
 }
 
 jQuery(document).ready(function(jQuery) {
-	pmpro_courses_setup();
+		pmpro_courses_setup();
 });

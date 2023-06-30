@@ -268,3 +268,38 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 
 	return $lessons_html;
 }
+
+/**
+ * Get a unique rewrite slug for our CPTs.
+ */
+function pmpro_courses_unique_rewrite_slug( $slug ) {
+	global $wp_post_types;
+
+	$suffix = 0;
+	do	{
+		$check_for_collision = false;
+		foreach( $wp_post_types as $post_type ) {
+			// Make sure rewrite values are there.
+			if ( empty( $post_type->rewrite ) ) {
+				continue;
+			}
+			if ( empty( $post_type->rewrite['slug'] ) ) {
+				continue;
+			}
+			
+			// Is our slug already taken?
+			if ( ! empty( $suffix ) ) {
+				$new_slug = $slug . '-' . $suffix;
+			} else {
+				$new_slug = $slug;
+			}
+			if ( $post_type->rewrite['slug'] === $new_slug ) {
+				$suffix = max( 2, $suffix + 1 );	// Start at 2. Increment suffix.
+				$check_for_collision = true;		// Check again.
+				break;
+			}
+		}
+	} while( $check_for_collision );
+
+	return $new_slug;
+}

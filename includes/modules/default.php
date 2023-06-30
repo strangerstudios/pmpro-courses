@@ -41,6 +41,10 @@ class PMPro_Courses_Module {
         if ( $this->is_active() ) {
             $this->init_active();
         }
+
+        // Hooks we always want to run.
+        add_action( 'pmpro_courses_module_settings', array( 'PMPro_Courses_Module', 'admin_settings' ) );
+        add_action( 'pmpro_courses_settings_save', array( 'PMPro_Courses_Module', 'admin_settings_save' ) );
     }
     
     /**
@@ -96,6 +100,40 @@ class PMPro_Courses_Module {
         require_once PMPRO_COURSES_DIR . '/includes/shortcodes/my-courses.php';
                 
         add_filter( 'pmpro_membership_content_filter', 'pmpro_courses_show_course_content_and_lessons', 10, 2 );
-        add_filter( 'the_content', 'pmpro_courses_add_lessons_to_course' );        
+        add_filter( 'the_content', 'pmpro_courses_add_lessons_to_course' );
+    }
+
+    /**
+     * Save additional admin settings.
+     * @since 1.2.2
+     */
+    static public function admin_settings_save() {
+        // Save settings.
+        if ( ! empty( $_REQUEST['pmpro_courses_cpt_archive'] ) ) {
+            update_option( 'pmpro_courses_cpt_archive', 1 );
+        } else {
+            update_option( 'pmpro_courses_cpt_archive', 0 );
+        }
+    }
+
+    /**
+     * Additional admin settings.
+     * @since 1.2.2
+     */
+    static public function admin_settings( $module ) {
+        if ( empty( $module ) || $module['slug'] !== 'default' ) {
+            return;
+        }
+
+        // Get settings from options.
+        $cpt_archive = get_option( 'pmpro_courses_cpt_archive', 1 );
+
+        // Show settings.
+        ?>
+        <div class="pmpro-courses-module-settings pmpro-courses-default-settings" data-module="default">
+            <input type='checkbox' name='pmpro_courses_cpt_archive' value='1' id='pmpro_courses_cpt_archive' <?php checked( $cpt_archive, 1 ); ?> />
+            <label for="pmpro_courses_cpt_archive"><?php esc_html_e( 'Enable Archive Page for the Default Courses CPT?', 'pmpro-courses' );?></label>
+        </div>
+        <?php
     }
 }

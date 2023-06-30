@@ -7,7 +7,7 @@
 	<p><?php esc_html_e( 'Which modules would you like to enable?', 'pmpro-courses' ); ?></p>
 	<form method='POST'>
 		<h3><?php esc_html_e( 'Modules', 'pmpro-courses' );?></h3>
-		<table class='form-table'>	
+		<table class='form-table pmpro-courses'>	
 		<?php
 			$modules = pmpro_courses_get_modules();            
             if( !empty( $modules ) ){
@@ -27,7 +27,7 @@
 						),
 					);
 					?>
-					<tr>
+					<tr class="pmpro-courses-<?php echo esc_attr( $module['slug'] );?>">
 						<th scope="row" valign="top">
 							<label for="<?php echo esc_attr( $module['slug'] ); ?>"><?php echo esc_html( $module['name'] ); ?></label>
 						</th>
@@ -35,6 +35,9 @@
                             <input type='checkbox' name='pmpro_courses_modules[]' value='<?php echo esc_attr( $module['slug'] ); ?>' id='<?php echo esc_attr( $module['slug'] ); ?>' <?php if( $checked ){ echo 'checked="true"'; } ?>/>
                             <label for="<?php echo esc_attr( $module['slug'] ); ?>"><?php echo esc_html( $module['title'] );?></label>
                             <p class="description"><?php echo wp_kses( $module['description'], $allowed_module_description_html ); ?></p>
+							<?php
+								do_action( 'pmpro_courses_module_settings', $module );
+							?>
                         </td>
 					</tr>
 					<?php

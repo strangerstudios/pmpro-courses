@@ -4,27 +4,6 @@
  * Hooks into init.
  */
 function pmpro_courses_course_cpt() {
-
-
-	/**
-	 * Check for collisions with other post types.
-	 * If there is a collision, append a -2 to the slug.
-	 * 
-	 * @return string $rewrite_slug
-	 * @since 1.2.2
-	 */
-	function check_for_collision() {
-		$post_types = $GLOBALS['wp_post_types'];
-		foreach ( $post_types as $post_type ) {
-			if ( $post_type->rewrite && $post_type->rewrite['slug'] === 'course' ) {
-				return $post_type->rewrite['slug'] . "-2";
-			}
-		}
-		return  "course";
-	}
-	$rewrite_slug = check_for_collision();
-
-
 	$labels  = array(
 		'name'                  => esc_html_x( 'Courses', 'Post Type General Name', 'pmpro-courses' ),
 		'singular_name'         => esc_html_x( 'Course', 'Post Type Singular Name', 'pmpro-courses' ),
@@ -54,7 +33,7 @@ function pmpro_courses_course_cpt() {
 		'filter_items_list'     => esc_html__( 'Filter Courses list', 'pmpro-courses' ),
 	);
 	$rewrite = array(
-		'slug'       => $rewrite_slug,
+		'slug'       => pmpro_courses_unique_rewrite_slug( 'course' ),
 		'with_front' => true,
 		'pages'      => true,
 		'feeds'      => false,
@@ -73,7 +52,7 @@ function pmpro_courses_course_cpt() {
 		'show_in_admin_bar'   => true,
 		'show_in_nav_menus'   => true,
 		'can_export'          => true,
-		'has_archive'         => 'courses',
+		'has_archive'         => get_option( 'pmpro_courses_cpt_archive', 1 ) ? 'courses' : false,
 		'exclude_from_search' => false,
 		'publicly_queryable'  => true,
 		'rewrite'             => $rewrite,

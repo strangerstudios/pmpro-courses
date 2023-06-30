@@ -3,15 +3,37 @@
  * Runs only when the plugin is activated.
  *
  * @since 0.1.0
+ * @since 1.2.2 Changed name. Flushing rewrite rules when other plugins are activated too.
  */
-function pmpro_courses_admin_notice_activation_hook() {
-	// Create transient data.
-	set_transient( 'pmpro-courses-admin-notice', true, 5 );
+function pmpro_courses_activation() {
+	// If this plugin is being acitvated, show a notice.
+	if ( current_filter() === 'activate_' . PMPRO_COURSES_BASENAME ) {
+		set_transient( 'pmpro-courses-admin-notice', true, 5 );
+	}
 	
 	// Trigger a rewrite rule flush in case the default module is on.
 	set_transient( 'pmpro_courses_flush_rewrite_rules', 1 );
 }
-register_activation_hook( PMPRO_COURSES_BASENAME, 'pmpro_courses_admin_notice_activation_hook' );
+register_activation_hook( PMPRO_COURSES_BASENAME, 'pmpro_courses_activation' );
+register_activation_hook( 'lifterlms/lifterlms.php', 'pmpro_courses_activation' );
+register_activation_hook( 'tutor/tutor.php', 'pmpro_courses_activation' );
+register_activation_hook( 'sensei-lms/lsensei-lms.php', 'pmpro_courses_activation' );
+register_activation_hook( 'sfwd-lms/sfwd_lms.php', 'pmpro_courses_activation' );
+
+/**
+ * Runs only when the plugin is deactivated.
+ *
+ * @since 1.2.2
+ */
+function pmpro_courses_deactivation() {
+	// Trigger a rewrite rule flush in case the default module is on.
+	set_transient( 'pmpro_courses_flush_rewrite_rules', 1 );
+}
+register_deactivation_hook( PMPRO_COURSES_BASENAME, 'pmpro_courses_deactivation' );
+register_deactivation_hook( 'lifterlms/lifterlms.php', 'pmpro_courses_deactivation' );
+register_deactivation_hook( 'tutor/tutor.php', 'pmpro_courses_deactivation' );
+register_deactivation_hook( 'sensei-lms/lsensei-lms.php', 'pmpro_courses_deactivation' );
+register_deactivation_hook( 'sfwd-lms/sfwd_lms.php', 'pmpro_courses_deactivation' );
 
 /**
  * Admin Notice on Activation.
