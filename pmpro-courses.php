@@ -97,7 +97,7 @@ function pmpro_courses_admin_styles( $hook ) {
 	$editing_course = in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'pmpro_course' == get_post_type();
 	$on_settings_page = ! empty( $_REQUEST['page'] ) && $_REQUEST['page'] === 'pmpro-courses-settings';
 
-	if ( $editin_course || $on_settings_page ) {
+	if ( $editing_course || $on_settings_page ) {
 
 		wp_enqueue_style( 'pmpro-courses-admin', plugins_url( 'css/admin.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
 		wp_enqueue_style( 'pmpro-courses-select2', plugins_url( 'css/select2.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );

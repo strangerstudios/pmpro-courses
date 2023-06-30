@@ -52,7 +52,7 @@ function pmpro_courses_course_cpt() {
 		'show_in_admin_bar'   => true,
 		'show_in_nav_menus'   => true,
 		'can_export'          => true,
-		'has_archive'         => 'courses',
+		'has_archive'         => get_option( 'pmpro_courses_cpt_archive', false ) ? 'courses' : false,
 		'exclude_from_search' => false,
 		'publicly_queryable'  => true,
 		'rewrite'             => $rewrite,

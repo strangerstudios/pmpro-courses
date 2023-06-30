@@ -58,6 +58,9 @@ function pmpro_courses_settings_save() {
 		update_option( 'pmpro_courses_modules', [] );
 	}
 
+	// Save module specific settings.
+	do_action( 'pmpro_courses_settings_save' );
+
 	// Flush rewrite rules in case core module was activated/deactivated.
 	set_transient( 'pmpro_courses_flush_rewrite_rules', 1 );
 }

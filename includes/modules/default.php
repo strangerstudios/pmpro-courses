@@ -44,6 +44,7 @@ class PMPro_Courses_Module {
 
         // Hooks we always want to run.
         add_action( 'pmpro_courses_module_settings', array( 'PMPro_Courses_Module', 'admin_settings' ) );
+        add_action( 'pmpro_courses_settings_save', array( 'PMPro_Courses_Module', 'admin_settings_save' ) );
     }
     
     /**
@@ -103,6 +104,19 @@ class PMPro_Courses_Module {
     }
 
     /**
+     * Save additional admin settings.
+     * @since 1.2.2
+     */
+    static public function admin_settings_save() {
+        // Save settings.
+        if ( ! empty( $_REQUEST['pmpro_courses_cpt_archive'] ) ) {
+            update_option( 'pmpro_courses_cpt_archive', true );
+        } else {
+            update_option( 'pmpro_courses_cpt_archive', false );
+        }
+    }
+
+    /**
      * Additional admin settings.
      * @since 1.2.2
      */
@@ -111,20 +125,8 @@ class PMPro_Courses_Module {
             return;
         }
 
-        // Save settings or get from options.
-        if ( ! empty( $_REQUEST['pmpro_courses_save_settings'] ) ) {
-            // Save settings.
-            if ( ! empty( $_REQUEST['pmpro_courses_cpt_archive'] ) ) {
-                update_option( 'pmpro_courses_cpt_archive', true );
-                $cpt_archive = true;
-            } else {
-                update_option( 'pmpro_courses_cpt_archive', false );
-                $cpt_archive = false;
-            }
-        } else {
-            // Get settings from options.
-            $cpt_archive = get_option( 'pmpro_courses_cpt_archive', false );
-        }
+        // Get settings from options.
+        $cpt_archive = get_option( 'pmpro_courses_cpt_archive', false );
 
         // Show settings.
         ?>
