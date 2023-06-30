@@ -94,8 +94,10 @@ add_action( 'plugins_loaded', 'pmpro_courses_load_textdomain' );
  * Enqueue Admin Scripts and Styles
  */
 function pmpro_courses_admin_styles( $hook ) {
+	$editing_course = in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'pmpro_course' == get_post_type();
+	$on_settings_page = ! empty( $_REQUEST['page'] ) && $_REQUEST['page'] === 'pmpro-courses-settings';
 
-	if ( in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'pmpro_course' == get_post_type() ) {
+	if ( $editin_course || $on_settings_page ) {
 
 		wp_enqueue_style( 'pmpro-courses-admin', plugins_url( 'css/admin.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
 		wp_enqueue_style( 'pmpro-courses-select2', plugins_url( 'css/select2.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
@@ -109,14 +111,16 @@ function pmpro_courses_admin_styles( $hook ) {
 		}
 
 		$localize = array(
-			'course_id'      => $post_id,
-			'save'           => esc_html__( 'Save', 'pmpro-courses' ),
-			'saving'         => esc_html__( 'Saving...', 'pmpro-courses' ),
-			'adding'         => esc_html__( 'Adding...', 'pmpro-courses' ),
-			'saving_error_1' => esc_html__( 'Error saving lesson [1]', 'pmpro-courses' ),
-			'saving_error_2' => esc_html__( 'Error saving lesson [2]', 'pmpro-courses' ),
-			'remove_error_1' => esc_html__( 'Error removing lesson [1]', 'pmpro-courses' ),
-			'remove_error_2' => esc_html__( 'Error removing lesson [2]', 'pmpro-courses' ),
+			'editing_course'   => $editing_course,
+			'on_settings_page' => $on_settings_page,
+			'course_id'        => $post_id,
+			'save'             => esc_html__( 'Save', 'pmpro-courses' ),
+			'saving'           => esc_html__( 'Saving...', 'pmpro-courses' ),
+			'adding'           => esc_html__( 'Adding...', 'pmpro-courses' ),
+			'saving_error_1'   => esc_html__( 'Error saving lesson [1]', 'pmpro-courses' ),
+			'saving_error_2'   => esc_html__( 'Error saving lesson [2]', 'pmpro-courses' ),
+			'remove_error_1'   => esc_html__( 'Error removing lesson [1]', 'pmpro-courses' ),
+			'remove_error_2'   => esc_html__( 'Error removing lesson [2]', 'pmpro-courses' ),
 		);
 
 		wp_localize_script( 'pmpro_courses', 'pmpro_courses', $localize );
