@@ -136,7 +136,8 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 
 == Changelog ==
 
-= 1.2.2 - 2023-06-28 =
+= 1.2.2 - 2023-06-30 =
+* BUG FIX/ENHANCEMENT: Added open to enable or disable the default module's Course CPT archive.
 * BUG FIX: Fixed and issue with TutorLMS integration. Clicking Preview lesson button was causing redirect instead of actually preview the lesson.
 * BUG FIX: Fixed an issue with default and LifterLMS modules enabled at the same time. LifterLMS courses were giving 404 errors due conflicts with default CPT and Lifter permalinks.
 

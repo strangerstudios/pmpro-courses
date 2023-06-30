@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || die( 'File cannot be accessed directly' );
 
-define( 'PMPRO_COURSES_VERSION', dirname( __FILE__ ) );
+define( 'PMPRO_COURSES_VERSION', '1.2.2' );
 define( 'PMPRO_COURSES_DIR', dirname( __FILE__ ) );
 define( 'PMPRO_COURSES_BASENAME', plugin_basename( __FILE__ ) );
 
