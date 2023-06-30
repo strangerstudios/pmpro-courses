@@ -110,9 +110,9 @@ class PMPro_Courses_Module {
     static public function admin_settings_save() {
         // Save settings.
         if ( ! empty( $_REQUEST['pmpro_courses_cpt_archive'] ) ) {
-            update_option( 'pmpro_courses_cpt_archive', true );
+            update_option( 'pmpro_courses_cpt_archive', 1 );
         } else {
-            update_option( 'pmpro_courses_cpt_archive', false );
+            update_option( 'pmpro_courses_cpt_archive', 0 );
         }
     }
 
@@ -126,12 +126,12 @@ class PMPro_Courses_Module {
         }
 
         // Get settings from options.
-        $cpt_archive = get_option( 'pmpro_courses_cpt_archive', false );
+        $cpt_archive = get_option( 'pmpro_courses_cpt_archive', 1 );
 
         // Show settings.
         ?>
         <div class="pmpro-courses-module-settings pmpro-courses-default-settings" data-module="default">
-            <input type='checkbox' name='pmpro_courses_cpt_archive' value='1' id='pmpro_courses_cpt_archive' <?php checked( $cpt_archive, true ); ?> />
+            <input type='checkbox' name='pmpro_courses_cpt_archive' value='1' id='pmpro_courses_cpt_archive' <?php checked( $cpt_archive, 1 ); ?> />
             <label for="pmpro_courses_cpt_archive"><?php esc_html_e( 'Enable Archive Page for the Default Courses CPT?', 'pmpro-courses' );?></label>
         </div>
         <?php
