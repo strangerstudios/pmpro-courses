@@ -275,6 +275,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 function pmpro_courses_unique_rewrite_slug( $slug ) {
 	global $wp_post_types;
 
+	$new_slug = $slug;
 	$suffix = 0;
 	do	{
 		$check_for_collision = false;
