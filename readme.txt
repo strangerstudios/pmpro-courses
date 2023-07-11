@@ -2,8 +2,8 @@
 Contributors: strangerstudios, paidmembershipspro, kimannwall, jarryd-long
 Tags: course, education, elearning, lms, membership, pmpro
 Requires at least: 5.4
-Tested up to: 6.2
-Stable tag: 1.2.2
+Tested up to: 6.3
+Stable tag: 1.2.3
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -135,6 +135,8 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 1.2.3 - 2023-07-11
+* BUG FIX: Fixed issue where rewrite slug prefix would default to pmpro_course sometimes. The slug prefix should always be course (or course-2/etc if there are other plugins using course already). Flushing the pretty permalink rewrite rules can fix issues.
 
 = 1.2.2 - 2023-06-30 =
 * BUG FIX/ENHANCEMENT: Added open to enable or disable the default module's Course CPT archive.
