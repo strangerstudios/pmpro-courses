@@ -121,6 +121,7 @@ function pmpro_courses_admin_styles( $hook ) {
 			'saving_error_2'   => esc_html__( 'Error saving lesson [2]', 'pmpro-courses' ),
 			'remove_error_1'   => esc_html__( 'Error removing lesson [1]', 'pmpro-courses' ),
 			'remove_error_2'   => esc_html__( 'Error removing lesson [2]', 'pmpro-courses' ),
+			'nonce'			   => wp_create_nonce( 'pmpro_courses_admin_nonce' )
 		);
 
 		wp_localize_script( 'pmpro_courses', 'pmpro_courses', $localize );
