@@ -65,9 +65,9 @@ function pmpro_courses_update_course_callback(){
 
 		if( $_REQUEST['action'] == 'pmpro_courses_update_course' ){
 
-				if ( ! current_user_can( 'edit_posts' ) ) {
-					return;
-				}
+			if ( ! current_user_can( 'edit_posts' ) ) {
+				return;
+			}
 
 			if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'pmpro_courses_admin_nonce' ) ) {
 				wp_die( __( 'Nonce is invalid', 'pmpro-courses' ) );
