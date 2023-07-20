@@ -86,11 +86,11 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 				// Send lessons and other content to the parent course.
 				$meta = get_post_meta( $post->ID );
 
-				$course_id = Sensei()->lesson->get_course_id( $post->ID );
+				$course_id = Sensei()->lesson->get_course_id( $post->ID ) ?: '';
 
 				$is_user_taking_course = Sensei()->course->is_user_enrolled( $course_id, $current_user->ID );
 
-				if ( ! $is_user_taking_course ) {
+				if ( ! $is_user_taking_course && ! empty( $course_id ) ) {
 					$redirect_to = get_permalink( $course_id );
 				} else {
 					$redirect_to = null;
@@ -143,7 +143,7 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 			}
 
 			$is_user_taking_course = Sensei()->course->is_user_enrolled( $post_id, $user_id );
-
+			$course_id = Sensei()->lesson->get_course_id( $post_id ) ?: '';
 			if ( $is_user_taking_course ) {
 				return true;
 			} elseif ( ! empty( $course_id ) ) {
