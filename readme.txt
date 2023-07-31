@@ -135,6 +135,11 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 1.2.4 - 2023-08-01 =
+* SECURITY: Added nonces to adding/removing lessons from the default courses module. (@andrewlimaza)
+* BUG FIX/ENHANCEMENT: Improved compatibility with auto-enrollment/unenrollment with Multiple Memberships Per User. (@dparker1005)
+* BUG FIX: Fixed an issue where Sensei LMS was not redirecting non-members away from the lesson to the course's landing page. (@andrewlimaza)
+
 = 1.2.3 - 2023-07-11
 * BUG FIX: Fixed issue where rewrite slug prefix would default to pmpro_course sometimes. The slug prefix should always be course (or course-2/etc if there are other plugins using course already). Flushing the pretty permalink rewrite rules can fix issues.
 
