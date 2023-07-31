@@ -64,6 +64,15 @@ function pmpro_courses_update_course_callback(){
 	if( !empty( $_REQUEST['action'] ) ){
 
 		if( $_REQUEST['action'] == 'pmpro_courses_update_course' ){
+
+			if ( ! current_user_can( 'edit_posts' ) ) {
+				return;
+			}
+
+			if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'pmpro_courses_admin_nonce' ) ) {
+				wp_die( __( 'Nonce is invalid', 'pmpro-courses' ) );
+			}
+			
 			$course = intval( $_REQUEST['course'] );
 			$lesson = intval( $_REQUEST['lesson'] );
 			$order = intval( $_REQUEST['order'] );
@@ -93,6 +102,15 @@ function pmpro_courses_remove_course_callback(){
 	if( !empty( $_REQUEST['action'] ) ){
 
 		if( $_REQUEST['action'] == 'pmpro_courses_remove_course' ){
+
+			if ( ! current_user_can( 'edit_posts' ) ) {
+				return;
+			}
+
+			// check if nonce is valid
+			if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'pmpro_courses_admin_nonce' ) ) {
+				wp_die( __( 'Nonce is invalid', 'pmpro-courses' ) );
+			}
 
 			$course = intval( $_REQUEST['course'] );
 			$lesson = intval( $_REQUEST['lesson'] );
