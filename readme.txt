@@ -3,7 +3,7 @@ Contributors: strangerstudios, paidmembershipspro, kimannwall, jarryd-long
 Tags: course, education, elearning, lms, membership, pmpro
 Requires at least: 5.4
 Tested up to: 6.3
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -135,6 +135,9 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 1.2.5 - 2023-08-04 =
+* SECURITY: Sanitizing options when saving to the database for activating modules.
+
 = 1.2.4 - 2023-08-01 =
 * SECURITY: Added nonces to adding/removing lessons from the default courses module. (@andrewlimaza)
 * BUG FIX/ENHANCEMENT: Improved compatibility with auto-enrollment/unenrollment with Multiple Memberships Per User. (@dparker1005)
