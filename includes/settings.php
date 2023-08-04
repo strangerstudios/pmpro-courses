@@ -48,7 +48,7 @@ function pmpro_courses_settings_save() {
 
 		foreach( $_REQUEST['pmpro_courses_modules'] as $active_module ) {
 			if ( in_array( $active_module, $all_module_slugs, true ) ) {
-				$active_modules[] = $active_module;
+				$active_modules[] = sanitize_text_field( $active_module );
 			}
 		}
 
