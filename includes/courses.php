@@ -157,7 +157,9 @@ function pmpro_courses_columns_content( $column, $course_id ) {
 			$level_names = array();
 			foreach ( $course_levels as $id ) {
 				$level = pmpro_getLevel( $id );
-				$level_names[] = $level->name;
+				if ( ! empty( $level->id ) ) {
+					$level_names[] = $level->name;
+				}
 			}
 			if ( ! empty( $level_names ) ) {
 				echo implode( ', ', $level_names );
