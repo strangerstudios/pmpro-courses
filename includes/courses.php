@@ -157,7 +157,7 @@ function pmpro_courses_columns_content( $column, $course_id ) {
 			$level_names = array();
 			foreach ( $course_levels as $id ) {
 				$level = pmpro_getLevel( $id );
-				if ( ! empty( $level->id ) ) {
+				if ( ! empty( $level->name ) ) {
 					$level_names[] = $level->name;
 				}
 			}
