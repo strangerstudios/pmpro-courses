@@ -111,7 +111,7 @@ function pmpro_courses_course_cpt_lessons() {
 			</tbody>
 		</table>
 
-		<h3><?php esc_html_e( 'Add Lessons', 'pmpro-courses' ); ?></h3>
+		<h2><?php esc_html_e( 'Add Lessons', 'pmpro-courses' ); ?></h2>
 		<table id="newmeta" class="wp-list-table pmpro-metabox-items">
 			<tbody>
 				<tr>
