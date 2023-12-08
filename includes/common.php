@@ -232,7 +232,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 							<?php
 								if ( is_user_logged_in() && ! empty( $hasaccess ) ) {
 									// Get the status of this lesson.
-									$lesson_status = pmpro_courses_get_user_lesson_status( $lesson->ID, $post->ID, get_current_user_id() );
+									$lesson_status = pmpro_courses_get_user_lesson_status( $lesson->ID, $course_id, get_current_user_id() );
 									if ( ! empty( $lesson_status ) ) {
 										if ( $lesson_status === 'complete' ) {
 											echo '<span class="pmpro_courses-lesson-status pmpro_courses-lesson-status-complete"><i class="dashicons dashicons-yes"></i><span class="pmpro_courses-lesson-status-label">' . esc_html( 'Complete', 'pmpro-courses' ) . '</span></span>';
