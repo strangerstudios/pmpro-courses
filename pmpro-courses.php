@@ -102,6 +102,9 @@ function pmpro_courses_admin_styles( $hook ) {
 		wp_enqueue_style( 'pmpro-courses-admin', plugins_url( 'css/admin.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
 		wp_enqueue_style( 'pmpro-courses-select2', plugins_url( 'css/select2.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
 		wp_enqueue_script( 'pmpro-courses-select2', plugins_url( 'js/select2.js', __FILE__ ), array( 'jquery' ), PMPRO_COURSES_VERSION );
+		//Enqueue jquery ui to allow drag & drop sorting of lessons.
+		wp_enqueue_style( 'pmpro-jquery-ui', plugins_url( 'css/jquery-ui.css', __FILE__ ), array(), PMPRO_COURSES_VERSION );
+		wp_enqueue_script( 'pmpro-jquery-ui', plugins_url( 'js/jquery-ui.js', __FILE__ ), array( 'jquery' ), PMPRO_COURSES_VERSION );
 		wp_register_script( 'pmpro_courses', plugins_url( 'js/admin.js', __FILE__ ), array( 'jquery' ), null, true );
 
 		if ( ! empty( $_GET['post'] ) ) {
