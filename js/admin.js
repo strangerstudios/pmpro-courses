@@ -141,9 +141,15 @@ function pmpro_courses_setup() {
  * @since TBD
  */
 function pmpro_courses_show_notice( message, type )  {
-	jQuery('.components-notice-list.components-editor-notices__dismissible')
-		.empty()
-		.html('<div class="notice notice-' + type + ' is-dismissible"><p>' + message + '</p></div>');
+	jQuery('.components-notice-list.components-editor-notices__dismissible').empty()
+		.append( jQuery( '<div/>' ).addClass( 'notice is-dismissible notice-' + type)
+			.append( jQuery( '<p/>' ).append( message) , jQuery( '<button/>' ).addClass( 'notice-dismiss' )
+				.append( jQuery( '<span />' ).addClass( 'screen-reader-text' ).text( 'Dismiss this notice' ) ) ) );
+
+	// Dismiss the notice when the dismiss button is clicked
+	jQuery( '.notice-dismiss' ).click( function () {
+		jQuery( this ).parent().remove();
+	});
 }
 
 /**
