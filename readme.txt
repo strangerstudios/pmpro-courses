@@ -2,8 +2,8 @@
 Contributors: strangerstudios, paidmembershipspro, kimannwall, jarryd-long
 Tags: course, education, elearning, lms, membership, pmpro
 Requires at least: 5.4
-Tested up to: 6.3
-Stable tag: 1.2.4
+Tested up to: 6.6
+Stable tag: 1.2.6
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -75,7 +75,7 @@ Paid Memberships Pro is built "the WordPress way" with a lean core plugin and ov
 
 Paid Memberships Pro is the flagship product of Stranger Studios. We are a bootstrapped company which grows when membership sites like yours grow. That means we focus our entire company towards helping you succeed.
 
-[Try Paid Memberships Pro entirely for free on WordPress.org](https://wordpress.org/plugins/paid-memberships-pro/) and see why 100,000+ sites trust us to help them #GetPaid.
+[Try Paid Memberships Pro entirely for free](https://www.paidmembershipspro.com) and see why 100,000+ sites trust us to help them #GetPaid.
 
 ### Read More
 
@@ -87,7 +87,7 @@ Want more information on protecting course content with Paid Memberships Pro, Le
 
 == Installation ==
 
-Note: You must have [Paid Memberships Pro](https://wordpress.org/plugins/paid-memberships-pro/) installed and activated on your site.
+Note: You must have [Paid Memberships Pro](https://www.paidmembershipspro.com) installed and activated on your site.
 
 ### Install PMPro Courses from within WordPress
 
@@ -135,6 +135,11 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 1.2.6 - 2024-10-17 =
+* FEATURE: Now updating the plugin from paidmembershipspro.com.
+* ENHANCEMENT: Updated translation files bundled with the plugin.
+* ENHANCEMENT: Improved translation strings for the plugin. (Thanks @DAnn2012)
+
 = 1.2.5 - 2023-08-04 =
 * SECURITY: Sanitizing options when saving to the database for activating modules.
 

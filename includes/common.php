@@ -235,9 +235,9 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 									$lesson_status = pmpro_courses_get_user_lesson_status( $lesson->ID, $post->ID, get_current_user_id() );
 									if ( ! empty( $lesson_status ) ) {
 										if ( $lesson_status === 'complete' ) {
-											echo '<span class="pmpro_courses-lesson-status pmpro_courses-lesson-status-complete"><i class="dashicons dashicons-yes"></i><span class="pmpro_courses-lesson-status-label">' . esc_html( 'Complete', 'pmpro-courses' ) . '</span></span>';
+											echo '<span class="pmpro_courses-lesson-status pmpro_courses-lesson-status-complete"><i class="dashicons dashicons-yes"></i><span class="pmpro_courses-lesson-status-label">' . esc_html__( 'Complete', 'pmpro-courses' ) . '</span></span>';
 										} else {
-											echo '<span class="pmpro_courses-lesson-status pmpro_courses-lesson-status-incomplete"><i class="dashicons dashicons-marker"></i><span class="pmpro_courses-lesson-status-label">' . esc_html( 'Complete', 'pmpro-courses' ) . '</span></span>';
+											echo '<span class="pmpro_courses-lesson-status pmpro_courses-lesson-status-incomplete"><i class="dashicons dashicons-marker"></i><span class="pmpro_courses-lesson-status-label">' . esc_html__( 'Complete', 'pmpro-courses' ) . '</span></span>';
 										}
 									}
 								}
