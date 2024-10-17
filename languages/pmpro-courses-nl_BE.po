@@ -1,0 +1,522 @@
+# Translation of Plugins - Premium Courses &amp; eLearning with Paid Memberships Pro for LearnDash, LifterLMS, Sensei LMS &amp; TutorLMS - Stable (latest release) in Dutch (Belgium)
+# This file is distributed under the same license as the Plugins - Premium Courses &amp; eLearning with Paid Memberships Pro for LearnDash, LifterLMS, Sensei LMS &amp; TutorLMS - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2024-05-02 18:50:14+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/4.0.1\n"
+"Language: nl_BE\n"
+"Project-Id-Version: Plugins - Premium Courses &amp; eLearning with Paid Memberships Pro for LearnDash, LifterLMS, Sensei LMS &amp; TutorLMS - Stable (latest release)\n"
+
+#: includes/courses.php:73 includes/courses.php:112
+msgid "Nonce is invalid"
+msgstr "Nonce is ongeldig"
+
+#: includes/settings.php:12
+msgid "Course Settings"
+msgstr "Cursusinstellingen"
+
+#: includes/modules/default.php:135
+msgid "Enable Archive Page for the Default Courses CPT?"
+msgstr "Archiefpagina inschakelen voor de standaard Cursussen CPT?"
+
+#: pmpro-courses.php:119
+msgid "Adding..."
+msgstr "Aan het toevoegen..."
+
+#: blocks/build/my-courses/block.json
+msgctxt "block description"
+msgid "Show a list of courses a member has access."
+msgstr "Een lijst weergeven met cursussen waartoe een lid toegang heeft."
+
+#: blocks/build/my-courses/block.json
+msgctxt "block title"
+msgid "PMPro Courses: My Courses"
+msgstr "PMPro cursussen: mijn cursussen"
+
+#: blocks/build/all-courses/block.json
+msgctxt "block description"
+msgid "Show a list of all available PMPro courses."
+msgstr "Toon een lijst met alle beschikbare PMPro cursussen."
+
+#: blocks/build/all-courses/block.json
+msgctxt "block title"
+msgid "PMPro Courses: All Courses"
+msgstr "PMPro cursussen: alle cursussen"
+
+#: blocks/build/my-courses/index.js:1
+msgid "My Courses"
+msgstr "Mijn cursussen"
+
+#: blocks/build/all-courses/index.js:1 blocks/build/my-courses/index.js:1
+msgid "Paid Memberships Pro Courses"
+msgstr "Paid Memberships Pro cursussen"
+
+#: blocks/build/all-courses/index.js:1 blocks/build/my-courses/index.js:1
+msgid "How many courses should be displayed. Set the value to -1 to show all courses."
+msgstr "Hoeveel cursussen moeten getoond worden. Stel de waarde in op -1 om alle cursussen weer te geven."
+
+#: blocks/build/all-courses/index.js:1 blocks/build/my-courses/index.js:1
+msgid "Limit"
+msgstr "Beperk"
+
+#: includes/modules/tutorlms.php:44
+msgid "Read the Tutor LMS Integration documentation &raquo;"
+msgstr "Lees de documentatie over de integratie van Tutor LMS &raquo;"
+
+#: includes/modules/tutorlms.php:43
+msgid "Integrate with the Tutor LMS plugin for WordPress."
+msgstr "Integreer met de Tutor LMS plugin voor WordPress."
+
+#: includes/modules/tutorlms.php:41
+msgid "Tutor LMS"
+msgstr "Tutor LMS"
+
+#: includes/modules/senseilms.php:44
+msgid "Read the Sensei LMS Integration documentation &raquo;"
+msgstr "Lees de documentatie over de Sensei LMS integratie &raquo;"
+
+#: includes/modules/senseilms.php:43
+msgid "Integrate with the Sensei LMS plugin for WordPress."
+msgstr "Integreer met de Sensei LMS plugin voor WordPress."
+
+#: includes/modules/senseilms.php:41
+msgid "Sensei LMS"
+msgstr "Sensei LMS"
+
+#: pmpro-courses.php:123
+msgid "Error removing lesson [2]"
+msgstr "Fout bij verwijderen van les [2]"
+
+#: pmpro-courses.php:122
+msgid "Error removing lesson [1]"
+msgstr "Fout bij verwijderen van les [1]"
+
+#: pmpro-courses.php:121
+msgid "Error saving lesson [2]"
+msgstr "Fout bij opslaan van les [2]"
+
+#: pmpro-courses.php:120
+msgid "Error saving lesson [1]"
+msgstr "Fout bij opslaan van les [1]"
+
+#: pmpro-courses.php:118
+msgid "Saving..."
+msgstr "Aan het opslaan..."
+
+#: pmpro-courses.php:117
+msgid "Save"
+msgstr "Opslaan"
+
+#: includes/shortcodes/my-courses.php:17
+msgid "Log in to view your courses »"
+msgstr "Login om je cursussen te bekijken »"
+
+#: includes/settings.php:71
+msgid "Settings saved successfully."
+msgstr "Instellingen succesvol opgeslagen."
+
+#: includes/settings.php:16
+msgid "Paid Memberships Pro Courses - Add New Lesson"
+msgstr "Paid Memberships Pro Courses - nieuwe les toevoegen"
+
+#: includes/settings.php:12 includes/settings.php:20
+msgid "Paid Memberships Pro Courses - Settings"
+msgstr "Paid Memberships Pro Courses - instellingen"
+
+#: includes/progress.php:123
+msgid "Mark Complete"
+msgstr "Markeer afgerond"
+
+#: includes/progress.php:121
+msgid "Completed"
+msgstr "Afgerond"
+
+#: includes/post-types/lessons.php:85
+msgid "None"
+msgstr "Geen"
+
+#: includes/post-types/lessons.php:45
+msgid "Lessons for Paid Memberships Pro Courses"
+msgstr "Lessen voor Paid Memberships Pro cursussen"
+
+#: includes/post-types/lessons.php:35
+msgid "Filter Lessons list"
+msgstr "Lessenlijst filteren"
+
+#: includes/post-types/lessons.php:34
+msgid "Lessons list navigation"
+msgstr "Navigatie lessenlijst"
+
+#: includes/post-types/lessons.php:33
+msgid "PMPro Lessons list"
+msgstr "PMPro lessen lijst"
+
+#: includes/post-types/lessons.php:32
+msgid "Uploaded to this lesson"
+msgstr "Geüpload naar deze les"
+
+#: includes/post-types/lessons.php:31
+msgid "Insert into lesson"
+msgstr "Invoegen in les"
+
+#: includes/post-types/lessons.php:30
+msgid "Use as lesson featured image"
+msgstr "Gebruik als uitgelichte afbeelding van de les"
+
+#: includes/post-types/lessons.php:28
+msgid "Set lesson featured image"
+msgstr "Uitgelichte afbeelding voor les instellen"
+
+#: includes/post-types/lessons.php:26
+msgid "Lesson not found in Trash"
+msgstr "Les niet gevonden in prullenbak"
+
+#: includes/post-types/lessons.php:25
+msgid "Lesson not found"
+msgstr "Les niet gevonden"
+
+#: includes/post-types/lessons.php:24
+msgid "Search Lesson"
+msgstr "Zoek les"
+
+#: includes/post-types/lessons.php:23
+msgid "View Lessons"
+msgstr "Lessen bekijken"
+
+#: includes/post-types/lessons.php:22
+msgid "View Lesson"
+msgstr "Les bekijken"
+
+#: includes/post-types/lessons.php:21
+msgid "Update Lesson"
+msgstr "Les updaten"
+
+#: includes/post-types/lessons.php:20
+msgid "Edit Lesson"
+msgstr "Les bewerken"
+
+#: includes/post-types/lessons.php:19
+msgid "New Lesson"
+msgstr "Nieuwe les"
+
+#: includes/post-types/lessons.php:17 includes/post-types/lessons.php:18
+#: includes/settings.php:16
+msgid "Add New Lesson"
+msgstr "Nieuwe les toevoegen"
+
+#: includes/post-types/lessons.php:16
+msgid "All Lessons"
+msgstr "Alle lessen"
+
+#: includes/post-types/lessons.php:15
+msgid "Lesson Attributes"
+msgstr "Les attributen"
+
+#: includes/post-types/lessons.php:14
+msgid "Lesson Archives"
+msgstr "Les archieven"
+
+#: includes/post-types/lessons.php:11
+msgctxt "Post Type Singular Name"
+msgid "Lesson"
+msgstr "Les"
+
+#: includes/post-types/lessons.php:10
+msgctxt "Post Type General Name"
+msgid "Lessons"
+msgstr "Lessen"
+
+#: includes/post-types/courses.php:164
+msgid "remove"
+msgstr "verwijderen"
+
+#: includes/post-types/courses.php:162
+msgid "edit"
+msgstr "bewerken"
+
+#: includes/post-types/courses.php:160
+msgid "Edit"
+msgstr "Bewerken"
+
+#: includes/post-types/courses.php:139
+msgid "Add to Course"
+msgstr "Toevoegen aan cursus"
+
+#: includes/post-types/courses.php:119 includes/post-types/lessons.php:13
+#: includes/post-types/lessons.php:44
+msgid "Lesson"
+msgstr "Les"
+
+#: includes/post-types/courses.php:114
+msgid "Add Lessons"
+msgstr "Lessen toevoegen"
+
+#: includes/post-types/courses.php:105
+msgid "Actions"
+msgstr "Acties"
+
+#: includes/post-types/courses.php:104
+msgid "Title"
+msgstr "Titel"
+
+#: includes/post-types/courses.php:103 includes/post-types/courses.php:135
+msgid "Order"
+msgstr "Volgorde"
+
+#: includes/post-types/courses.php:69
+msgid "Course Categories"
+msgstr "Cursus categorieën"
+
+#: includes/post-types/courses.php:43
+msgid "Courses and lessons for members."
+msgstr "Cursussen en lessen voor leden."
+
+#: includes/post-types/courses.php:33
+msgid "Filter Courses list"
+msgstr "Cursussenlijst filteren"
+
+#: includes/post-types/courses.php:32
+msgid "Courses list navigation"
+msgstr "Navigatie lijst met cursussen"
+
+#: includes/post-types/courses.php:31
+msgid "PMPro Courses list"
+msgstr "PMPro cursussen lijst"
+
+#: includes/post-types/courses.php:30
+msgid "Uploaded to this course"
+msgstr "Geüpload naar deze cursus"
+
+#: includes/post-types/courses.php:29
+msgid "Insert into course"
+msgstr "Invoegen in cursus"
+
+#: includes/post-types/courses.php:28
+msgid "Use as course featured image"
+msgstr "Gebruik als uitgelichte afbeelding van de cursus"
+
+#: includes/post-types/courses.php:27 includes/post-types/lessons.php:29
+msgid "Remove featured image"
+msgstr "Uitgelichte afbeelding verwijderen"
+
+#: includes/post-types/courses.php:26
+msgid "Set course featured image"
+msgstr "Uitgelichte afbeelding voor cursus instellen"
+
+#: includes/post-types/courses.php:25 includes/post-types/lessons.php:27
+msgid "Featured Image"
+msgstr "Uitgelichte afbeelding"
+
+#: includes/post-types/courses.php:24
+msgid "Course not found in Trash"
+msgstr "Cursus niet gevonden in prullenbak"
+
+#: includes/post-types/courses.php:23
+msgid "Course not found"
+msgstr "Cursus niet gevonden"
+
+#: includes/post-types/courses.php:22
+msgid "Search Courses"
+msgstr "Zoek cursussen"
+
+#: includes/post-types/courses.php:21
+msgid "View Courses"
+msgstr "Cursussen bekijken"
+
+#: includes/post-types/courses.php:20
+msgid "View Course"
+msgstr "Cursus bekijken"
+
+#: includes/post-types/courses.php:19
+msgid "Update Course"
+msgstr "Cursus updaten"
+
+#: includes/post-types/courses.php:18
+msgid "Edit Course"
+msgstr "Cursus bewerken"
+
+#: includes/post-types/courses.php:17
+msgid "New Course"
+msgstr "Nieuwe cursus"
+
+#: includes/post-types/courses.php:15 includes/post-types/courses.php:16
+msgid "Add New Course"
+msgstr "Nieuwe cursus toevoegen"
+
+#: includes/post-types/courses.php:14 blocks/build/all-courses/index.js:1
+msgid "All Courses"
+msgstr "Alle cursussen"
+
+#: includes/post-types/courses.php:13
+msgid "Course Attributes"
+msgstr "Cursus kenmerken"
+
+#: includes/post-types/courses.php:12
+msgid "Course Archives"
+msgstr "Cursus archieven"
+
+#: includes/post-types/courses.php:9
+msgctxt "Post Type Singular Name"
+msgid "Course"
+msgstr "Cursus"
+
+#: includes/post-types/courses.php:8
+msgctxt "Post Type General Name"
+msgid "Courses"
+msgstr "Cursussen"
+
+#: includes/modules/lifterlms.php:38
+msgid "Read the LifterLMS Integration documentation &raquo;"
+msgstr "Lees de LifterLMS integratie documentatie &raquo;"
+
+#: includes/modules/lifterlms.php:37
+msgid "Integrate with the LifterLMS plugin for WordPress."
+msgstr "Integreer met de LifterLMS plugin voor WordPress."
+
+#: includes/modules/lifterlms.php:35
+msgid "LifterLMS"
+msgstr "LifterLMS"
+
+#: includes/modules/learndash.php:51 includes/modules/lifterlms.php:49
+#: includes/modules/senseilms.php:55 includes/modules/tutorlms.php:55
+#: includes/post-types/courses.php:83
+msgid "Require Membership"
+msgstr "Vereis lidmaatschap"
+
+#: includes/modules/learndash.php:40
+msgid "Read the LearnDash Integration documentation &raquo;"
+msgstr "Lees de LearnDash Integratie documentatie &raquo;"
+
+#: includes/modules/learndash.php:39
+msgid "Integrate with the LearnDash plugin for WordPress."
+msgstr "Integreer met de LearnDash plugin voor WordPress."
+
+#: includes/modules/learndash.php:37
+msgid "LearnDash"
+msgstr "LearnDash"
+
+#: includes/modules/default.php:30
+msgid "Unserializing instances of this class is forbidden."
+msgstr "Unserializing instanties van deze klasse is verboden."
+
+#: includes/lessons.php:48
+msgid "&#8212;"
+msgstr "&#8212;"
+
+#: includes/lessons.php:38 includes/post-types/courses.php:11
+#: includes/post-types/courses.php:42 includes/post-types/lessons.php:71
+#: includes/post-types/lessons.php:80
+msgid "Course"
+msgstr "Cursus"
+
+#. translators: %s: link to the course for this lesson.
+#: includes/lessons.php:23
+msgid "Course: %s"
+msgstr "Cursus: %s"
+
+#: includes/courses.php:135
+msgid "Level"
+msgstr "Niveau"
+
+#: includes/courses.php:133
+msgid "Lesson Count"
+msgstr "Les aantal"
+
+#: includes/common.php:217 includes/post-types/courses.php:85
+#: includes/post-types/lessons.php:12
+msgid "Lessons"
+msgstr "Lessen"
+
+#: includes/common.php:149 includes/courses.php:149
+msgid "%s Lesson"
+msgid_plural "%s Lessons"
+msgstr[0] "%s Les"
+msgstr[1] "%s Lessen"
+
+#: includes/common.php:136 includes/post-types/courses.php:10
+msgid "Courses"
+msgstr "Cursussen"
+
+#: includes/common.php:12
+msgid "Read the Default Course and Lesson documentation &raquo;"
+msgstr "Lees de standaardcursus en lesdocumentatie &raquo;"
+
+#: includes/common.php:11
+msgid "The Course and Lesson post types bundled with PMPro Courses."
+msgstr "De typen cursus- en lesberichten gebundeld met PMPro cursussen."
+
+#: includes/common.php:9
+msgid "Default"
+msgstr "Standaard"
+
+#: includes/adminpages/settings.php:51
+msgid "Documentation"
+msgstr "Documentatie"
+
+#: includes/adminpages/settings.php:48
+msgid "Save Settings"
+msgstr "Instellingen opslaan"
+
+#: includes/adminpages/settings.php:9
+msgid "Modules"
+msgstr "Modules"
+
+#: includes/adminpages/settings.php:7
+msgid "Which modules would you like to enable?"
+msgstr "Welke modules wil je inschakelen?"
+
+#: includes/adminpages/settings.php:5
+msgid "Courses for Membership Settings"
+msgstr "Cursussen voor lidmaatschapsinstellingen"
+
+#: includes/admin.php:90 includes/adminpages/settings.php:51
+msgid "Support"
+msgstr "Ondersteuning"
+
+#: includes/admin.php:90
+msgid "Visit Customer Support Forum"
+msgstr "Bezoek het klantondersteuningsforum"
+
+#: includes/admin.php:89
+msgid "Docs"
+msgstr "Docs"
+
+#: includes/admin.php:89
+msgid "View Documentation"
+msgstr "Documentatie bekijken"
+
+#: includes/admin.php:71 includes/settings.php:20
+msgid "Settings"
+msgstr "Instellingen"
+
+#: includes/admin.php:51
+msgid "Click here to add your first course."
+msgstr "Klik hier om je eerste cursus toe te voegen."
+
+#: includes/admin.php:49
+msgid "Thank you for activating."
+msgstr "Bedankt voor het activeren."
+
+#. Author URI of the plugin
+msgid "https://www.paidmembershipspro.com"
+msgstr "https://www.paidmembershipspro.com"
+
+#. Author of the plugin
+msgid "Paid Memberships Pro"
+msgstr "Paid Memberships Pro"
+
+#. Description of the plugin
+msgid "Create courses and lessons for members. Integrates LMS plugins with Paid Memberships Pro."
+msgstr "Maak cursussen en lessen voor leden. Integreert LMS plugins met Paid Memberships Pro."
+
+#. Plugin URI of the plugin
+msgid "https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/"
+msgstr "https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/"
+
+#. Plugin Name of the plugin
+msgid "Paid Memberships Pro - Courses for Membership Add On"
+msgstr "Paid Memberships Pro - Courses for Membership Add On"
