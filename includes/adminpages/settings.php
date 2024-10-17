@@ -6,7 +6,7 @@
 	</h1>
 	<p><?php esc_html_e( 'Which modules would you like to enable?', 'pmpro-courses' ); ?></p>
 	<form method='POST'>
-		<h3><?php esc_html_e( 'Modules', 'pmpro-courses' );?></h3>
+		<h2><?php esc_html_e( 'Modules', 'pmpro-courses' );?></h2>
 		<table class='form-table pmpro-courses'>	
 		<?php
 			$modules = pmpro_courses_get_modules();            

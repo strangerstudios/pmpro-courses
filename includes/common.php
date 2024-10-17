@@ -214,7 +214,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 	// Build the HTML to output a list of lessons.
 	?>
 	<div class="pmpro_courses pmpro_courses-lessons <?php echo esc_attr( $pmpro_courses_lesson_access_class ); ?>">
-		<h3 class="pmpro_courses-title"><?php esc_html_e( 'Lessons', 'pmpro-courses' ); ?></h3>
+		<h2 class="pmpro_courses-title"><?php esc_html_e( 'Lessons', 'pmpro-courses' ); ?></h2>
 		<ol class="pmpro_courses-list">
 			<?php
 				foreach( $lessons as $lesson ) { ?>
