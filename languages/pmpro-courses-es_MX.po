@@ -1,17 +1,21 @@
-# Translation of Plugins - Premium Courses &amp; eLearning with Paid Memberships Pro for LearnDash, LifterLMS, Sensei LMS &amp; TutorLMS - Stable (latest release) in Spanish (Mexico)
-# This file is distributed under the same license as the Plugins - Premium Courses &amp; eLearning with Paid Memberships Pro for LearnDash, LifterLMS, Sensei LMS &amp; TutorLMS - Stable (latest release) package.
+# Copyright (C) 2024 Paid Memberships Pro
+# This file is distributed under the same license as the Paid Memberships Pro - Courses for Membership Add On plugin.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-06-05 17:34:08+0000\n"
+"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 1.2.6\n"
+"Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
+"Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
+"Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: GlotPress/4.0.1\n"
-"Language: es_MX\n"
-"Project-Id-Version: Plugins - Premium Courses &amp; eLearning with Paid Memberships Pro for LearnDash, LifterLMS, Sensei LMS &amp; TutorLMS - Stable (latest release)\n"
+"POT-Creation-Date: 2024-10-17T14:37:44+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.11.0\n"
+"X-Domain: pmpro-courses\n"
 
-#: includes/courses.php:73 includes/courses.php:112
+#: includes/courses.php:73
+#: includes/courses.php:112
 msgid "Nonce is invalid"
 msgstr "Nonce no válido"
 
@@ -28,38 +32,52 @@ msgid "Adding..."
 msgstr "Añadiendo..."
 
 #: blocks/build/my-courses/block.json
+#: blocks/src/my-courses/block.json
 msgctxt "block description"
 msgid "Show a list of courses a member has access."
 msgstr "Muestra una lista de los cursos a los que un miembro tiene acceso."
 
 #: blocks/build/my-courses/block.json
+#: blocks/src/my-courses/block.json
 msgctxt "block title"
 msgid "PMPro Courses: My Courses"
 msgstr "PMPro Cursos: Mis Cursos"
 
 #: blocks/build/all-courses/block.json
+#: blocks/src/all-courses/block.json
 msgctxt "block description"
 msgid "Show a list of all available PMPro courses."
 msgstr "Muestra una lista de todos los cursos de PMPro disponibles."
 
 #: blocks/build/all-courses/block.json
+#: blocks/src/all-courses/block.json
 msgctxt "block title"
 msgid "PMPro Courses: All Courses"
 msgstr "PMPro Cursos: Todos los cursos"
 
 #: blocks/build/my-courses/index.js:1
+#: blocks/src/my-courses/edit.js:25
 msgid "My Courses"
 msgstr "Mis cursos"
 
-#: blocks/build/all-courses/index.js:1 blocks/build/my-courses/index.js:1
+#: blocks/build/all-courses/index.js:1
+#: blocks/build/my-courses/index.js:1
+#: blocks/src/all-courses/edit.js:24
+#: blocks/src/my-courses/edit.js:24
 msgid "Paid Memberships Pro Courses"
 msgstr "Cursos de Paid Memberships Pro"
 
-#: blocks/build/all-courses/index.js:1 blocks/build/my-courses/index.js:1
+#: blocks/build/all-courses/index.js:1
+#: blocks/build/my-courses/index.js:1
+#: blocks/src/all-courses/edit.js:19
+#: blocks/src/my-courses/edit.js:19
 msgid "How many courses should be displayed. Set the value to -1 to show all courses."
 msgstr "¿Cuántos cursos deben mostrarse? Establezca el valor en -1 para mostrar todos los cursos."
 
-#: blocks/build/all-courses/index.js:1 blocks/build/my-courses/index.js:1
+#: blocks/build/all-courses/index.js:1
+#: blocks/build/my-courses/index.js:1
+#: blocks/src/all-courses/edit.js:16
+#: blocks/src/my-courses/edit.js:16
 msgid "Limit"
 msgstr "Límite"
 
@@ -123,7 +141,8 @@ msgstr "Ajustes guardados correctamente."
 msgid "Paid Memberships Pro Courses - Add New Lesson"
 msgstr "Cursos de Paid Memberships Pro - Añadir Nueva Lección"
 
-#: includes/settings.php:12 includes/settings.php:20
+#: includes/settings.php:12
+#: includes/settings.php:20
 msgid "Paid Memberships Pro Courses - Settings"
 msgstr "Cursos de Paid Memberships Pro - Ajustes"
 
@@ -203,7 +222,8 @@ msgstr "Editar lección"
 msgid "New Lesson"
 msgstr "Nueva lección"
 
-#: includes/post-types/lessons.php:17 includes/post-types/lessons.php:18
+#: includes/post-types/lessons.php:17
+#: includes/post-types/lessons.php:18
 #: includes/settings.php:16
 msgid "Add New Lesson"
 msgstr "Añadir nueva lección"
@@ -246,7 +266,8 @@ msgstr "Editar"
 msgid "Add to Course"
 msgstr "Añadir al curso"
 
-#: includes/post-types/courses.php:119 includes/post-types/lessons.php:13
+#: includes/post-types/courses.php:119
+#: includes/post-types/lessons.php:13
 #: includes/post-types/lessons.php:44
 msgid "Lesson"
 msgstr "Lección"
@@ -263,7 +284,8 @@ msgstr "Acciones"
 msgid "Title"
 msgstr "Título"
 
-#: includes/post-types/courses.php:103 includes/post-types/courses.php:135
+#: includes/post-types/courses.php:103
+#: includes/post-types/courses.php:135
 msgid "Order"
 msgstr "Orden"
 
@@ -299,7 +321,8 @@ msgstr "Insertar en el curso"
 msgid "Use as course featured image"
 msgstr "Usar como imagen destacada en el curso"
 
-#: includes/post-types/courses.php:27 includes/post-types/lessons.php:29
+#: includes/post-types/courses.php:27
+#: includes/post-types/lessons.php:29
 msgid "Remove featured image"
 msgstr "Eliminar la imagen destacada"
 
@@ -307,7 +330,8 @@ msgstr "Eliminar la imagen destacada"
 msgid "Set course featured image"
 msgstr "Establecer imagen destacada del curso"
 
-#: includes/post-types/courses.php:25 includes/post-types/lessons.php:27
+#: includes/post-types/courses.php:25
+#: includes/post-types/lessons.php:27
 msgid "Featured Image"
 msgstr "Imagen destacada"
 
@@ -343,11 +367,14 @@ msgstr "Editar curso"
 msgid "New Course"
 msgstr "Nuevo curso"
 
-#: includes/post-types/courses.php:15 includes/post-types/courses.php:16
+#: includes/post-types/courses.php:15
+#: includes/post-types/courses.php:16
 msgid "Add New Course"
 msgstr "Añadir nuevo curso"
 
-#: includes/post-types/courses.php:14 blocks/build/all-courses/index.js:1
+#: includes/post-types/courses.php:14
+#: blocks/build/all-courses/index.js:1
+#: blocks/src/all-courses/edit.js:25
 msgid "All Courses"
 msgstr "Todos los cursos"
 
@@ -381,8 +408,10 @@ msgstr "Integrar con el plugin LifterLMS para WordPress."
 msgid "LifterLMS"
 msgstr "LifterLMS"
 
-#: includes/modules/learndash.php:51 includes/modules/lifterlms.php:49
-#: includes/modules/senseilms.php:55 includes/modules/tutorlms.php:55
+#: includes/modules/learndash.php:51
+#: includes/modules/lifterlms.php:49
+#: includes/modules/senseilms.php:55
+#: includes/modules/tutorlms.php:55
 #: includes/post-types/courses.php:83
 msgid "Require Membership"
 msgstr "Requerir membresía"
@@ -407,8 +436,10 @@ msgstr "Deserialización de instancias de esta clase prohibida"
 msgid "&#8212;"
 msgstr "&#8212;"
 
-#: includes/lessons.php:38 includes/post-types/courses.php:11
-#: includes/post-types/courses.php:42 includes/post-types/lessons.php:71
+#: includes/lessons.php:38
+#: includes/post-types/courses.php:11
+#: includes/post-types/courses.php:42
+#: includes/post-types/lessons.php:71
 #: includes/post-types/lessons.php:80
 msgid "Course"
 msgstr "Curso"
@@ -426,18 +457,21 @@ msgstr "Nivel"
 msgid "Lesson Count"
 msgstr "Número de lecciones"
 
-#: includes/common.php:217 includes/post-types/courses.php:85
+#: includes/common.php:217
+#: includes/post-types/courses.php:85
 #: includes/post-types/lessons.php:12
 msgid "Lessons"
 msgstr "Lecciones"
 
-#: includes/common.php:149 includes/courses.php:149
+#: includes/common.php:149
+#: includes/courses.php:149
 msgid "%s Lesson"
 msgid_plural "%s Lessons"
-msgstr[0] "Lección de %s"
-msgstr[1] "Lecciones de %s"
+msgstr[0] ""
+msgstr[1] ""
 
-#: includes/common.php:136 includes/post-types/courses.php:10
+#: includes/common.php:136
+#: includes/post-types/courses.php:10
 msgid "Courses"
 msgstr "Cursos"
 
@@ -473,7 +507,8 @@ msgstr "¿Qué módulos le gustaría activar?"
 msgid "Courses for Membership Settings"
 msgstr "Cursos para ajustes de membresía"
 
-#: includes/admin.php:90 includes/adminpages/settings.php:51
+#: includes/admin.php:90
+#: includes/adminpages/settings.php:51
 msgid "Support"
 msgstr "Soporte"
 
@@ -489,7 +524,8 @@ msgstr "Documentación"
 msgid "View Documentation"
 msgstr "Ver la documentación"
 
-#: includes/admin.php:71 includes/settings.php:20
+#: includes/admin.php:71
+#: includes/settings.php:20
 msgid "Settings"
 msgstr "Ajustes"
 
@@ -502,21 +538,31 @@ msgid "Thank you for activating."
 msgstr "Gracias por activar."
 
 #. Author URI of the plugin
+#: pmpro-courses.php
 msgid "https://www.paidmembershipspro.com"
 msgstr "https://www.paidmembershipspro.com"
 
 #. Author of the plugin
+#: pmpro-courses.php
 msgid "Paid Memberships Pro"
 msgstr "Paid Memberships Pro"
 
 #. Description of the plugin
+#: pmpro-courses.php
 msgid "Create courses and lessons for members. Integrates LMS plugins with Paid Memberships Pro."
 msgstr "Crear cursos y lecciones para miembros. Integra plugins de LMS con Paid Memberships Pro."
 
 #. Plugin URI of the plugin
+#: pmpro-courses.php
 msgid "https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/"
 msgstr "https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/"
 
 #. Plugin Name of the plugin
+#: pmpro-courses.php
 msgid "Paid Memberships Pro - Courses for Membership Add On"
 msgstr "Paid Memberships Pro - Cursos para complemento de membresía"
+
+#: includes/common.php:238
+#: includes/common.php:240
+msgid "Complete"
+msgstr ""
