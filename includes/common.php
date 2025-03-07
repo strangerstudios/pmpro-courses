@@ -310,7 +310,7 @@ function pmpro_courses_unique_rewrite_slug( $slug ) {
  *
  * @param string $sql The SQL query string.
  * @return string The modified SQL query string.
- * @since TBD
+ * @since 1.2.7
  */
 function pmpro_courses_adjacent_post_where( $sql ) {
 	// Bail if not a main query or not a PMPro Lesson post type.
@@ -337,7 +337,7 @@ function pmpro_courses_adjacent_post_where( $sql ) {
    *
    * @param string $sql The SQL query string.
    * @return string The modified SQL query string.
-   * @since TBD
+   * @since 1.2.7
    */
   function pmpro_courses_adjacent_post_sort( $sql ) {
 	// Bail if not a main query or not a PMPro Lesson post type.

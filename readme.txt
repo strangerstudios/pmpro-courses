@@ -2,8 +2,8 @@
 Contributors: strangerstudios, paidmembershipspro, kimannwall, jarryd-long
 Tags: course, education, elearning, lms, membership, pmpro
 Requires at least: 5.4
-Tested up to: 6.6
-Stable tag: 1.2.6
+Tested up to: 6.8
+Stable tag: 1.2.7
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -135,6 +135,12 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 1.2.7 - 2025-03-07 =
+* ENHANCEMENT: Updated `<h3>` tags to `<h2>` tags for better accessibility. #57 (@dwanjuki)
+* BUG FIX/ENHANCEMENT: Pagination on lesson pages now orders lessons by menu order. #69 (@MaximilianoRicoTabo)
+* BUG FIX: Fixed an issue where the lesson status may not show correctly in lessons lists. #61 (@kimcoleman)
+* BUG FIX: Fixed a PHP warning that could occur when viewing the Courses List Table after a level has been deleted. #62 (@kimcoleman)
+
 = 1.2.6 - 2024-10-17 =
 * FEATURE: Now updating the plugin from paidmembershipspro.com.
 * ENHANCEMENT: Updated translation files bundled with the plugin.
