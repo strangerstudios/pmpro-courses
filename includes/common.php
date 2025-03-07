@@ -304,3 +304,52 @@ function pmpro_courses_unique_rewrite_slug( $slug ) {
 
 	return $new_slug;
 }
+
+/**
+ * Replace the SQL query where clause string to sort adjacent posts by menu_order instead of post_date.
+ *
+ * @param string $sql The SQL query string.
+ * @return string The modified SQL query string.
+ * @since TBD
+ */
+function pmpro_courses_adjacent_post_where( $sql ) {
+	// Bail if not a main query or not a PMPro Lesson post type.
+	if ( !is_main_query() || get_post_type() !== 'pmpro_lesson' ) {
+		return $sql;
+	}
+
+	//get current post
+	$the_post = get_post( get_the_ID() );
+	$patterns = array( '/post_date/', '/\'[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\'/' );
+	$replacements = array( 'menu_order', $the_post->menu_order );
+
+	// Replace post_date with menu_order
+	$sql = preg_replace( $patterns, $replacements, $sql );
+	//Ensure the query fetches only lessons that are children of the same course.
+	return $sql . ' AND p.post_parent = ' . $the_post->post_parent;
+  }
+
+  add_filter( 'get_next_post_where', 'pmpro_courses_adjacent_post_where' );
+  add_filter( 'get_previous_post_where', 'pmpro_courses_adjacent_post_where' );
+
+  /**
+   * Replace the SQL query order by string to sort adjacent posts by menu_order instead of post_date.
+   *
+   * @param string $sql The SQL query string.
+   * @return string The modified SQL query string.
+   * @since TBD
+   */
+  function pmpro_courses_adjacent_post_sort( $sql ) {
+	// Bail if not a main query or not a PMPro Lesson post type.
+	if ( !is_main_query() || get_post_type() !== 'pmpro_lesson' ) {
+		return $sql;
+	}
+
+	$pattern = '/post_date/';
+	$replacement = 'menu_order';
+	// Replace post_date with menu_order
+	return preg_replace( $pattern, $replacement, $sql );
+  }
+
+  add_filter( 'get_next_post_sort', 'pmpro_courses_adjacent_post_sort' );
+  add_filter( 'get_previous_post_sort', 'pmpro_courses_adjacent_post_sort' );
