@@ -152,7 +152,7 @@ function pmpro_courses_get_lessons_table_html( $lessons ){
 		foreach ( $lessons as $lesson ) {
 
 			$ret .= "<tr data-lesson_id='" . intval( $lesson->ID ) . "'>";
-			$ret .= "<td>" . esc_html( $lesson->menu_order) . "</td>";
+			$ret .= "<td class='pmpro-lesson-order'>" . esc_html( $lesson->menu_order) . "</td>";
 			$ret .= "<td><a href='".admin_url( 'post.php?post=' . esc_attr( intval( $lesson->ID ) ) . '&action=edit' ) . "' title='" . esc_attr__('Edit', 'pmpro-courses') .' '. esc_attr( $lesson->post_title ). "' target='_BLANK'>". esc_html( $lesson->post_title ) ."</a></td>";
 			$ret .= "<td>";
 			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_edit_post(" . intval( $lesson->ID ) . "," . intval( $lesson->menu_order ) . "); void(0);'>". esc_html__( 'edit', 'pmpro-courses' )."</a>";
