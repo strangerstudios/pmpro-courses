@@ -133,26 +133,6 @@ function pmpro_courses_setup() {
 }
 
 /**
- * Show a notice on the page using the WordPress notice styles.
- *
- * @param {string} message - The message to display in the notice
- * @param {string} type - The type of notice to display (error, warning, success, info)
- * @return {void}
- * @since TBD
- */
-function pmpro_courses_show_notice( message, type )  {
-	jQuery('.components-notice-list.components-editor-notices__dismissible').empty()
-		.append( jQuery( '<div/>' ).addClass( 'notice is-dismissible notice-' + type)
-			.append( jQuery( '<p/>' ).append( message) , jQuery( '<button/>' ).addClass( 'notice-dismiss' )
-				.append( jQuery( '<span />' ).addClass( 'screen-reader-text' ).text( 'Dismiss this notice' ) ) ) );
-
-	// Dismiss the notice when the dismiss button is clicked
-	jQuery( '.notice-dismiss' ).click( function () {
-		jQuery( this ).parent().remove();
-	});
-}
-
-/**
  * Update the order of the lessons in the course UI table 
  *
  * @return {void}
@@ -192,29 +172,19 @@ function pmpro_courses_update_lessons_order( $tbody ) {
 		type: 'POST',
 		dataType: 'JSON',
 		data: data,
-		//Error callback
-		error: function ( xml ) {
-			pmpro_courses_show_notice('Error updating lesson order', 'error');
-		},
-		//Success callback
-		success: function ( response ) {
-			if ( ! response || ! response.success ) {
-				message = response.message ? response.message : 'Error updating lesson order';
-				pmpro_courses_show_notice( message, 'error' );
-			} else {
-				pmpro_courses_show_notice( response.message, 'success' );
-				// Update the UI
-				pmpro_courses_update_course_order_ui();
-			}
+		error: function () {},
+		success: function () {
+			pmpro_courses_update_course_order_ui();
 		}
 	});
 }
 
-jQuery(document).ready(function ( $ ) {
+// Once the page is ready, we can allow sortable etc.
+jQuery(function () {
 	pmpro_courses_setup();
-	$( '#pmpro_courses_table tbody' ).sortable({
-		stop: function ( event, ui ) {
-			pmpro_courses_update_lessons_order( $( this ) );
+	jQuery( '#pmpro_courses_table tbody' ).sortable({
+		stop: function () {
+			pmpro_courses_update_lessons_order( jQuery( this ) );
 		}
 	});
 });
