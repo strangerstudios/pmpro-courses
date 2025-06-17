@@ -138,7 +138,7 @@ function pmpro_courses_setup() {
  * @return {void}
  * @since TBD
  */
-function pmpro_courses_update_course_order_ui() {
+function pmpro_courses_update_lesson_order_ui() {
 	$tbody = jQuery( '#pmpro_courses_table tbody' );
 	//Iterate over the tr elements in the tbody and update the order in the TD
 	$tbody.find('tr').each( function ( index ) {
@@ -160,7 +160,7 @@ function pmpro_courses_update_lessons_order( $tbody ) {
 
 	// Request body
 	const data = {
-		action: 'pmpro_courses_update_course_order',
+		action: 'pmpro_courses_update_lesson_order',
 		course: pmpro_courses.course_id,
 		lessons: $lesson_ids,
 		nonce: pmpro_courses.nonce
@@ -172,9 +172,16 @@ function pmpro_courses_update_lessons_order( $tbody ) {
 		type: 'POST',
 		dataType: 'JSON',
 		data: data,
-		error: function () {},
-		success: function () {
-			pmpro_courses_update_course_order_ui();
+		error: function () {
+			alert('Failed to update lesson order. Please try again.');
+		},
+		success: function (response) {
+			if (response.success) {
+				pmpro_courses_update_lesson_order_ui();
+				alert(response.data);
+			} else {
+				alert(response.data);
+			}
 		}
 	});
 }
