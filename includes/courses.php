@@ -279,7 +279,7 @@ function pmpro_courses_update_lesson_order_callback() {
 	}
 
 	//return success json
-	wp_send_json_success( esc_html__( 'Lessons order updated', 'pmpro-courses' ) );
+	wp_send_json_success( esc_html__( 'Lesson order updated', 'pmpro-courses' ) );
 }
 
 add_action( 'wp_ajax_pmpro_courses_update_lesson_order', 'pmpro_courses_update_lesson_order_callback' );

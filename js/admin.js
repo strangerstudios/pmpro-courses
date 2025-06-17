@@ -177,8 +177,17 @@ function pmpro_courses_update_lessons_order( $tbody ) {
 		},
 		success: function (response) {
 			if (response.success) {
+				// Remove any existing notices.
+				jQuery('.pmpro-lesson-notice').remove();
+
+				// Update the UI to reflect the new order.
 				pmpro_courses_update_lesson_order_ui();
-				alert(response.data);
+
+				// Show a success message and automatically hide it after a delay.
+				jQuery('<div class="pmpro-lesson-notice updated">' + response.data + '</div>')
+					.insertBefore('#pmpro_courses_table')
+					.delay(2000)
+					.fadeOut(500, function() {jQuery(this).remove();});
 			} else {
 				alert(response.data);
 			}
