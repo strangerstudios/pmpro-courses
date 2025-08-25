@@ -50,3 +50,29 @@ table#newmeta {
 .pmpro-courses-module-settings {
 	margin-top: 1em;
 }
+
+/* Drag and Drop */
+.pmpro-lesson-order::before {
+    color: #CCC;
+    content: "\f333";
+    display: inline-block;
+    font: 400 16px/1 dashicons;
+    opacity: 0;
+    width: 25px;
+}
+
+.pmpro-lesson-order:hover::before {
+    opacity: 1;
+    cursor:grab;
+}
+
+.pmpro-lesson-order:active::before {
+    cursor: grabbing; /* when mouse is pressed down */
+}
+
+/* Update Lesson Order Notice, force the styling. */
+.pmpro-lesson-notice{
+  margin:0 !important;
+  padding-top:0.5rem !important;
+  padding-bottom:0.5rem !important;
+}

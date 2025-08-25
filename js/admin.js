@@ -44,7 +44,8 @@ function pmpro_courses_update_post() {
 	jQuery(this).attr('disabled', 'true');
 
 	var lesson_id = jQuery('#pmpro_courses_post').val();
-	var order = jQuery('#pmpro_courses_order').val();
+	//Insert the lesson into the course at the end for now. Get the order from table TD
+	const order = parseInt( jQuery( '#pmpro_courses_table tr:last ' ).find( 'td' ).eq( 0 ).text() )+ 1;
 
 	var data = {
 		action: 'pmpro_courses_update_course',
@@ -95,7 +96,6 @@ function pmpro_courses_toggle_module_settings(module) {
 }
 
 function pmpro_courses_setup() {
-	console.log(pmpro_courses);
 
 	// Editing a course.
 	if (pmpro_courses.editing_course) {
@@ -132,6 +132,75 @@ function pmpro_courses_setup() {
 	}
 }
 
-jQuery(document).ready(function (jQuery) {
+/**
+ * Update the order of the lessons in the course UI table 
+ *
+ * @return {void}
+ * @since TBD
+ */
+function pmpro_courses_update_lesson_order_ui() {
+	$tbody = jQuery( '#pmpro_courses_table tbody' );
+	//Iterate over the tr elements in the tbody and update the order in the TD
+	$tbody.find('tr').each( function ( index ) {
+		jQuery(this).find( 'td' ).eq( 0 ).text( index + 1 );
+	});
+
+}
+/**
+ * Update the order of the lessons in the course
+ * 
+ * @param {jQuery} $tbody - The tbody element containing the lessons
+ * @return {void}
+ * @since TBD
+ */
+function pmpro_courses_update_lessons_order( $tbody ) {
+	const  $lesson_ids = $tbody.find( 'tr' ).map( function () {
+		return jQuery(this).data('lesson_id');
+	}).get();
+
+	// Request body
+	const data = {
+		action: 'pmpro_courses_update_lesson_order',
+		course: pmpro_courses.course_id,
+		lessons: $lesson_ids,
+		nonce: pmpro_courses.nonce
+	}
+
+	// Send the request
+	jQuery.ajax({
+		url: ajaxurl,
+		type: 'POST',
+		dataType: 'JSON',
+		data: data,
+		error: function () {
+			alert('Failed to update lesson order. Please try again.');
+		},
+		success: function (response) {
+			if (response.success) {
+				// Remove any existing notices.
+				jQuery('.pmpro-lesson-notice').remove();
+
+				// Update the UI to reflect the new order.
+				pmpro_courses_update_lesson_order_ui();
+
+				// Show a success message and automatically hide it after a delay.
+				jQuery('<div class="pmpro-lesson-notice updated">' + response.data + '</div>')
+					.insertBefore('#pmpro_courses_table')
+					.delay(2000)
+					.fadeOut(500, function() {jQuery(this).remove();});
+			} else {
+				alert(response.data);
+			}
+		}
+	});
+}
+
+// Once the page is ready, we can allow sortable etc.
+jQuery(function () {
 	pmpro_courses_setup();
+	jQuery( '#pmpro_courses_table tbody' ).sortable({
+		stop: function () {
+			pmpro_courses_update_lessons_order( jQuery( this ) );
+		}
+	});
 });

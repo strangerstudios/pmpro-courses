@@ -254,3 +254,34 @@ function pmpro_courses_hide_adjacent_post_links_for_courses( $output, $format, $
 }
 add_action( 'previous_post_link', 'pmpro_courses_hide_adjacent_post_links_for_courses', 10, 5 );
 add_action( 'next_post_link', 'pmpro_courses_hide_adjacent_post_links_for_courses', 10, 5 );
+
+/**
+ * Update All Course Lessons menu_order attrbute based on the UI drag and drop.
+ *
+ * @return void Despite the void return, this function echoes JSON response for AJAX callback and dies the WP standard way.
+ * @since TBD
+ */
+function pmpro_courses_update_lesson_order_callback() {
+	//Bail if user can't edit posts
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		wp_send_json_error( esc_html__( 'User cannot edit posts', 'pmpro-courses' ) );
+	}
+
+	//Check nonce
+	if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'pmpro_courses_admin_nonce' ) ) {
+		wp_send_json_error( esc_html__( 'Nonce is invalid', 'pmpro-courses' ) );
+	}
+
+	$course = intval( $_REQUEST['course'] );
+	$lessons = $_REQUEST['lessons'];
+
+	// Update the course order
+	foreach ( $lessons as $order => $lesson ) {
+		wp_update_post( array( 'ID' => $lesson, 'menu_order' => $order + 1, 'post_parent' => $course ) );
+	}
+
+	//return success json
+	wp_send_json_success( esc_html__( 'Lesson order updated', 'pmpro-courses' ) );
+}
+
+add_action( 'wp_ajax_pmpro_courses_update_lesson_order', 'pmpro_courses_update_lesson_order_callback' );
