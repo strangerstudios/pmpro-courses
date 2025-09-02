@@ -58,12 +58,14 @@ function pmpro_courses_show_course_content_to_nonmembers() {
 
 /**
  * AJAX callback to add/edit a lesson to a course from the edit course page.
+ * This DOES NOT SAVE THE DATA. This will happen on save.
  */
 function pmpro_courses_update_course_callback(){
 
-	if( !empty( $_REQUEST['action'] ) ){
+	if ( ! empty( $_REQUEST['action'] ) ) {
 
-		if( $_REQUEST['action'] == 'pmpro_courses_update_course' ){
+		if ( $_REQUEST['action'] == 'pmpro_courses_update_course' ) {
+	
 
 			if ( ! current_user_can( 'edit_posts' ) ) {
 				return;
@@ -73,22 +75,29 @@ function pmpro_courses_update_course_callback(){
 				wp_die( __( 'Nonce is invalid', 'pmpro-courses' ) );
 			}
 			
-			$course = intval( $_REQUEST['course'] );
-			$lesson = intval( $_REQUEST['lesson'] );
-			$order = intval( $_REQUEST['order'] );
-			
-			// If no order, set to the max.
-			if ( empty( $order ) ) {
-				$order = pmpro_courses_get_next_lesson_order( $course );
-			}			
-			
-			wp_update_post( array( 'ID' => $lesson, 'post_parent' => $course, 'menu_order' => $order ) );
-						
-			echo pmpro_courses_get_lessons_table_html( pmpro_courses_get_lessons( $course ) );
-			
-			wp_die();
-		}
+			// Got to get the value 
+			$course_id = intval( $_REQUEST['course_id'] );
+			$lesson_id = intval( $_REQUEST['lesson_id'] );
+			// $order = intval( $_REQUEST['order'] );
+			$section_id = intval( $_REQUEST['section_id'] ); // This is to save lessons to a specific section.
 
+			// Get the lesson object.
+			$lesson = get_post( $lesson_id );
+
+			$table_row = "<tr data-lesson_id='" . intval( $lesson_id ) . "'>";
+			$table_row .= "<td class='pmpro-lesson-order'>1</td>";
+			$table_row .= "<td><a href='" . admin_url( 'post.php?post=' . esc_attr( intval( $lesson_id ) ) . '&action=edit' ) . "' title='" . esc_attr__('Edit', 'pmpro-courses') .' '. esc_attr( $lesson->post_title ) . "' target='_BLANK'>". esc_html( $lesson->post_title . ' (#' . $lesson_id . ')' ) ."</a></td>";
+			$table_row .= "<input type='hidden' name='pmpro_courses_lessons[" . intval( $section_id ) . "][]' value='". intval( $lesson_id ) ."' />";
+			$table_row .= "<td>";
+			$table_row .= "<a class='button button-secondary' href='javascript:pmpro_courses_edit_post(" . intval( $lesson_id ) . "," . intval( $lesson_id ) . "); void(0);'>". esc_html__( 'edit', 'pmpro-courses' )."</a>";
+			$table_row .= " ";
+			$table_row .= "<a class='button button-secondary' href='javascript:pmpro_courses_remove_post(". intval( $lesson_id ) ."); void(0);'>". esc_html__( 'remove', 'pmpro-courses' )."</a>";
+			$table_row .= "</td>";
+			$table_row .= "</tr>";
+
+			echo $table_row;
+
+		}
 	}
 
 }

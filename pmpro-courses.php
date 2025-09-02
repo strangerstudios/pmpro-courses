@@ -22,6 +22,60 @@ require_once PMPRO_COURSES_DIR . '/includes/admin.php';
 require_once PMPRO_COURSES_DIR . '/includes/settings.php';
 require_once PMPRO_COURSES_DIR . '/includes/blocks.php';
 
+/**
+ * Get the lessons dropdown HTML with all PMPro lessons.
+ * @since TBD
+ */
+function pmpro_courses_lessons_settings() {
+    global $post;
+    
+    // Get all available lessons for the dropdown
+    $all_lessons = get_posts(array(
+        'post_type' => 'pmpro_lesson',
+        'posts_per_page' => 99,
+        'post_status' => 'publish',
+        'orderby' => 'menu_order',
+        'order' => 'ASC'
+    ));
+    
+    // Build lessons options HTML
+    $lessons_options = '<option value="0">' . esc_html__( 'Select a lesson...', 'pmpro-courses' ) . '</option>';
+    foreach ($all_lessons as $lesson) {
+        $lessons_options .= sprintf(
+            '<option value="%d">%s (#%d)</option>',
+            intval($lesson->ID),
+            esc_html($lesson->post_title),
+            $lesson->ID
+        );
+    }
+
+	return $lessons_options;
+}
+
+
+/** 
+ * Load the Member Edit Panel if the class exists.
+ * 
+ * @since TBD
+ */
+function pmpro_courses_pmpro_member_edit_panels( $panels ) {
+	
+	if ( ! class_exists( 'PMPro_Member_Edit_Panel' ) ) {
+		return $panels;
+	}
+
+	require_once PMPRO_COURSES_DIR . '/includes/adminpages/class-pmpro-courses-member-edit.php';
+
+	// If the class exists, add a panel.
+	if ( class_exists( 'PMPro_Courses_Member_Edit_Panel' ) ) {
+		$panels[] = new PMPro_Courses_Member_Edit_Panel();
+	}
+
+	return $panels;
+}
+add_filter( 'pmpro_member_edit_panels', 'pmpro_courses_pmpro_member_edit_panels' );
+
+
 // Modules.
 function pmpro_courses_setup_modules() {
 	require_once PMPRO_COURSES_DIR . '/includes/modules/default.php';
@@ -110,6 +164,11 @@ function pmpro_courses_admin_styles( $hook ) {
 			$post_id = '';
 		}
 
+		// Get the HTML template to localize.
+		ob_start();
+		pmpro_courses_get_sections_html();
+		$section_template = ob_get_clean();
+
 		$localize = array(
 			'editing_course'   => $editing_course,
 			'on_settings_page' => $on_settings_page,
@@ -121,7 +180,8 @@ function pmpro_courses_admin_styles( $hook ) {
 			'saving_error_2'   => esc_html__( 'Error saving lesson [2]', 'pmpro-courses' ),
 			'remove_error_1'   => esc_html__( 'Error removing lesson [1]', 'pmpro-courses' ),
 			'remove_error_2'   => esc_html__( 'Error removing lesson [2]', 'pmpro-courses' ),
-			'nonce'			   => wp_create_nonce( 'pmpro_courses_admin_nonce' )
+			'nonce'			   => wp_create_nonce( 'pmpro_courses_admin_nonce' ),
+			'empty_lesson_section_html' => $section_template
 		);
 
 		wp_localize_script( 'pmpro_courses', 'pmpro_courses', $localize );
@@ -153,3 +213,55 @@ function pmpro_courses_frontend_styles(){
 
 }
 add_action( 'wp_enqueue_scripts', 'pmpro_courses_frontend_styles' );
+
+/// Save data to post meta..
+// add_action( 'save_post_pmpro_course', function( $post_id, $post, $update ) {
+//     // Basic checks
+//     if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+//     if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+
+	
+//     // // Nonce (matches what you already localize/create)
+//     // if ( empty( $_POST['pmpro_courses_sections_nonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'pmpro_courses_sections_nonce' ) ) {
+//     //     return;
+//     // }
+
+//     // Expect:
+//     // - pmpro_course_lessons_group_name[]  (array of section names in UI order)
+//     // - pmpro_courses_lessons[SECTION_ID][] (array of lesson IDs per section)
+//     $section_names = isset( $_POST['pmpro_course_lessons_group_name'] ) ? (array) $_POST['pmpro_course_lessons_group_name'] : array();
+//     $sections_lessons = isset( $_POST['pmpro_courses_lessons'] ) ? (array) $_POST['pmpro_courses_lessons'] : array();
+
+//     // Build normalized structure
+//     $sections = array();
+
+//     // Section IDs in your HTML start at 1 and increment; we’ll map names by index.
+//     // If you add/delete/move sections via JS, ensure both arrays stay aligned by SECTION_ID.
+//     foreach ( $section_names as $index => $raw_name ) {
+//         $section_id = $index + 1;
+//         $name = sanitize_text_field( $raw_name );
+
+//         // Gather lessons for this section (if any)
+//         $lesson_ids = array();
+// 		// Get lesson section IDs.
+
+//         if ( isset( $sections_lessons[ $section_id ] ) && is_array( $sections_lessons[ $section_id ] ) ) {
+//             foreach ( $sections_lessons[ $section_id ] as $lid ) {
+//                 $lid = intval( $lid );
+//                 if ( $lid > 0 ) {
+//                     $lesson_ids[] = $lid;
+//                 }
+//             }
+//         }
+
+//         // Store the section information.
+//         $sections[] = array(
+// 			'section_id' => $section_id,
+//             'name'       => $name,
+//             'lessons'    => $lesson_ids,
+//         );
+//     }
+
+//     // Save the full structure to a single meta key
+//     update_post_meta( $post_id, 'pmpro_course_sections', $sections);
+// }, 10, 3 );

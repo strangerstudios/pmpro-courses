@@ -82,85 +82,65 @@ function pmpro_courses_course_cpt_define_meta_boxes() {
 	if ( function_exists( 'pmpro_page_meta' ) ) {
 		add_meta_box( 'pmpro_page_meta', esc_html__( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'pmpro_course', 'side');
 	}
-	add_meta_box( 'pmpro_courses_lessons', esc_html__( 'Lessons', 'pmpro-courses'), 'pmpro_courses_course_cpt_lessons', 'pmpro_course', 'normal' );	
+	add_meta_box( 'pmpro_courses_lessons', esc_html__( 'Course Outline', 'pmpro-courses'), 'pmpro_courses_course_cpt_lessons', 'pmpro_course', 'normal' );	
 }
 add_action('admin_menu', 'pmpro_courses_course_cpt_define_meta_boxes', 20);
+
+/**
+ * Always show the "Course Outline" metabox on a page for PMPro Courses as it's required.
+ *
+ * @since TBD
+ */
+function pmpro_courses_unhide_course_outline_meta_box( $hidden, $screen ) {
+	if ( $screen->post_type == 'pmpro_course' ) {
+		$hidden = array_diff( $hidden, array( 'pmpro_courses_lessons' ) );
+	}
+	return $hidden;
+}
+add_filter('hidden_meta_boxes', 'pmpro_courses_unhide_course_outline_meta_box', 10, 2);
+
 
 /**
  * Callback for lessons meta box
  */
 function pmpro_courses_course_cpt_lessons() {
-		global $wpdb, $post;
-
 		// boot out people without permissions
 		if ( ! current_user_can( 'edit_posts' ) ) {
 			return false;
 		}
-		?>	
-		<table id="pmpro_courses_table" class="wp-list-table widefat striped pmpro-metabox-items">
-			<thead>
-				<th><?php esc_html_e( 'Order', 'pmpro-courses' ); ?></th>
-				<th width="50%"><?php esc_html_e( 'Title', 'pmpro-courses' ); ?></th>
-				<th width="20%"><?php esc_html_e( 'Actions', 'pmpro-courses' ); ?></th>
-			</thead>
-			<tbody>
-			<?php 				
-				echo pmpro_courses_get_lessons_table_html( pmpro_courses_get_lessons( $post->ID ) );
-			?>
-			</tbody>
-		</table>
-
-		<h3><?php esc_html_e( 'Add Lessons', 'pmpro-courses' ); ?></h3>
-		<table id="newmeta" class="wp-list-table pmpro-metabox-items">
-			<tbody>
-				<tr>
-					<td>
-						<label for="pmpro_courses_post"><?php esc_html_e( 'Lesson', 'pmpro-courses' ); ?></label>
-						<select id="pmpro_courses_post" name="pmpro_courses_post">
-							<option value=""></option>
-							<?php
-								$all_lessons = get_posts( array( 'post_type' => 'pmpro_lesson', 'posts_per_page' => -1, 'post_status' => 'publish', 'orderby' => 'menu_order', 'order' => 'ASC' ) );
-								foreach ( $all_lessons as $lesson ) {
-									?>
-									<option value="<?php echo intval( $lesson->ID ); ?>"><?php esc_html_e( $lesson->post_title ); ?>
-									(#<?php echo $lesson->ID;?>)
-									</option>
-									<?php
-								}
-							?>
-						</select>
-					</td>
-					<td width="20%">
-						<a class="button button-primary" id="pmpro_courses_save"><?php esc_html_e( 'Add to Course', 'pmpro-courses' ); ?></a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		
+		// Loop through all options and then show each section, we'll get there.///
+		// Callback points to a DOM template for the Course Outline/Sections.
+		pmpro_courses_get_sections_html();
+		?>
+		<p class="text-center">
+			<button id="pmpro_courses_add_section" name="pmpro_courses_add_section" class="button button-primary button-hero">
+				<?php
+					echo '<span class="dashicons dashicons-plus"></span>' . ' ' . esc_html__( 'Add New Section', 'pmpro-courses' );
+				?>
+			</button>			
+		</p>
 		<?php
-	// }
 }
 
-function pmpro_courses_get_lessons_table_html( $lessons ){
+// Get the course lesson table for a section.
+// Maybe useful for initial load IDK?
+function pmpro_courses_get_lessons_table_html( $lessons, $section_id = 1 ){
 
-	$ret = "";
-
-	if( !empty( $lessons ) ){
+	if ( ! empty( $lessons ) ) {
 		
-		$count = 1;
-
 		foreach ( $lessons as $lesson ) {
 
 			$ret .= "<tr data-lesson_id='" . intval( $lesson->ID ) . "'>";
 			$ret .= "<td class='pmpro-lesson-order'>" . esc_html( $lesson->menu_order) . "</td>";
 			$ret .= "<td><a href='".admin_url( 'post.php?post=' . esc_attr( intval( $lesson->ID ) ) . '&action=edit' ) . "' title='" . esc_attr__('Edit', 'pmpro-courses') .' '. esc_attr( $lesson->post_title ). "' target='_BLANK'>". esc_html( $lesson->post_title ) ."</a></td>";
+			$ret .= "<input type='hidden' name='pmpro_courses_lessons[" . intval( $section_id ) . "][]' value='". intval( $lesson->ID ) ."' />";
 			$ret .= "<td>";
 			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_edit_post(" . intval( $lesson->ID ) . "," . intval( $lesson->menu_order ) . "); void(0);'>". esc_html__( 'edit', 'pmpro-courses' )."</a>";
 			$ret .= " ";
 			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_remove_post(". intval( $lesson->ID ) ."); void(0);'>". esc_html__( 'remove', 'pmpro-courses' )."</a>";
 			$ret .= "</td>";
 			$ret .= "</tr>";
-
-			$count++;
 		}
 
 	} 

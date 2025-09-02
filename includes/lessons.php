@@ -10,13 +10,13 @@ function pmpro_courses_the_content_lesson( $content ) {
 		$after_the_content = '';
 
 		// Show a link to mark the lesson complete or incomplete.	
-		$complete_button = pmpro_courses_complete_button( $post->ID, $course_id );
+		$complete_button = pmpro_courses_complete_lesson_button( $post->ID, get_current_user_id() );
 		if ( ! empty( $complete_button ) ) {			
 			$after_the_content .= '<div class="pmpro_courses_lesson-status">';
 			$after_the_content .= $complete_button;
 			$after_the_content .= '</div>';			
 		}
-
+ 
 		if ( ! empty( $course_id ) ) {
 			$after_the_content .= sprintf(
 				/* translators: %s: link to the course for this lesson. */

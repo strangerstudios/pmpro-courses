@@ -39,43 +39,60 @@ function pmpro_courses_remove_post(post_id) {
 	});
 }
 
-function pmpro_courses_update_post() {
+/**
+ * Update the Course Lessons table using AJAX.
+ * This does not save the data, just updates the DOM.
+ * 
+ * @since TBD
+ */
+function pmpro_courses_update_post(button_element) {
 
-	jQuery(this).attr('disabled', 'true');
+	console.log(button_element + ' clicked');
+	jQuery(button_element).attr('disabled', 'true');
 
-	var lesson_id = jQuery('#pmpro_courses_post').val();
-	//Insert the lesson into the course at the end for now. Get the order from table TD
-	const order = parseInt( jQuery( '#pmpro_courses_table tr:last ' ).find( 'td' ).eq( 0 ).text() )+ 1;
+	var button = jQuery(button_element);
+    var section = button.closest('.pmpro_courses_lessons-section');
+	var lesson_id = section.find('.pmpro_courses_lessons_select').val();
+	var order = jQuery('#pmpro_courses_order').val();
 
 	var data = {
 		action: 'pmpro_courses_update_course',
-		course: pmpro_courses.course_id,
-		lesson: lesson_id,
-		order: order,
+		course_id: pmpro_courses.course_id,
+		lesson_id: lesson_id,
 		nonce: pmpro_courses.nonce
 	}
+
 	jQuery.ajax({
 		url: ajaxurl,
 		type: 'POST',
 		dataType: 'html',
 		data: data,
 		error: function (xml) {
-			alert('Error saving lesson to course [1]');
+			alert('Error adding lesson to course [1]');
 			//enable save button
-			jQuery('#pmpro_courses_save').html('Save');
+			jQuery('#pmpro_courses_save').html('Add Lesson');
 			jQuery('#pmpro_courses_save').removeAttr('disabled');
 		},
 		success: function (responseHTML) {
 			if (responseHTML == 'error') {
-				alert('Error saving lesson to course [2]');
+				alert('Error adding lesson to course [2]');
 				//enable save button
-				jQuery('#pmpro_courses_save').html('Save');
+				jQuery('#pmpro_courses_save').html('Add Lesson');
 				jQuery('#pmpro_courses_save').removeAttr('disabled');
 			} else {
-				jQuery('#pmpro_courses_table tbody').html(responseHTML);
-				jQuery('#pmpro_courses_post').val(null).trigger('change');
+				// If there is a row with the class ".no-lessons", remove it.
+				const tbody = section.find('.pmpro_courses_lesson_table tbody');
+
+				// Remove "No Added Lessons"
+				tbody.find('.no-lessons').remove();
+
+				tbody.append(responseHTML);
+
+				// jQuery('#pmpro_courses_post').val(null).trigger('change');
+				// jQuery('#pmpro_courses_section').val(null).trigger('change');
 				jQuery('#pmpro_courses_order').val('');
-				jQuery('#pmpro_courses_save').html('Add to Course');
+				jQuery('#pmpro_courses_save').html('Add Lesson');
+				jQuery('#pmpro_courses_save').removeAttr('disabled');
 			}
 		}
 	});
@@ -99,7 +116,7 @@ function pmpro_courses_setup() {
 
 	// Editing a course.
 	if (pmpro_courses.editing_course) {
-		jQuery('#pmpro_courses_post').select2({ width: 'elements' });
+		jQuery('.pmpro_courses_lessons_select').select2({ width: 'elements' });
 
 		jQuery('#pmpro_courses_order').keypress(function (e) {
 			if (e.which == 13) {
@@ -108,13 +125,6 @@ function pmpro_courses_setup() {
 			}
 		});
 
-		jQuery('#pmpro_courses_save').click(function () {
-			if (jQuery(this).attr('disabled') !== 'true') {
-				//Show that the courses is being 
-				jQuery(this).html(pmpro_courses.adding);
-				pmpro_courses_update_post();
-			}
-		});
 	}
 
 	// Courses Settings page.
@@ -132,75 +142,117 @@ function pmpro_courses_setup() {
 	}
 }
 
-/**
- * Update the order of the lessons in the course UI table 
- *
- * @return {void}
- * @since TBD
- */
-function pmpro_courses_update_lesson_order_ui() {
-	$tbody = jQuery( '#pmpro_courses_table tbody' );
-	//Iterate over the tr elements in the tbody and update the order in the TD
-	$tbody.find('tr').each( function ( index ) {
-		jQuery(this).find( 'td' ).eq( 0 ).text( index + 1 );
-	});
+// Function to prep click events.
+function pmpro_courses_prep_click_events() {
 
-}
-/**
- * Update the order of the lessons in the course
- * 
- * @param {jQuery} $tbody - The tbody element containing the lessons
- * @return {void}
- * @since TBD
- */
-function pmpro_courses_update_lessons_order( $tbody ) {
-	const  $lesson_ids = $tbody.find( 'tr' ).map( function () {
-		return jQuery(this).data('lesson_id');
-	}).get();
+	jQuery('#pmpro_courses_add_section').parent('p').prev().find('select').focus().select2({ width: 'elements' });
 
-	// Request body
-	const data = {
-		action: 'pmpro_courses_update_lesson_order',
-		course: pmpro_courses.course_id,
-		lessons: $lesson_ids,
-		nonce: pmpro_courses.nonce
+	// Whenever we make a change, warn the user if they try to navigate away. 
+	/// DO we need this.
+	function pmpro_courses_made_a_change() {
+		window.onbeforeunload = function () {
+			return true;
+		};
+		jQuery('#pmpro_courses_savesettings').prop("disabled", false);
 	}
 
-	// Send the request
-	jQuery.ajax({
-		url: ajaxurl,
-		type: 'POST',
-		dataType: 'JSON',
-		data: data,
-		error: function () {
-			alert('Failed to update lesson order. Please try again.');
-		},
-		success: function (response) {
-			if (response.success) {
-				// Remove any existing notices.
-				jQuery('.pmpro-lesson-notice').remove();
-
-				// Update the UI to reflect the new order.
-				pmpro_courses_update_lesson_order_ui();
-
-				// Show a success message and automatically hide it after a delay.
-				jQuery('<div class="pmpro-lesson-notice updated">' + response.data + '</div>')
-					.insertBefore('#pmpro_courses_table')
-					.delay(2000)
-					.fadeOut(500, function() {jQuery(this).remove();});
-			} else {
-				alert(response.data);
-			}
+	// Whenever the lesson button is clicked to add a lesson.
+	jQuery('.pmpro_courses_save_lesson').off('click').on('click', function () {
+		if (jQuery(this).attr('disabled') !== 'true') {
+			jQuery(this).html(pmpro_courses.adding);
+			pmpro_courses_update_post(jQuery(this));
 		}
 	});
+
+	// Add a new empty section
+	jQuery('#pmpro_courses_add_section').unbind('click').on('click', function (event) {
+		event.preventDefault();
+		// Find the last section and get its data-section-id, then increment by 1.
+		var last_section = jQuery('.pmpro_courses_lessons-section').last();
+		var last_id = parseInt(last_section.attr('data-section-id')) || 0;
+		var new_id = last_id + 1;
+
+		// Insert the new section HTML, replacing the data-section-id.
+		var new_section_html = pmpro_courses.empty_lesson_section_html.replace(/data-section-id="\d*"/, 'data-section-id="' + new_id + '"');
+		jQuery('#pmpro_courses_add_section').parent('p').before(new_section_html);
+		pmpro_courses_prep_click_events();
+		jQuery('#pmpro_courses_add_section').parent('p').prev().find('input').focus().select();
+	});
+
+	// Delete a specific section.
+	jQuery('.pmpro_courses_lessons-section-buttons-button.delete-section-btn').unbind('click').on('click', function () {
+		var the_section = jQuery(this).closest('.pmpro_courses_lessons-section');
+		var section_name = the_section.find('input[name="pmpro_course_lessons_section_name"]').val();
+
+		// Cannot delete the section if there's only one left.
+		if (jQuery('.pmpro_courses_lessons-section').length <= 1) {
+			alert('You cannot delete this section. A minimum of one section is required.');
+			return;
+		}
+
+		var answer;
+		if (section_name.length > 0) {
+			answer = window.confirm('Delete the "' + section_name + '" section?');
+		} else {
+			answer = window.confirm('Delete this section?');
+		}
+		if (answer) {
+			the_section.remove();
+		}
+	});
+
+	// Toggle a specific section.
+	jQuery('button.pmpro_courses_lessons-section-buttons-button-toggle-section, div.pmpro_courses_lessons-section-header h3').unbind('click').on('click', function (event) {
+		event.preventDefault();
+
+		// Ignore if the text field was clicked.
+		if (jQuery(event.target).prop('nodeName') === 'INPUT') {
+			return;
+		}
+
+		// Find the toggle button and open or close.
+		let the_button = jQuery(event.target).parents('.pmpro_courses_lessons-section').find('button.pmpro_courses_lessons-section-buttons-button-toggle-section');
+		let button_icon = the_button.children('.dashicons');
+		let section_header = the_button.closest('.pmpro_courses_lessons-section-header');
+		let section_inside = section_header.siblings('.pmpro_course_lesson-inside');
+
+		if (button_icon.hasClass('dashicons-arrow-up')) {
+			// closing
+			button_icon.removeClass('dashicons-arrow-up');
+			button_icon.addClass('dashicons-arrow-down');
+			section_inside.slideUp();
+		} else {
+			// opening
+			button_icon.removeClass('dashicons-arrow-down');
+			button_icon.addClass('dashicons-arrow-up');
+			section_inside.slideDown();
+		}
+	});
+
+	// Move section up or down.
+	jQuery('.pmpro_courses_lessons-section-buttons-button-move-up').unbind('click').on('click', function (event) {
+		var the_section = jQuery(this).closest('.pmpro_courses_lessons-section');
+		var prev_section = the_section.prev('.pmpro_courses_lessons-section');
+		if (prev_section.length > 0) {
+			the_section.insertBefore(prev_section);
+			// pmpro_courses_made_a_change();
+		}
+	});
+
+	// Move section down.
+	jQuery('.pmpro_courses_lessons-section-buttons-button-move-down').unbind('click').on('click', function (event) {
+		var the_section = jQuery(this).closest('.pmpro_courses_lessons-section');
+		var next_section = the_section.next('.pmpro_courses_lessons-section');
+		if (next_section.length > 0) {
+			the_section.insertAfter(next_section);
+			// pmpro_courses_made_a_change();
+		}
+	});
+
 }
 
-// Once the page is ready, we can allow sortable etc.
-jQuery(function () {
+// Once document is loaded, let's load PMPro Courses JS.
+jQuery(document).ready(function() {
 	pmpro_courses_setup();
-	jQuery( '#pmpro_courses_table tbody' ).sortable({
-		stop: function () {
-			pmpro_courses_update_lessons_order( jQuery( this ) );
-		}
-	});
+	pmpro_courses_prep_click_events();
 });

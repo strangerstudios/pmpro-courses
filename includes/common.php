@@ -46,7 +46,7 @@ function pmpro_courses_get_lessons( $course ) {
 	// Set up args for query.
 	$args = array(
 		'post_parent' => $course,
-		'posts_per_page' => -1,
+		'posts_per_page' => 99,
 		'post_type' => 'pmpro_lesson',
 		'orderby' => 'menu_order',
 		'order' => 'ASC'
@@ -84,8 +84,11 @@ function pmpro_courses_get_next_lesson_order( $course ) {
 function pmpro_courses_get_lesson_count( $course_id ) {
 	global $wpdb;
 
-	$sql = "SELECT count(*) FROM $wpdb->posts ";
-	$sql .= " WHERE post_parent = '" . esc_sql( $course_id ) . "' AND post_type = 'pmpro_lesson'";
+	$sql = $wpdb->prepare(
+		"SELECT count(*) FROM $wpdb->posts WHERE post_parent = %d AND post_type = %s",
+		$course_id,
+		'pmpro_lesson'
+	);
 	$results = $wpdb->get_var( $sql );
 	return intval( $results );
 }
@@ -214,7 +217,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 	// Build the HTML to output a list of lessons.
 	?>
 	<div class="pmpro_courses pmpro_courses-lessons <?php echo esc_attr( $pmpro_courses_lesson_access_class ); ?>">
-		<h2 class="pmpro_courses-title"><?php esc_html_e( 'Lessons', 'pmpro-courses' ); ?></h2>
+		<h2 class="pmpro_courses-title"><?php esc_html_e( 'Course Outline', 'pmpro-courses' ); ?></h2>
 		<ol class="pmpro_courses-list">
 			<?php
 				foreach( $lessons as $lesson ) { ?>
@@ -232,14 +235,13 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 							<?php
 								if ( is_user_logged_in() && ! empty( $hasaccess ) ) {
 									// Get the status of this lesson.
-									$lesson_status = pmpro_courses_get_user_lesson_status( $lesson->ID, $course_id, get_current_user_id() );
-									if ( ! empty( $lesson_status ) ) {
-										if ( $lesson_status === 'complete' ) {
+									$lesson_completed = PMPro_Courses_User_Progress::get_user_lesson_status( $lesson->ID, get_current_user_id() );
+										if ( $lesson_completed ) {
 											echo '<span class="pmpro_courses-lesson-status pmpro_courses-lesson-status-complete"><i class="dashicons dashicons-yes"></i><span class="pmpro_courses-lesson-status-label">' . esc_html__( 'Complete', 'pmpro-courses' ) . '</span></span>';
 										} else {
 											echo '<span class="pmpro_courses-lesson-status pmpro_courses-lesson-status-incomplete"><i class="dashicons dashicons-marker"></i><span class="pmpro_courses-lesson-status-label">' . esc_html__( 'Complete', 'pmpro-courses' ) . '</span></span>';
 										}
-									}
+									
 								}
 							?>
 						<?php 
@@ -350,6 +352,15 @@ function pmpro_courses_adjacent_post_where( $sql ) {
 	// Replace post_date with menu_order
 	return preg_replace( $pattern, $replacement, $sql );
   }
+add_filter( 'get_next_post_sort', 'pmpro_courses_adjacent_post_sort' );
+add_filter( 'get_previous_post_sort', 'pmpro_courses_adjacent_post_sort' );
 
-  add_filter( 'get_next_post_sort', 'pmpro_courses_adjacent_post_sort' );
-  add_filter( 'get_previous_post_sort', 'pmpro_courses_adjacent_post_sort' );
+/**
+ * Get the HTML section.
+ *
+ * @param [type] $section
+ * @return void
+ */
+function pmpro_courses_get_sections_html( $section = null ) {
+	include( plugin_dir_path( __FILE__ ) . 'adminpages/course-outline/section-settings.php' );
+}
