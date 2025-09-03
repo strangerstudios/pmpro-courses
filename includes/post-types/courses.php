@@ -109,9 +109,15 @@ function pmpro_courses_course_cpt_lessons() {
 			return false;
 		}
 		
+		// Generate an array of values:
+		$sections = get_post_meta( get_the_ID(), 'pmpro_course_sections', true );
+
 		// Loop through all options and then show each section, we'll get there.///
 		// Callback points to a DOM template for the Course Outline/Sections.
-		pmpro_courses_get_sections_html();
+		foreach( $sections as $section ) {
+			// Fake the section stuff.
+			pmpro_courses_get_sections_html( $section );
+		}
 		?>
 		<p class="text-center">
 			<button id="pmpro_courses_add_section" name="pmpro_courses_add_section" class="button button-primary button-hero">
@@ -120,6 +126,7 @@ function pmpro_courses_course_cpt_lessons() {
 				?>
 			</button>			
 		</p>
+		<input type="hidden" name="pmpro_course_sections_nonce" value="<?php echo esc_attr( wp_create_nonce( 'pmpro_course_sections_save' ) ); ?>" />
 		<?php
 }
 
@@ -129,6 +136,8 @@ function pmpro_courses_get_lessons_table_html( $lessons, $section_id = 1 ){
 
 	if ( ! empty( $lessons ) ) {
 		
+		$ret = '';
+
 		foreach ( $lessons as $lesson ) {
 
 			$ret .= "<tr data-lesson_id='" . intval( $lesson->ID ) . "'>";
@@ -148,3 +157,75 @@ function pmpro_courses_get_lessons_table_html( $lessons, $section_id = 1 ){
 	return $ret;
 
 }
+
+/**
+ * Save PMPro Course sections + lessons as a normalized array.
+ * Runs only when saving the pmpro_course post type.
+ * 
+ * @since TBD
+ */
+function pmpro_courses_save_course_sections( $post_id, $post, $update ) {
+	
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	// Let's make sure we have the nonce in the post.
+	if ( empty( $_POST['pmpro_course_sections_nonce'] ) || ! wp_verify_nonce( $_POST['pmpro_course_sections_nonce'], 'pmpro_course_sections_save' ) ) {
+		return;
+	}
+
+	// Gather raw inputs.
+	$names		   = isset( $_POST['pmpro_course_lessons_section_name'] ) ? (array) $_POST['pmpro_course_lessons_section_name'] : array();
+	$ids		   = isset( $_POST['pmpro_course_lessons_section_id'] )   ? (array) $_POST['pmpro_course_lessons_section_id']   : array();
+	$lessons_by_id = isset( $_POST['pmpro_courses_lessons'] )			  ? (array) $_POST['pmpro_courses_lessons']			    : array();
+
+	// Normalize + sanitize.
+	$names = array_map( 'sanitize_text_field', $names );
+	$ids   = array_map( 'absint', $ids );
+
+	// Build normalized sections array following the submitted order of IDs.
+	$sections = array();
+	foreach ( $ids as $i => $sid ) {
+		// Skip any invalid section IDs.
+		if ( ! $sid ) {
+			continue;
+		}
+
+		$section_name = isset( $names[ $i ] ) ? $names[ $i ] : '';
+		$raw_lessons  = isset( $lessons_by_id[ $sid ] ) ? (array) $lessons_by_id[ $sid ] : array();
+
+		// Sanitize lesson IDs and keep order; remove empties/duplicates.
+		$lesson_ids = array_values( array_unique( array_filter( array_map( 'absint', $raw_lessons ) ) ) );
+
+		// Skip empty sections with empty lessons.
+		if ( $section_name === '' && empty( $lesson_ids ) ) {
+			continue;
+		}
+
+		// Set the post parent for each lesson ID.
+		/// Leave this here for now.
+		foreach ( $lesson_ids as $lesson_id ) {
+			wp_update_post( array(
+				'ID'		  => $lesson_id,
+				'post_parent' => $post_id,
+			) );
+		}
+
+		$sections[] = array(
+			'section_id'   => $sid,
+			'section_name' => $section_name,
+			'lessons'	   => $lesson_ids,
+		);
+	}
+
+	// Save the post meta from the meta box.
+	if ( ! empty( $sections ) ) {
+		update_post_meta( $post_id, 'pmpro_course_sections', $sections );
+	}
+}
+add_action( 'save_post_pmpro_course', 'pmpro_courses_save_course_sections', 10, 3 );

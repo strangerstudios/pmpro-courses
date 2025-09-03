@@ -47,18 +47,19 @@ function pmpro_courses_remove_post(post_id) {
  */
 function pmpro_courses_update_post(button_element) {
 
-	console.log(button_element + ' clicked');
 	jQuery(button_element).attr('disabled', 'true');
 
 	var button = jQuery(button_element);
     var section = button.closest('.pmpro_courses_lessons-section');
 	var lesson_id = section.find('.pmpro_courses_lessons_select').val();
 	var order = jQuery('#pmpro_courses_order').val();
+	var section_id = section.data('section-id');
 
 	var data = {
 		action: 'pmpro_courses_update_course',
 		course_id: pmpro_courses.course_id,
 		lesson_id: lesson_id,
+		section_id: section_id,
 		nonce: pmpro_courses.nonce
 	}
 
@@ -86,6 +87,7 @@ function pmpro_courses_update_post(button_element) {
 				// Remove "No Added Lessons"
 				tbody.find('.no-lessons').remove();
 
+				// Add a row of data.
 				tbody.append(responseHTML);
 
 				// jQuery('#pmpro_courses_post').val(null).trigger('change');
@@ -167,14 +169,28 @@ function pmpro_courses_prep_click_events() {
 	// Add a new empty section
 	jQuery('#pmpro_courses_add_section').unbind('click').on('click', function (event) {
 		event.preventDefault();
-		// Find the last section and get its data-section-id, then increment by 1.
-		var last_section = jQuery('.pmpro_courses_lessons-section').last();
-		var last_id = parseInt(last_section.attr('data-section-id')) || 0;
-		var new_id = last_id + 1;
+
+		// Find the highest data-section-id in the DOM and increment it by 1.
+		var max_id = 0;
+		jQuery('.pmpro_courses_lessons-section').each(function () {
+			var id = parseInt(jQuery(this).attr('data-section-id')) || 0;
+			if (id > max_id) {
+				max_id = id;
+			}
+		});
+		var new_id = max_id + 1;
 
 		// Insert the new section HTML, replacing the data-section-id.
 		var new_section_html = pmpro_courses.empty_lesson_section_html.replace(/data-section-id="\d*"/, 'data-section-id="' + new_id + '"');
+
 		jQuery('#pmpro_courses_add_section').parent('p').before(new_section_html);
+
+		// Grab the just-inserted section and update hidden field and some other values we need with the new ID.
+		var inserted_section = jQuery('.pmpro_courses_lessons-section[data-section-id="' + new_id + '"]');
+		inserted_section.find('input[name="pmpro_course_lessons_section_id[]"]').val(new_id);
+		inserted_section.find('label[for^="pmpro_course_lessons_section_name_"]').attr('for', 'pmpro_course_lessons_section_name_' + new_id);
+		inserted_section.find('input[id^="pmpro_course_lessons_section_name_"]').attr('id', 'pmpro_course_lessons_section_name_' + new_id);
+
 		pmpro_courses_prep_click_events();
 		jQuery('#pmpro_courses_add_section').parent('p').prev().find('input').focus().select();
 	});
@@ -182,7 +198,7 @@ function pmpro_courses_prep_click_events() {
 	// Delete a specific section.
 	jQuery('.pmpro_courses_lessons-section-buttons-button.delete-section-btn').unbind('click').on('click', function () {
 		var the_section = jQuery(this).closest('.pmpro_courses_lessons-section');
-		var section_name = the_section.find('input[name="pmpro_course_lessons_section_name"]').val();
+		var section_name = the_section.find('input[name="pmpro_course_lessons_section_name[]"]').val();
 
 		// Cannot delete the section if there's only one left.
 		if (jQuery('.pmpro_courses_lessons-section').length <= 1) {

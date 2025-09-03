@@ -52,6 +52,7 @@ function pmpro_courses_get_lessons( $course ) {
 		'order' => 'ASC'
 	);
 	
+
 	// Return lessons.
 	return get_posts( $args );
 }
@@ -193,10 +194,11 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 	ob_start();
 
 	// Get the lessons assigned to this course.
-	$lessons = pmpro_courses_get_lessons( $course_id );
+	// $lessons = pmpro_courses_get_lessons( $course_id );
+	$sections = get_post_meta( $course_id, 'pmpro_course_sections', true );
 
 	// Return if there are no lessons for this course.
-	if ( empty( $lessons ) ) {
+	if ( empty( $sections ) ) {
 		return;
 	}
 
@@ -218,44 +220,52 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 	?>
 	<div class="pmpro_courses pmpro_courses-lessons <?php echo esc_attr( $pmpro_courses_lesson_access_class ); ?>">
 		<h2 class="pmpro_courses-title"><?php esc_html_e( 'Course Outline', 'pmpro-courses' ); ?></h2>
-		<ol class="pmpro_courses-list">
 			<?php
-				foreach( $lessons as $lesson ) { ?>
-					<li id="pmpro_courses-lesson-<?php echo intval( $lesson->ID ); ?>" class="pmpro_courses-list-item">
-						<?php 
-							// Only add link to single lesson page if current user has access.
-							if ( ! empty( $hasaccess ) ) { ?>
-								<a class="pmpro_courses-list-item-link" href="<?php echo esc_url( get_permalink( $lesson->ID ) ); ?>">
-								<?php
-							}
-						?>
-							<div class="pmpro_courses-list-item-title">
-								<?php echo esc_html( $lesson->post_title ); ?>
-							</div>
+				foreach( $sections as $section ) { ?>
+					<h3 class="pmpro_courses-section-title">
+						<?php echo !empty( $section['section_name'] ) ? esc_html( $section['section_name'] ) : esc_html__( 'Section', 'pmpro-courses' ); ?>
+					</h3>
+					<ol class="pmpro_courses-list">
+						<?php foreach( $section['lessons'] as $lesson_id ) {
+							$lesson = get_post( $lesson_id ); ?>
+						<li id="pmpro_courses-lesson-<?php echo intval( $lesson->ID ); ?>" class="pmpro_courses-list-item">
 							<?php
-								if ( is_user_logged_in() && ! empty( $hasaccess ) ) {
-									// Get the status of this lesson.
-									$lesson_completed = PMPro_Courses_User_Progress::get_user_lesson_status( $lesson->ID, get_current_user_id() );
-										if ( $lesson_completed ) {
-											echo '<span class="pmpro_courses-lesson-status pmpro_courses-lesson-status-complete"><i class="dashicons dashicons-yes"></i><span class="pmpro_courses-lesson-status-label">' . esc_html__( 'Complete', 'pmpro-courses' ) . '</span></span>';
-										} else {
-											echo '<span class="pmpro_courses-lesson-status pmpro_courses-lesson-status-incomplete"><i class="dashicons dashicons-marker"></i><span class="pmpro_courses-lesson-status-label">' . esc_html__( 'Complete', 'pmpro-courses' ) . '</span></span>';
-										}
-									
+								// Only add link to single section page if current user has access.
+								if ( ! empty( $hasaccess ) ) { ?>
+									<a class="pmpro_courses-list-item-link" href="<?php echo esc_url( get_permalink( $lesson->ID ) ); ?>">
+									<?php
 								}
 							?>
-						<?php 
-							// Only add link to single lesson page if current user has access.
-							if ( ! empty( $hasaccess ) ) { ?>
-								</a>
-							<?php
-							}
-						?>
-					</li>
-					<?php
-				}
+								<div class="pmpro_courses-list-item-title">
+									<?php echo esc_html( $lesson->post_title ); ?>
+								</div>
+								<?php
+									if ( is_user_logged_in() && ! empty( $hasaccess ) ) {
+										// Get the status of this lesson.
+										$lesson_completed = PMPro_Courses_User_Progress::get_user_lesson_status( $lesson->ID, get_current_user_id() );
+											if ( $lesson_completed ) {
+												echo '<span class="pmpro_courses-lesson-status pmpro_courses-lesson-status-complete"><i class="dashicons dashicons-yes"></i><span class="pmpro_courses-lesson-status-label">' . esc_html__( 'Complete', 'pmpro-courses' ) . '</span></span>';
+											} else {
+												echo '<span class="pmpro_courses-lesson-status pmpro_courses-lesson-status-incomplete"><i class="dashicons dashicons-marker"></i><span class="pmpro_courses-lesson-status-label">' . esc_html__( 'Complete', 'pmpro-courses' ) . '</span></span>';
+											}
+										
+									}
+								?>
+							<?php 
+								// Only add link to single lesson page if current user has access.
+								if ( ! empty( $hasaccess ) ) { ?>
+									</a>
+								<?php
+								}
+							?>
+						</li>
+						<?php
+					}
+				?>
+			</ol> <!-- end pmpro_courses-list -->
+			<?php
+					}
 			?>
-		</ol> <!-- end pmpro_courses-list -->
 	</div> <!-- end pmpro_courses -->
 	<?php
 
@@ -266,7 +276,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 	 * Filter to allow custom code to modify the structure of the frontend courses list.
 	 * 
 	 */
-	$lessons_html = apply_filters( 'pmpro_courses_get_lessons_html', $temp_content, $course_id, $lessons );
+	$lessons_html = apply_filters( 'pmpro_courses_get_lessons_html', $temp_content, $course_id, $sections );
 
 	return $lessons_html;
 }

@@ -4,7 +4,21 @@ if ( empty( $section ) ) {
 	$section_name = '';
 	$section_id = 1;
 } else {
-	// Section from settings etc can be loaded here.
+	$section_name = sanitize_text_field( $section['section_name'] );
+	$section_id = (int) $section['section_id'];
+
+	if ( ! empty( $section['lessons']) ) {
+		// Get the lessons to build the lesson table.
+		$lessons = get_posts( array(
+			'post__in' => $section['lessons'],
+			'post_type' => 'pmpro_lesson'
+		) );
+		
+		if ( ! empty( $lessons ) ) {
+			$lesson_table_html = pmpro_courses_get_lessons_table_html( $lessons, $section_id );
+		}
+
+	}
 }
 
 // Defaults, get all PMPro Lessons posts that are published.
@@ -31,7 +45,8 @@ $lessons_options = pmpro_courses_lessons_settings();
 		<h3>
 			<label for="pmpro_course_lessons_section_name_<?php echo esc_attr( $section_id ); ?>">
 				<?php echo esc_html__('Section Name', 'pmpro-courses'); ?>
-				<input type="text" name="pmpro_course_lessons_section_name" id="pmpro_course_lessons_section_name_<?php echo esc_attr( $section_id ); ?>" placeholder="<?php echo esc_attr__('Section Name', 'pmpro-courses'); ?>" value="" />
+				<input type="text" name="pmpro_course_lessons_section_name[]" id="pmpro_course_lessons_section_name_<?php echo esc_attr( $section_id ); ?>" placeholder="<?php echo esc_attr__('Section Name', 'pmpro-courses'); ?>" value="<?php echo esc_attr( $section_name ); ?>" />
+				<input type="hidden" name="pmpro_course_lessons_section_id[]" value="<?php echo esc_attr( $section_id ); ?>" />
 			</label>
 		</h3>
 		<button type="button" aria-disabled="false" class="pmpro_courses_lessons-section-buttons-button pmpro_courses_lessons-section-buttons-button-toggle-section" aria-label="<?php echo esc_attr__('Expand and Edit Section', 'pmpro-courses'); ?>">
