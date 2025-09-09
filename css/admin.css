@@ -51,22 +51,12 @@ table#newmeta {
 	margin-top: 1em;
 }
 
-/* Drag and Drop */
-.pmpro-lesson-order::before {
-    color: #CCC;
-    content: "\f333";
-    display: inline-block;
-    font: 400 16px/1 dashicons;
-    opacity: 0;
-    width: 25px;
-}
-
-.pmpro-lesson-order:hover::before {
+.pmpro-lesson-order:hover {
     opacity: 1;
     cursor:grab;
 }
 
-.pmpro-lesson-order:active::before {
+.pmpro-lesson-order:active {
     cursor: grabbing; /* when mouse is pressed down */
 }
 
@@ -77,12 +67,10 @@ table#newmeta {
   padding-bottom:0.5rem !important;
 }
 
-/* From: .pmpro_userfield-group-header { cursor: pointer; } */
 .pmpro_courses_lessons-section-header {
 	cursor: pointer;
 }
 
-/* User Fields Settings */
 .pmpro_courses_lessons-section-buttons-button {
 	background: 0 0;
 	border: 0;
@@ -251,3 +239,4 @@ li.pmpro_courses_lessons-section-column-type { flex: 2; }
 		flex: 0 0 calc( 25% - var(--pmpro--spacing--medium) );
 	}
 }
+

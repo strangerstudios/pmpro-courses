@@ -26,14 +26,13 @@ require_once PMPRO_COURSES_DIR . '/includes/blocks.php';
  * Get the lessons dropdown HTML with all PMPro lessons.
  * @since TBD
  */
-function pmpro_courses_lessons_settings() {
-    global $post;
-    
+function pmpro_courses_lessons_settings( $exclude_lessons = array() ) {    
     // Get all available lessons for the dropdown
     $all_lessons = get_posts(array(
         'post_type' => 'pmpro_lesson',
         'posts_per_page' => 99,
         'post_status' => 'publish',
+		'exclude' => $exclude_lessons,
         'orderby' => 'menu_order',
         'order' => 'ASC'
     ));
@@ -200,7 +199,8 @@ function pmpro_courses_frontend_styles(){
 	if(
 		is_singular( array( 'pmpro_course', 'pmpro_lesson' ) ) ||
 		( $post && has_shortcode( $post->post_content, 'pmpro_all_courses' ) ) ||
-		( $post && has_shortcode( $post->post_content, 'pmpro_my_courses' ) )
+		( $post && has_shortcode( $post->post_content, 'pmpro_my_courses' ) ) ||
+		( $post && has_shortcode( $post->post_content, 'pmpro_course_outline' ) )
 	){
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_style( 'dashicons' );

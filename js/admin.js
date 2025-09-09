@@ -7,41 +7,50 @@ function pmpro_courses_edit_post(post_id, order) {
 	location.href = "#pmpro_courses_edit_post";
 }
 
-function pmpro_courses_remove_post(post_id) {
+/**
+ * Remove a lesson from the lesson table for a course.
+ * 
+ * @since TBD
+ */
+function pmpro_courses_remove_lesson(lesson_id) {
 
-	var data = {
-		action: 'pmpro_courses_remove_course',
-		course: pmpro_courses.course_id,
-		lesson: post_id,
-		nonce: pmpro_courses.nonce
+	// Show an alert/confirmation 
+	const $row = jQuery('tr[data-lesson_id="' + lesson_id + '"]');
+	const $table = $row.closest('table');
+	const lesson_text = $row.find('a').first().text().trim();
+
+	if (confirm("Are you sure you want to remove the lesson: " + lesson_text + "?")) {
+		// Remove the row
+		$row.remove();
 	}
 
-	jQuery.ajax({
-		url: ajaxurl,
-		type: 'POST',
-		timeout: 2000,
-		dataType: 'html',
-		data: data,
-		error: function (xml) {
-			alert('Error removing lesson [1]');
-			//enable save button
-			jQuery('#pmpro_courses_save').removeAttr('disabled');
-		},
-		success: function (responseHTML) {
-			if (responseHTML == 'error') {
-				alert('Error removing lesson [2]');
-				//enable save button
-				jQuery('#pmpro_courses_save').removeAttr('disabled');
-			} else {
-				jQuery('#pmpro_courses_table tbody').html(responseHTML);
-			}
-		}
-	});
+	// If no lesson rows left, add "No Lessons" default row
+	if ($table.find('tr[data-lesson_id]').length === 0) {
+		$table.find('tbody').html(
+			'<tr class="no-lessons"><td colspan="3" style="text-align:center;">No Lessons Added</td></tr>'
+		);
+	}
+
+	// Put the select2 option back to the dropdown when removing.
+	if (lesson_text) {
+		jQuery('.pmpro_courses_lessons_select').each(function () {
+		const $sel = jQuery(this);
+
+		// Add new option node (clone because an <option> can only live in one place)
+		const option = new Option(lesson_text, lesson_id, false, false);
+		$sel.append(option);
+
+		// Refresh Select2 UI
+		$sel.trigger('change.select2');
+		});
+	}
 }
 
 /**
  * Update the Course Lessons table using AJAX.
  * This does not save the data, just updates the DOM.
+ * 
+ * AJAX is needed, because we need to get the WP_POST object for the lesson when building the table row.
  * 
  * @since TBD
  */
@@ -52,7 +61,6 @@ function pmpro_courses_update_post(button_element) {
 	var button = jQuery(button_element);
     var section = button.closest('.pmpro_courses_lessons-section');
 	var lesson_id = section.find('.pmpro_courses_lessons_select').val();
-	var order = jQuery('#pmpro_courses_order').val();
 	var section_id = section.data('section-id');
 
 	var data = {
@@ -71,34 +79,55 @@ function pmpro_courses_update_post(button_element) {
 		error: function (xml) {
 			alert('Error adding lesson to course [1]');
 			//enable save button
-			jQuery('#pmpro_courses_save').html('Add Lesson');
-			jQuery('#pmpro_courses_save').removeAttr('disabled');
+			button.html('Add Lesson');
+			button.removeAttr('disabled');
 		},
 		success: function (responseHTML) {
 			if (responseHTML == 'error') {
 				alert('Error adding lesson to course [2]');
 				//enable save button
-				jQuery('#pmpro_courses_save').html('Add Lesson');
-				jQuery('#pmpro_courses_save').removeAttr('disabled');
+				button.html('Add Lesson');
+				button.removeAttr('disabled');
 			} else {
 				// If there is a row with the class ".no-lessons", remove it.
 				const tbody = section.find('.pmpro_courses_lesson_table tbody');
+				const valToRemove = String(lesson_id);
+				const $allSelects = jQuery('.pmpro_courses_lessons_select');
+
 
 				// Remove "No Added Lessons"
 				tbody.find('.no-lessons').remove();
 
+				// Loop through all selects and remove the lesson value.
+				$allSelects.each(function () {
+				const $sel = jQuery(this);
+
+				// If this select currently has the just-added value selected, clear it first
+				if (String($sel.val()) === valToRemove) {
+					$sel.val(null).trigger('change'); // clears the selection in Select2 UI
+				}
+
+				// Remove the option from the DOM so it disappears from the dropdown
+				$sel.find('option[value="' + valToRemove + '"]').remove();
+
+				// Tell Select2 to refresh from the underlying <select>
+				$sel.trigger('change.select2');
+				});
+
 				// Add a row of data.
 				tbody.append(responseHTML);
 
-				// jQuery('#pmpro_courses_post').val(null).trigger('change');
-				// jQuery('#pmpro_courses_section').val(null).trigger('change');
 				jQuery('#pmpro_courses_order').val('');
-				jQuery('#pmpro_courses_save').html('Add Lesson');
-				jQuery('#pmpro_courses_save').removeAttr('disabled');
+				button.html('Add Lesson');
+				button.removeAttr('disabled');
 			}
 		}
 	});
 }
+
+
+// Let's build lesson reordering to move rows around within a specific table.
+
 
 /**
  * Toggle the additional settings for a module.
@@ -116,10 +145,13 @@ function pmpro_courses_toggle_module_settings(module) {
 
 function pmpro_courses_setup() {
 
+	// Find all course tables and make them sortable on page load.
+	pmpro_courses_select2();
+	pmpro_courses_make_table_sortable( '.pmpro_courses_lesson_table' );
+
+
 	// Editing a course.
 	if (pmpro_courses.editing_course) {
-		jQuery('.pmpro_courses_lessons_select').select2({ width: 'elements' });
-
 		jQuery('#pmpro_courses_order').keypress(function (e) {
 			if (e.which == 13) {
 				pmpro_courses_update_post();
@@ -144,11 +176,45 @@ function pmpro_courses_setup() {
 	}
 }
 
+// Make select2 elements
+function pmpro_courses_select2() {
+    jQuery('select.pmpro_courses_lessons_select').select2({
+        width: 'elements'
+    });
+}
+
+function pmpro_courses_make_table_sortable( $table ) {
+	const $tbody = jQuery($table).find('tbody');
+
+	// Make rows draggable; no renumbering or extra work needed.
+	$tbody.sortable({
+		items: '> tr',
+		axis: 'y',
+		cursor: 'move',
+		tolerance: 'pointer',
+		helper: function(e, tr) {
+		// Keep column widths while dragging
+		const $originals = tr.children();
+		const $helper = tr.clone();
+		$helper.children().each(function(i) {
+			jQuery(this).width($originals.eq(i).width());
+		});
+		return $helper;
+		},
+		placeholder: 'pmpro-row-placeholder',
+		start: function(e, ui) {
+		ui.placeholder.height(ui.item.height());
+		},
+		update: function() {
+		// Nothing to do: inputs move with the row, so $_POST order is correct.
+		}
+	}).disableSelection();
+
+}
+
 // Function to prep click events.
 function pmpro_courses_prep_click_events() {
-
-	jQuery('#pmpro_courses_add_section').parent('p').prev().find('select').focus().select2({ width: 'elements' });
-
+	
 	// Whenever we make a change, warn the user if they try to navigate away. 
 	/// DO we need this.
 	function pmpro_courses_made_a_change() {
@@ -190,6 +256,10 @@ function pmpro_courses_prep_click_events() {
 		inserted_section.find('input[name="pmpro_course_lessons_section_id[]"]').val(new_id);
 		inserted_section.find('label[for^="pmpro_course_lessons_section_name_"]').attr('for', 'pmpro_course_lessons_section_name_' + new_id);
 		inserted_section.find('input[id^="pmpro_course_lessons_section_name_"]').attr('id', 'pmpro_course_lessons_section_name_' + new_id);
+
+		// Make the table sortable and select2.
+		pmpro_courses_select2();
+		pmpro_courses_make_table_sortable( inserted_section.find('.pmpro_courses_lesson_table') );
 
 		pmpro_courses_prep_click_events();
 		jQuery('#pmpro_courses_add_section').parent('p').prev().find('input').focus().select();

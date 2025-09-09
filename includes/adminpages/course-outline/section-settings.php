@@ -11,7 +11,10 @@ if ( empty( $section ) ) {
 		// Get the lessons to build the lesson table.
 		$lessons = get_posts( array(
 			'post__in' => $section['lessons'],
-			'post_type' => 'pmpro_lesson'
+			'post_type' => 'pmpro_lesson',
+			'numberposts' => 99,
+			'orderby' => 'menu_order',
+			'order' => 'ASC'
 		) );
 		
 		if ( ! empty( $lessons ) ) {
@@ -22,7 +25,7 @@ if ( empty( $section ) ) {
 }
 
 // Defaults, get all PMPro Lessons posts that are published.
-$lessons_options = pmpro_courses_lessons_settings();
+$lessons_options = pmpro_courses_lessons_settings( isset( $section['lessons'] ) ? array_map( 'intval', $section['lessons'] ) : array() );
 ?>
 <div class="pmpro_courses_lessons-section" data-section-id="<?php echo esc_attr( $section_id ); ?>">
 	<div class="pmpro_courses_lessons-section-header">
@@ -59,7 +62,7 @@ $lessons_options = pmpro_courses_lessons_settings();
 			<table id="pmpro_courses_table_<?php echo esc_attr( $section_id ); ?>" class="wp-list-table widefat striped pmpro-metabox-items pmpro_courses_lesson_table">
 				<thead>
 					<tr>
-						<th><?php echo esc_html__('Order', 'pmpro-courses'); ?></th>
+						<th></th>
 						<th width="50%"><?php echo esc_html__('Title', 'pmpro-courses'); ?></th>
 						<th width="20%"><?php echo esc_html__('Actions', 'pmpro-courses'); ?></th>
 					</tr>
@@ -75,7 +78,7 @@ $lessons_options = pmpro_courses_lessons_settings();
 					<tr>
 						<td>
 							<label for="pmpro_courses_post"><?php echo esc_html__('Lesson', 'pmpro-courses'); ?></label>
-							<select id="pmpro_courses_post" class="pmpro_courses_lessons_select" name="pmpro_courses_post">
+							<select class="pmpro_courses_lessons_select" name="pmpro_courses_post">
 								<?php echo isset($lessons_options) ? $lessons_options : ''; ?>
 							</select>
 						</td>

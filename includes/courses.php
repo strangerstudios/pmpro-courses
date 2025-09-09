@@ -58,7 +58,7 @@ function pmpro_courses_show_course_content_to_nonmembers() {
 
 /**
  * AJAX callback to add/edit a lesson to a course from the edit course page.
- * This DOES NOT SAVE THE DATA. This will happen on save.
+ * This DOES NOT SAVE THE DATA. This will happen on post save.
  */
 function pmpro_courses_update_course_callback(){
 
@@ -66,7 +66,6 @@ function pmpro_courses_update_course_callback(){
 
 		if ( $_REQUEST['action'] == 'pmpro_courses_update_course' ) {
 	
-
 			if ( ! current_user_can( 'edit_posts' ) ) {
 				return;
 			}
@@ -85,13 +84,11 @@ function pmpro_courses_update_course_callback(){
 			$lesson = get_post( $lesson_id );
 
 			$table_row = "<tr data-lesson_id='" . intval( $lesson_id ) . "'>";
-			$table_row .= "<td class='pmpro-lesson-order'>1</td>";
+			$table_row .= "<td class='pmpro-lesson-order'><span class='dashicons dashicons-menu'></span></td>";
 			$table_row .= "<td><a href='" . admin_url( 'post.php?post=' . esc_attr( intval( $lesson_id ) ) . '&action=edit' ) . "' title='" . esc_attr__('Edit', 'pmpro-courses') .' '. esc_attr( $lesson->post_title ) . "' target='_BLANK'>". esc_html( $lesson->post_title . ' (#' . $lesson_id . ')' ) ."</a></td>";
 			$table_row .= "<input type='hidden' name='pmpro_courses_lessons[" . intval( $section_id ) . "][]' value='". intval( $lesson_id ) ."' />";
-			$table_row .= "<td>";
-			$table_row .= "<a class='button button-secondary' href='javascript:pmpro_courses_edit_post(" . intval( $lesson_id ) . "," . intval( $lesson_id ) . "); void(0);'>". esc_html__( 'edit', 'pmpro-courses' )."</a>";
-			$table_row .= " ";
-			$table_row .= "<a class='button button-secondary' href='javascript:pmpro_courses_remove_post(". intval( $lesson_id ) ."); void(0);'>". esc_html__( 'remove', 'pmpro-courses' )."</a>";
+			$table_row .= "<td class='pmpro-courses-lesson-remove'>";
+			$table_row .= "<a class='button button-secondary' href='javascript:pmpro_courses_remove_lesson(". intval( $lesson_id ) ."); void(0);'>". esc_html__( 'Remove', 'pmpro-courses' )."</a>";
 			$table_row .= "</td>";
 			$table_row .= "</tr>";
 
@@ -106,6 +103,7 @@ add_action( 'wp_ajax_pmpro_courses_update_course', 'pmpro_courses_update_course_
 /**
  * AJAX callback to remove a lesson from a course on the edit course page.
  */
+/// No longer needed.
 function pmpro_courses_remove_course_callback(){
 
 	if( !empty( $_REQUEST['action'] ) ){
@@ -212,6 +210,11 @@ function pmpro_courses_template_redirect() {
 		if ( current_user_can( 'manage_options' ) ) {
 			return;
 		}
+
+		// PMPro
+		if ( ! function_exists( 'pmpro_has_membership_access' ) ) {
+			return;
+		}
 		
 		// Okay check access.
 		if ( $post->post_type == 'pmpro_course' ) {
@@ -264,6 +267,8 @@ function pmpro_courses_hide_adjacent_post_links_for_courses( $output, $format, $
 add_action( 'previous_post_link', 'pmpro_courses_hide_adjacent_post_links_for_courses', 10, 5 );
 add_action( 'next_post_link', 'pmpro_courses_hide_adjacent_post_links_for_courses', 10, 5 );
 
+
+//// Don't need this I don't think.
 /**
  * Update All Course Lessons menu_order attrbute based on the UI drag and drop.
  *

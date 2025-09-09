@@ -57,6 +57,7 @@ function pmpro_courses_get_lessons( $course ) {
 	return get_posts( $args );
 }
 
+/// This needs to be reworked.
 /**
  * Get the next order # for a lesson in a course.
  */
@@ -65,7 +66,7 @@ function pmpro_courses_get_next_lesson_order( $course ) {
 	if ( is_object( $course ) ) {
 		$course = $course->ID;
 	}
-	
+
 	// Get all the lessons.
 	$lessons = pmpro_courses_get_lessons( $course );
 		
@@ -140,7 +141,10 @@ function pmpro_courses_get_courses_html( $courses ) {
 		<h4 class="pmpro_courses-title"><?php esc_html_e( 'Courses', 'pmpro-courses' ); ?></h4>
 		<ul class="pmpro_courses-list">
 			<?php
-				foreach( $courses as $course ) { ?>
+				foreach( $courses as $course ) { 
+					$progress = PMPro_Courses_User_Progress::get_course_progress_for_user( $course->ID, get_current_user_id() );
+
+					?>
 					<li id="pmpro_courses-course-<?php echo intval( $course->ID ); ?>" class="pmpro_courses-list-item">
 						<a class="pmpro_courses-list-item-link" href="<?php echo esc_url( get_permalink( $course->ID ) ); ?>">
 							<div class="pmpro_courses-list-item-title">
@@ -153,6 +157,7 @@ function pmpro_courses_get_courses_html( $courses ) {
 									<?php printf( esc_html( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ) ), number_format_i18n( $lesson_count ) ); ?>
 								</span>
 							<?php } ?>
+							<span class="pmpro_courses-list-item-progress"><?php echo esc_html( $progress ) . '%'; ?></span>
 						</a>
 					</li>
 					<?php
@@ -166,7 +171,6 @@ function pmpro_courses_get_courses_html( $courses ) {
 
 	/**
 	 * Filter to allow custom code to modify the structure of the frontend courses list.
-	 * 
 	 */
 	$courses_html = apply_filters( 'pmpro_courses_get_courses_html', $temp_content, $courses );
 
@@ -221,10 +225,14 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 	<div class="pmpro_courses pmpro_courses-lessons <?php echo esc_attr( $pmpro_courses_lesson_access_class ); ?>">
 		<h2 class="pmpro_courses-title"><?php esc_html_e( 'Course Outline', 'pmpro-courses' ); ?></h2>
 			<?php
-				foreach( $sections as $section ) { ?>
+				foreach( $sections as $section ) {
+
+					if ( ! empty( $section['section_name'] ) ) {
+					?>
 					<h3 class="pmpro_courses-section-title">
-						<?php echo !empty( $section['section_name'] ) ? esc_html( $section['section_name'] ) : esc_html__( 'Section', 'pmpro-courses' ); ?>
+						<?php echo esc_html( $section['section_name'] ); ?>
 					</h3>
+					<?php } ?>
 					<ol class="pmpro_courses-list">
 						<?php foreach( $section['lessons'] as $lesson_id ) {
 							$lesson = get_post( $lesson_id ); ?>

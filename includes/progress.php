@@ -143,7 +143,7 @@ class PMPro_Courses_User_Progress {
 			return 0;
 		}
 
-		return ( $completed_count / count( $lessons) ) * 100;
+		return round( ( $completed_count / count( $lessons) ) * 100 );
 	}
 
 	///
@@ -172,11 +172,66 @@ class PMPro_Courses_User_Progress {
 
 		return $completed_lessons;
 	}
+
+	/**
+	 * Get a list of courses for a user that have no progress at all.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|null $user_id
+	 * @return array|false Array of WP_Post objects (pmpro_course) or false if no user.
+	 */
+	public static function pmpro_courses_get_no_activity_courses_for_user( $user_id = null ) {
+		global $wpdb;
+
+		if ( empty( $user_id ) ) {
+			$user_id = get_current_user_id();
+		}
+		if ( empty( $user_id ) ) {
+			return false;
+		}
+
+		$table = $wpdb->prefix . 'pmpro_courses_user_lesson_progress';
+
+		// Find courses that (a) have lessons, and (b) have NO progress rows for this user.
+		$sql = $wpdb->prepare(
+			"
+			SELECT c.*
+			FROM {$wpdb->posts} AS c
+			WHERE c.post_type = 'pmpro_course'
+			AND c.post_status IN ('publish','private')
+			AND EXISTS (
+					SELECT 1
+					FROM {$wpdb->posts} AS l
+					WHERE l.post_type = 'pmpro_lesson'
+					AND l.post_parent = c.ID
+					AND l.post_status IN ('publish','private')
+			)
+			AND NOT EXISTS (
+					SELECT 1
+					FROM {$table} AS p
+					INNER JOIN {$wpdb->posts} AS l2
+							ON l2.ID = p.lesson_id
+						AND l2.post_type = 'pmpro_lesson'
+						AND l2.post_parent = c.ID
+						AND l2.post_status IN ('publish','private')
+					WHERE p.user_id = %d
+			)
+			ORDER BY c.post_title ASC
+			",
+			$user_id
+		);
+
+		$courses = $wpdb->get_results( $sql );
+		return $courses;
+	}
 } // End of class.
 
 function pmpro_courses_get_user_lesson_status(){
 	return true;
 }
+
+
 /// This should rather be in another file I think.
 /**
  * Display a button that allows a user to mark a lesson as complete or show completed if the lesson is completed.
