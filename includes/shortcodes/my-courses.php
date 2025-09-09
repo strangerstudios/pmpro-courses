@@ -26,7 +26,7 @@ function pmpro_courses_shortcode_my_courses( $atts ) {
 	// Get all the courses available for the current user.
 	$courses = pmpro_courses_get_courses( $course_limit, get_current_user_id() );
 
-	// Hide empty courses from the list.
+	// Hide courses with zero progress from the list.
 	if ( $hide_inactive ) {
 		$empty_progress_courses = PMPro_Courses_User_Progress::pmpro_courses_get_no_activity_courses_for_user( get_current_user_id() ); // returns an array of objects.
 		

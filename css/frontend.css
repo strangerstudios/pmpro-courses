@@ -138,3 +138,31 @@
 	margin: 30px 0;
 }
 
+/* Course Frontend Section */
+.pmpro_courses-section-title[role="button"] {
+  cursor: pointer;
+}
+.pmpro_courses-section-title[role="button"]:focus {
+  outline: 2px solid #555; /* adjust to your theme */
+  outline-offset: 2px;
+}
+
+.pmpro_courses-section-title {
+  position: relative;
+  cursor: pointer;
+  padding-right: 24px; /* space for icon */
+}
+
+.pmpro_courses-section-title::after {
+  font-family: dashicons;
+  content: "\f343"; /* dashicons-arrow-up-alt2 */
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.pmpro_courses-section-title:not(.pmpro_courses_course_open)::after {
+  content: "\f347"; /* dashicons-arrow-down-alt2 */
+}
+

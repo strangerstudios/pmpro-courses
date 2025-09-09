@@ -13,6 +13,7 @@ if ( empty( $section ) ) {
 			'post__in' => $section['lessons'],
 			'post_type' => 'pmpro_lesson',
 			'numberposts' => 99,
+			'post_status' => array( 'draft', 'publish' ),
 			'orderby' => 'menu_order',
 			'order' => 'ASC'
 		) );
@@ -20,7 +21,6 @@ if ( empty( $section ) ) {
 		if ( ! empty( $lessons ) ) {
 			$lesson_table_html = pmpro_courses_get_lessons_table_html( $lessons, $section_id );
 		}
-
 	}
 }
 
@@ -71,23 +71,35 @@ $lessons_options = pmpro_courses_lessons_settings( isset( $section['lessons'] ) 
 					<?php echo isset($lesson_table_html) ? $lesson_table_html : '<tr class="no-lessons"><td colspan="3" style="text-align:center;">' . esc_html__( 'No Lessons Added', 'pmpro-courses' ) . '</td></tr>'; ?>
 				</tbody>
 			</table>
-
-			<h3><?php echo esc_html__('Add Lessons', 'pmpro-courses'); ?></h3>
+			<h3><?php echo esc_html__('Add Existing Lessons', 'pmpro-courses'); ?></h3>
 			<table id="newmeta" class="wp-list-table pmpro-metabox-items">
 				<tbody>
 					<tr>
 						<td>
-							<label for="pmpro_courses_post"><?php echo esc_html__('Lesson', 'pmpro-courses'); ?></label>
 							<select class="pmpro_courses_lessons_select" name="pmpro_courses_post">
-								<?php echo isset($lessons_options) ? $lessons_options : ''; ?>
+								<?php echo isset( $lessons_options ) ? $lessons_options : ''; ?>
 							</select>
 						</td>
 						<td width="20%">
-							<a class="button button-primary pmpro_courses_save_lesson" id="pmpro_courses_save" data-section-id="<?php echo esc_attr( $section_id ); ?>"><?php echo esc_html__('Add Lesson', 'pmpro-courses'); ?></a>
+							<a class="button button-primary pmpro_courses_save_lesson" id="pmpro_courses_save" data-section-id="<?php echo esc_attr( $section_id ); ?>"><?php echo esc_html__( 'Add Lesson', 'pmpro-courses' ); ?></a>
 						</td>
 					</tr>
+					<tr>
+						<td>
+							<h3><?php esc_html_e( 'Create a New Draft Lesson', 'pmpro-courses' ); ?></h3>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" id="pmpro_courses_new_lesson_title_<?php echo esc_attr( $section_id ); ?>" class="pmpro_courses_new_lesson_title" placeholder="<?php esc_attr_e( 'Enter a lesson title', 'pmpro-courses' ); ?>" />
+						</td>
+						<td width="20%">
+							<a class="button button-primary pmpro_courses_create_lesson" id="pmpro_courses_create_lesson" data-section-id="<?php echo esc_attr( $section_id ); ?>"><?php echo esc_html__( 'Create Lesson', 'pmpro-courses' ); ?></a>
+						</td>
+</tr>
 				</tbody>
 			</table>
+			
 		</div>
 	</div>
 </div>

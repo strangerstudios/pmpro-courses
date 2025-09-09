@@ -125,8 +125,64 @@ function pmpro_courses_update_post(button_element) {
 	});
 }
 
+jQuery(document).on('click', '.pmpro_courses_create_lesson', function () {
+	pmpro_courses_create_lesson(this);
+});
 
-// Let's build lesson reordering to move rows around within a specific table.
+
+// Callback to create a lesson.
+function pmpro_courses_create_lesson(buttonEl) {
+	const $btn = jQuery(buttonEl);
+	const $section = $btn.closest('.pmpro_courses_lessons-section');
+	const section_id = $section.data('section-id');
+	const $title = $section.find('.pmpro_courses_new_lesson_title');
+	const title = ($title.val() || '').trim();
+
+	if (!title) {
+		alert('Please enter a lesson title.');
+		return;
+	}
+
+	$btn.prop('disabled', true).text('Creating…');
+	
+	var data = {
+			action: 'pmpro_courses_create_lesson',
+			course_id: pmpro_courses.course_id,
+			section_id: section_id,
+			title: title,
+			nonce: pmpro_courses.nonce
+	}
+	
+	jQuery.ajax({
+		url: ajaxurl,
+		type: 'POST',
+		dataType: 'html',
+		data: data,
+		error: function () {
+			alert('Error creating lesson.');
+			$btn.prop('disabled', false).text('Create Lesson');
+		},
+		success: function (responseHTML) {
+			if (responseHTML == 'error') {
+				$btn.prop('disabled', false).text('Create Lesson');
+				return;
+			} else {
+			const tbody = $section.find('.pmpro_courses_lesson_table tbody');
+
+			// Remove "No Lessons Added" placeholder if present
+			tbody.find('.no-lessons').remove();
+
+			// Append the new row HTML returned by PHP (already includes the post ID)
+			tbody.append(responseHTML);
+
+			// Clear the input and restore the button
+			$title.val('');
+			$btn.prop('disabled', false).text('Create Lesson');
+			}
+			
+		}
+	});
+}
 
 
 /**

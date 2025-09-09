@@ -176,89 +176,98 @@ function pmpro_courses_get_lessons_table_html( $lessons, $section_id = 1 ){
  * @since TBD
  */
 function pmpro_courses_save_course_sections( $post_id, $post, $update ) {
-	
+
+	// Let's not save if the user cannot edit the current post.
 	if ( ! current_user_can( 'edit_post', $post_id ) ) {
 		return;
 	}
 
+	// Let's not save during autosave, to save some resources.
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 		return;
 	}
 
-	// Let's make sure we have the nonce in the post.
+	// Bail if the nonce has failed.
 	if ( empty( $_POST['pmpro_course_sections_nonce'] ) || ! wp_verify_nonce( $_POST['pmpro_course_sections_nonce'], 'pmpro_course_sections_save' ) ) {
 		return;
 	}
 
-	// Gather raw inputs.
-	$names		   = isset( $_POST['pmpro_course_lessons_section_name'] ) ? (array) $_POST['pmpro_course_lessons_section_name'] : array();
-	$ids		   = isset( $_POST['pmpro_course_lessons_section_id'] )   ? (array) $_POST['pmpro_course_lessons_section_id']   : array();
-	$lessons_by_id = isset( $_POST['pmpro_courses_lessons'] )			  ? (array) $_POST['pmpro_courses_lessons']			    : array();
+	// Get all the data.
+	$section_names         = isset( $_POST['pmpro_course_lessons_section_name'] ) ? (array) $_POST['pmpro_course_lessons_section_name'] : array();
+	$section_ids   = isset( $_POST['pmpro_course_lessons_section_id'] )   ? (array) $_POST['pmpro_course_lessons_section_id']   : array();
+	$lessons_by_id = isset( $_POST['pmpro_courses_lessons'] )             ? (array) $_POST['pmpro_courses_lessons']             : array();
 
-	// Normalize + sanitize.
-	$names = array_map( 'sanitize_text_field', $names );
-	$ids   = array_map( 'absint', $ids );
+	$section_names = array_map( 'sanitize_text_field', $section_names );
+	$section_ids   = array_map( 'absint', $section_ids );
 
-	// Build normalized sections array following the submitted order of IDs.
-	$sections = array();
-	$lesson_order = 1;
-	foreach ( $ids as $i => $sid ) {
-		// Skip any invalid section IDs.
-		if ( ! $sid ) {
+	$sections         = array();
+	$all_lesson_ids   = array();   // union across all sections, helps order the lessons in post object for next/previous navigation.
+
+	// Loop through all sections to be processed.
+	foreach ( $section_ids as $key => $section_id ) {
+		if ( ! $section_id ) {
 			continue;
-		}
+		} 
 
-		$section_name = isset( $names[ $i ] ) ? $names[ $i ] : '';
-		$raw_lessons  = isset( $lessons_by_id[ $sid ] ) ? (array) $lessons_by_id[ $sid ] : array();
-
-		// Sanitize lesson IDs and keep order; remove empties/duplicates.
+		$section_name = isset( $section_names[ $key ] ) ? sanitize_text_field( $section_names[ $key ] ) : '';
+		$raw_lessons  = isset( $lessons_by_id[ $section_id ] ) ? (array) $lessons_by_id[ $section_id ] : array();
 		$lesson_ids = array_values( array_unique( array_filter( array_map( 'absint', $raw_lessons ) ) ) );
 
-		// Skip empty sections with empty lessons.
+		// Skip totally empty unnamed sections.
 		if ( $section_name === '' && empty( $lesson_ids ) ) {
 			continue;
 		}
 
-		// Remove any lessons from the post_parent if they are not in the $lesson_ids array.
-		$existing_lessons = get_children( array(
-			'post_parent' => $post_id,
-			'post_type'   => 'pmpro_lesson',
-			'post_status' => 'any',
-			'fields'      => 'ids',
-		) );
-			
-		// There may be lessons that have a post parent but removed from the post metabox.
-		$lessons_to_remove = array_diff( $existing_lessons, $lesson_ids );
-		if ( ! empty( $lessons_to_remove ) ) {
-			foreach ( $lessons_to_remove as $lesson_remove_id ) {
-				wp_update_post( array(
-					'ID'         => $lesson_remove_id,
-					'post_parent' => 0,
-				) );
-			}
-		}
-
-		// Set the post parent for each lesson ID, this is to update the post parent for the lesson metabox too.
-		foreach ( $lesson_ids as $lesson_id ) {
-			wp_update_post( array(
-				'ID'		  => $lesson_id,
-				'post_parent' => $post_id,
-				'menu_order'  => $lesson_order,
-			) );
-			$lesson_order++;
-		}
-
 		$sections[] = array(
-			'section_id'   => $sid,
+			'section_id'   => $section_id,
 			'section_name' => $section_name,
-			'lessons'	   => $lesson_ids,
+			'lessons'      => $lesson_ids,
 		);
+
+		// Accumulate union (preserving per-section order first; course order computed later).
+		foreach ( $lesson_ids as $lid ) {
+			$all_lesson_ids[] = $lid;
+		}
 	}
 
-	// Save the post meta from the meta box.
-	if ( ! empty( $sections ) ) {
-		update_post_meta( $post_id, 'pmpro_course_sections', $sections );
+	// Nothing to save, empty sections.
+	if ( empty( $sections ) ) {
+		return;
 	}
 
+	// Get all lesson IDs that are passed through $_POST to see if any need to be removed from the post parent.
+	$all_lesson_ids = array_values( array_unique( array_filter( $all_lesson_ids, 'absint' ) ) );
+
+	// Get all pre-existing lessons for a this course.
+	$existing_lessons = get_children( array(
+		'post_parent' => $post_id,
+		'post_type'   => 'pmpro_lesson',
+		'post_status' => 'any',
+		'fields'      => 'ids',
+	) );
+
+	// Remove any lessons from the post parent if they're removed from the sections and missing from the $_POST.
+	$lessons_to_remove = array_diff( (array) $existing_lessons, $all_lesson_ids );
+	if ( ! empty( $lessons_to_remove ) ) {
+		foreach ( $lessons_to_remove as $lesson_remove_id ) {
+			wp_update_post( array(
+				'ID'          => $lesson_remove_id,
+				'post_parent' => 0,
+			) );
+		}
+	}
+
+	// Loop through all lessons for a course, and update their post parent and menu order.
+	$lesson_order   = 1;
+	foreach ( $all_lesson_ids as $lid ) {
+		wp_update_post( array(
+			'ID'          => $lid,
+			'post_parent' => $post_id,
+			'menu_order'  => $lesson_order++,
+		) );
+	}
+
+	// Save the post meta data, this is primarily used for the settings.
+	update_post_meta( $post_id, 'pmpro_course_sections', $sections );
 }
-add_action( 'save_post_pmpro_course', 'pmpro_courses_save_course_sections', 10, 3 );
+add_action( 'save_post_pmpro_course', 'pmpro_courses_save_course_sections', 20, 3 ); // run a bit later

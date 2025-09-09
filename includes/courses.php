@@ -64,7 +64,7 @@ function pmpro_courses_update_course_callback(){
 
 	if ( ! empty( $_REQUEST['action'] ) ) {
 
-		if ( $_REQUEST['action'] == 'pmpro_courses_update_course' ) {
+		if ( $_REQUEST['action'] == 'pmpro_courses_update_course' ) { /// Not needed
 	
 			if ( ! current_user_can( 'edit_posts' ) ) {
 				return;
@@ -100,38 +100,59 @@ function pmpro_courses_update_course_callback(){
 }
 add_action( 'wp_ajax_pmpro_courses_update_course', 'pmpro_courses_update_course_callback' );
 
-/**
- * AJAX callback to remove a lesson from a course on the edit course page.
- */
-/// No longer needed.
-function pmpro_courses_remove_course_callback(){
+/// Create course
+function pmpro_courses_create_lesson_cb() {
+	
 
-	if( !empty( $_REQUEST['action'] ) ){
-
-		if( $_REQUEST['action'] == 'pmpro_courses_remove_course' ){
-
-			if ( ! current_user_can( 'edit_posts' ) ) {
-				return;
-			}
-
-			// check if nonce is valid
-			if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'pmpro_courses_admin_nonce' ) ) {
-				wp_die( __( 'Nonce is invalid', 'pmpro-courses' ) );
-			}
-
-			$course = intval( $_REQUEST['course'] );
-			$lesson = intval( $_REQUEST['lesson'] );
-			
-			wp_update_post( array( 'ID' => $lesson, 'post_parent' => '' ) );
-			
-			echo pmpro_courses_get_lessons_table_html( pmpro_courses_get_lessons( $course ) );
-			
-			wp_die();
-		}
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		return;
 	}
 
+	if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'pmpro_courses_admin_nonce' ) ) {
+		wp_die( __( 'Nonce is invalid', 'pmpro-courses' ) );
+	}
+
+	$title      = isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '';
+	$section_id = isset( $_POST['section_id'] ) ? (int) $_POST['section_id'] : 0;
+	$course_id  = isset( $_POST['course_id'] ) ? (int) $_POST['course_id'] : 0;
+
+	if ( '' === $title ) {
+		$title = __( 'Untitled Lesson', 'pmpro-courses' );
+	}
+
+	$postarr = array(
+		'post_type'   => 'pmpro_lesson',
+		'post_status' => 'draft', // or 'publish' if you prefer
+		'post_title'  => $title,
+		'post_author' => get_current_user_id(),
+	);
+
+	$post_id = wp_insert_post( $postarr );
+	
+
+	// if ( is_wp_error( $post_id ) ) {
+	// 	wp_send_json_error(
+	// 		array(
+	// 			'message' => __( 'Could not create lesson.', 'pmpro-courses' ),
+	// 			'error'   => $post_id->get_error_message(),
+	// 		),
+	// 		500
+	// 	);
+	// }
+
+	// Build a single table row for this lesson so the JS can append it immediately.
+	$table_row = "<tr data-lesson_id='" . intval( $post_id ) . "'>";
+	$table_row .= "<td class='pmpro-lesson-order'><span class='dashicons dashicons-menu'></span></td>";
+	$table_row .= "<td><a href='" . admin_url( 'post.php?post=' . esc_attr( intval( $post_id ) ) . '&action=edit' ) . "' title='" . esc_attr__('Edit', 'pmpro-courses') .' '. esc_attr( $title ) . "' target='_BLANK'>". esc_html( $title . ' (#' . $post_id . ')' ) ."</a></td>";
+	$table_row .= "<input type='hidden' name='pmpro_courses_lessons[" . intval( $section_id ) . "][]' value='". intval( $post_id ) ."' />";
+	$table_row .= "<td class='pmpro-courses-lesson-remove'>";
+	$table_row .= "<a class='button button-secondary' href='javascript:pmpro_courses_remove_lesson(". intval( $post_id ) ."); void(0);'>". esc_html__( 'Remove', 'pmpro-courses' )."</a>";
+	$table_row .= "</td>";
+	$table_row .= "</tr>";
+
+	echo $table_row;
 }
-add_action( 'wp_ajax_pmpro_courses_remove_course', 'pmpro_courses_remove_course_callback' );
+add_action( 'wp_ajax_pmpro_courses_create_lesson', 'pmpro_courses_create_lesson_cb' );
 
 /**
  * Adds columns to the Courses table.
