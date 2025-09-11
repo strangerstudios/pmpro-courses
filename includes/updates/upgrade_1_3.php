@@ -5,8 +5,8 @@
  */
 function pmpro_courses_upgrade_1_2() {
 	pmpro_courses_create_progress_table();
-	update_option( 'pmpro_courses_db_version', '1.2' );
-	return 1.2;
+	update_option( 'pmpro_courses_db_version', '1.3' );
+	return 1.3;
 }
 
 /**

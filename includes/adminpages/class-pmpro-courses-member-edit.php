@@ -15,22 +15,24 @@ class PMPro_Courses_Member_Edit_Panel extends PMPro_Member_Edit_Panel {
 	 * Display a table of lesson content.
 	 */
 	protected function display_panel_contents() {
+		$user = self::get_user();
+		$user_id = (int) $user->ID;
 		// Get a list of courses that the member has access to OR has completed lessons.
-		$member_courses = pmpro_courses_get_courses( 200, (int) $_REQUEST['user_id'] );
+		$member_courses = pmpro_courses_get_courses( 200, $user_id );
 		?>
 		<table class="wp-list-table widefat fixed striped">
 			<tr>
 				<th><?php esc_html_e( 'Course', 'pmpro-courses' ); ?></th>
-				<th><?php esc_html_e( 'Start Date', 'pmpro-courses' ); ?></th>
-				<th><?php esc_html_e( 'End Date', 'pmpro-courses' ); ?></th>
-				<th><?php esc_html_e( 'Progress', 'pmpro-courses' ); ?></th>
+				<th><?php esc_html_e( 'First Lesson Completed On', 'pmpro-courses' ); ?></th>
+				<th><?php esc_html_e( 'Latest Lesson Completed On', 'pmpro-courses' ); ?></th>
+				<th><?php esc_html_e( 'Completed', 'pmpro-courses' ); ?></th>
 			</tr>
 			<?php
 			if ( ! empty( $member_courses ) ) {
 				foreach( $member_courses as $course ) {
 					// Enrollment date would be the time of completing the 'oldest' lesson for the specific course.
-					$lessons = PMPro_Courses_User_Progress::get_completed_lessons_for_a_course( $course->ID );
-					$progress = PMPro_Courses_User_Progress::get_course_progress_for_user( $course->ID );
+					$lessons = PMPro_Courses_User_Progress::get_completed_lessons_for_a_course( $course->ID, $user_id );
+					$progress = PMPro_Courses_User_Progress::get_course_progress_for_user( $course->ID, $user_id );
 
 					$first_completed_lesson = ! empty( $lessons ) ? reset( $lessons ) : null;
 

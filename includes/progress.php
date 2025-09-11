@@ -257,3 +257,47 @@ function pmpro_courses_toggle_lesson_progress_ajax(){
 	}
 }
 add_action( 'wp_ajax_pmpro_courses_toggle_lesson_progress', 'pmpro_courses_toggle_lesson_progress_ajax' );
+
+/**
+ * Retroactively migrate any user progress from user meta to the new progress table.
+ * 
+ * @since TBD
+ */
+function pmpro_courses_migrate_course_progress() {
+	global $wpdb;
+
+	// User is logged out, let's bail.
+	if ( ! is_user_logged_in() ) {
+		return;
+	}
+
+	// Only run the code if we're viewing a lesson or course.
+	if ( ! is_singular( 'pmpro_course' ) && ! is_singular( 'pmpro_lesson' ) ) {
+		return;
+	}
+
+	// Get the course ID.
+	if ( is_singular( 'pmpro_course' ) ) {
+		$course_id = get_the_ID();
+	} elseif ( is_singular( 'pmpro_lesson' ) ) {
+		$lesson = get_post();
+		if ( empty( $lesson ) || empty( $lesson->post_parent ) ) {
+			return;
+		}
+		$course_id = $lesson->post_parent;
+	}
+
+	// Try to get the meta to see if there's any "old" progress to migrate.
+	$previous_progress = get_user_meta( get_current_user_id(), 'pmpro_courses_progress_' . $course_id , true );
+
+	if ( is_array( $previous_progress ) && ! empty( $previous_progress ) ) {
+		foreach ( $previous_progress as $lesson_id ) {
+			// Migrate each lesson to the new table.
+			// PMPro_Courses_User_Progress::toggle_lesson_progress( $lesson_id, get_current_user_id(), true );
+		}
+
+		// Delete the old user meta to prevent re-migration.
+		// delete_user_meta( get_current_user_id(), 'pmpro_courses_progress_' . $course_id );
+	}
+}
+add_action( 'wp', 'pmpro_courses_migrate_course_progress' );

@@ -238,7 +238,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 							$lesson_access = get_post_meta( $lesson->ID, 'pmpro_courses_bypass_restriction', true );
 							
 							?>
-						<li id="pmpro_courses-lesson-<?php echo intval( $lesson->ID ); ?>" class="pmpro_courses-list-item">
+						<li id="pmpro_courses-lesson-<?php echo intval( $lesson->ID ); ?>" class="pmpro_courses-list-item <?php echo esc_attr( $lesson_access ? 'pmpro_courses-free-lesson' : '' ); ?>">
 							<?php
 								// Only add link to single section page if current user has access.
 								if ( ! empty( $hasaccess ) || ! empty( $lesson_access ) ) { ?>

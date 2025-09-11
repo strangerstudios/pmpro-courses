@@ -70,9 +70,9 @@ function pmpro_courses_admin_init() {
 	}
 
 	// Version 1.2 update, which includes the new table for progress tracking.
-	if ( $db_version < 1.2 ) {
-		require_once PMPRO_COURSES_DIR . '/includes/updates/upgrade_1_2.php';
-		$db_version = pmpro_courses_upgrade_1_2();
+	if ( $db_version < 1.3 ) {
+		require_once PMPRO_COURSES_DIR . '/includes/updates/upgrade_1_3.php';
+		$db_version = pmpro_courses_upgrade_1_3();
 	}
 
 }
