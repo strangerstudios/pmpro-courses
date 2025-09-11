@@ -57,7 +57,6 @@ function pmpro_courses_get_lessons( $course ) {
 	return get_posts( $args );
 }
 
-/// This needs to be reworked.
 /**
  * Get the next order # for a lesson in a course.
  */
@@ -235,11 +234,14 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 					<?php } ?>
 					<ol class="pmpro_courses-list">
 						<?php foreach( $section['lessons'] as $lesson_id ) {
-							$lesson = get_post( $lesson_id ); ?>
+							$lesson = get_post( $lesson_id ); 
+							$lesson_access = get_post_meta( $lesson->ID, 'pmpro_courses_bypass_restriction', true );
+							
+							?>
 						<li id="pmpro_courses-lesson-<?php echo intval( $lesson->ID ); ?>" class="pmpro_courses-list-item">
 							<?php
 								// Only add link to single section page if current user has access.
-								if ( ! empty( $hasaccess ) ) { ?>
+								if ( ! empty( $hasaccess ) || ! empty( $lesson_access ) ) { ?>
 									<a class="pmpro_courses-list-item-link" href="<?php echo esc_url( get_permalink( $lesson->ID ) ); ?>">
 									<?php
 								}
@@ -261,7 +263,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 								?>
 							<?php 
 								// Only add link to single lesson page if current user has access.
-								if ( ! empty( $hasaccess ) ) { ?>
+								if ( ! empty( $hasaccess ) || ! empty( $lesson_access ) ) { ?>
 									</a>
 								<?php
 								}
@@ -287,6 +289,41 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 	$lessons_html = apply_filters( 'pmpro_courses_get_lessons_html', $temp_content, $course_id, $sections );
 
 	return $lessons_html;
+}
+
+
+/**
+ * Get the lessons dropdown HTML with all PMPro lessons that are "available"
+ * This is used for the the lesson settings.
+ * 
+ * @since TBD
+ *
+ */
+function pmpro_courses_lessons_settings( $exclude_lessons = array(), $parent_id = 0 ) {
+	
+	// Get all available lessons for the dropdown, exclude any lessons that have 'another' post parent.
+	$all_lessons = get_posts(array(
+		'post_type' => 'pmpro_lesson',
+		'posts_per_page' => 99,
+		'post_status' => 'publish',
+		'exclude' => $exclude_lessons,
+		'orderby' => 'menu_order',
+		'order' => 'ASC',
+		'post_parent__in' => array(0, $parent_id),
+	));
+	
+	// Build lessons options HTML
+	$lessons_options = '<option value="0">' . esc_html__( 'Select a lesson...', 'pmpro-courses' ) . '</option>';
+	foreach ($all_lessons as $lesson) {
+		$lessons_options .= sprintf(
+			'<option value="%d">%s (#%d)</option>',
+			intval($lesson->ID),
+			esc_html($lesson->post_title),
+			$lesson->ID
+		);
+	}
+
+	return $lessons_options;
 }
 
 /**

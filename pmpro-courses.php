@@ -22,59 +22,6 @@ require_once PMPRO_COURSES_DIR . '/includes/admin.php';
 require_once PMPRO_COURSES_DIR . '/includes/settings.php';
 require_once PMPRO_COURSES_DIR . '/includes/blocks.php';
 
-/**
- * Get the lessons dropdown HTML with all PMPro lessons.
- * @since TBD
- */
-function pmpro_courses_lessons_settings( $exclude_lessons = array() ) {    
-    // Get all available lessons for the dropdown
-    $all_lessons = get_posts(array(
-        'post_type' => 'pmpro_lesson',
-        'posts_per_page' => 99,
-        'post_status' => 'publish',
-		'exclude' => $exclude_lessons,
-        'orderby' => 'menu_order',
-        'order' => 'ASC'
-    ));
-    
-    // Build lessons options HTML
-    $lessons_options = '<option value="0">' . esc_html__( 'Select a lesson...', 'pmpro-courses' ) . '</option>';
-    foreach ($all_lessons as $lesson) {
-        $lessons_options .= sprintf(
-            '<option value="%d">%s (#%d)</option>',
-            intval($lesson->ID),
-            esc_html($lesson->post_title),
-            $lesson->ID
-        );
-    }
-
-	return $lessons_options;
-}
-
-
-/** 
- * Load the Member Edit Panel if the class exists.
- * 
- * @since TBD
- */
-function pmpro_courses_pmpro_member_edit_panels( $panels ) {
-	
-	if ( ! class_exists( 'PMPro_Member_Edit_Panel' ) ) {
-		return $panels;
-	}
-
-	require_once PMPRO_COURSES_DIR . '/includes/adminpages/class-pmpro-courses-member-edit.php';
-
-	// If the class exists, add a panel.
-	if ( class_exists( 'PMPro_Courses_Member_Edit_Panel' ) ) {
-		$panels[] = new PMPro_Courses_Member_Edit_Panel();
-	}
-
-	return $panels;
-}
-add_filter( 'pmpro_member_edit_panels', 'pmpro_courses_pmpro_member_edit_panels' );
-
-
 // Modules.
 function pmpro_courses_setup_modules() {
 	require_once PMPRO_COURSES_DIR . '/includes/modules/default.php';
@@ -94,7 +41,14 @@ add_action( 'plugins_loaded', 'pmpro_courses_setup_modules' );
  * Default settings on first load and updates.
  */
 function pmpro_courses_admin_init() {
-	$db_version = get_option( 'pmpro_courses_db_version', '' );
+
+	// Only run this code if the person has the right permissions.
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	$db_version = floatval( get_option( 'pmpro_courses_db_version', '' ) );
+
 	if ( $db_version < 1 ) {
 		// Figure out which modules to enable.
 		$modules = array();
@@ -112,7 +66,15 @@ function pmpro_courses_admin_init() {
 
 		// Save DB version.
 		update_option( 'pmpro_courses_db_version', 1 );
+		$db_version = 1;
 	}
+
+	// Version 1.2 update, which includes the new table for progress tracking.
+	if ( $db_version < 1.2 ) {
+		require_once PMPRO_COURSES_DIR . '/includes/updates/upgrade_1_2.php';
+		$db_version = pmpro_courses_upgrade_1_2();
+	}
+
 }
 add_action( 'admin_init', 'pmpro_courses_admin_init' );
 

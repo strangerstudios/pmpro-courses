@@ -1,31 +1,5 @@
 <?php 
-/// Convert this to a class.
-
-/// Keep this here for now.
 class PMPro_Courses_User_Progress {
-
-	/**
-	 * Create the table for progress tracking.
-	 *
-	 * @since TBD
-	 * @return void
-	 */
-	public static function create_progress_table() {
-		global $wpdb;
-
-		$table_name = $wpdb->prefix . 'pmpro_courses_user_lesson_progress';
-		$sql = "CREATE TABLE {$table_name} (
-		user_id bigint(20) unsigned NOT NULL,
-		lesson_id bigint(20) unsigned NOT NULL,
-		completed_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-		PRIMARY KEY (user_id, lesson_id),
-		KEY idx_lesson_id (lesson_id),
-		KEY idx_completed_at (completed_at))";
-
-		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-		dbDelta($sql);
-	}
-
 	/**
 	 * Toggle progress for lesson completion (complete or reset/clear)
 	 * 
@@ -146,7 +120,13 @@ class PMPro_Courses_User_Progress {
 		return round( ( $completed_count / count( $lessons) ) * 100 );
 	}
 
-	///
+	/**
+	 * Get all completed lessons for a particular course (and optionally a specific user).
+	 *
+	 * @param int $course_id The course (post->ID) we want to query.
+	 * @param int $user_id The WordPress user ID we want to query. Optional.
+	 * @return array $completed_lessons A list of completed lesson IDs with additional data around the release.
+	 */
 	public static function get_completed_lessons_for_a_course( $course_id, $user_id = '' ) {
 		global $wpdb;
 

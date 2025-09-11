@@ -102,7 +102,30 @@ class PMPro_Courses_Module {
                 
         add_filter( 'pmpro_membership_content_filter', 'pmpro_courses_show_course_content_and_lessons', 10, 2 );
         add_filter( 'the_content', 'pmpro_courses_add_lessons_to_course' );
+		add_filter( 'pmpro_member_edit_panels', array( PMPro_Courses_Module::class, 'pmpro_courses_pmpro_member_edit_panels' ) );
     }
+
+	/** 
+	 * Load the Member Edit Panel if the class exists.
+	 * 
+	 * @since TBD
+	 */
+	static public function pmpro_courses_pmpro_member_edit_panels( $panels ) {
+		
+		if ( ! class_exists( 'PMPro_Member_Edit_Panel' ) ) {
+			return $panels;
+		}
+		
+		require_once PMPRO_COURSES_DIR . '/includes/adminpages/class-pmpro-courses-member-edit.php';
+		
+		// If the class exists, add a panel.
+		if ( class_exists( 'PMPro_Courses_Member_Edit_Panel' ) ) {
+			$panels[] = new PMPro_Courses_Member_Edit_Panel();
+		}
+
+		return $panels;
+	}
+	
 
     /**
      * Save additional admin settings.

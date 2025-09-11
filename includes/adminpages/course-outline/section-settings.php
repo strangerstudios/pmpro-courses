@@ -1,5 +1,7 @@
 <?php
 
+global $post;
+
 if ( empty( $section ) ) {
 	$section_name = '';
 	$section_id = 1;
@@ -24,8 +26,9 @@ if ( empty( $section ) ) {
 	}
 }
 
-// Defaults, get all PMPro Lessons posts that are published.
-$lessons_options = pmpro_courses_lessons_settings( isset( $section['lessons'] ) ? array_map( 'intval', $section['lessons'] ) : array() );
+// Defaults, get all PMPro Lessons posts that are available to assign, exclude any that have "another" post parent and exclude already assigned lessons to current course.
+$exclude_assigned_lessons = isset( $section['lessons'] ) ? array_map( 'intval', $section['lessons'] ) : array();
+$lessons_options = pmpro_courses_lessons_settings( $exclude_assigned_lessons, $post->ID );
 ?>
 <div class="pmpro_courses_lessons-section" data-section-id="<?php echo esc_attr( $section_id ); ?>">
 	<div class="pmpro_courses_lessons-section-header">
