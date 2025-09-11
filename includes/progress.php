@@ -25,7 +25,7 @@ class PMPro_Courses_User_Progress {
 			// no course to mark against
 			return false;
 		}
-
+	
 		// Mark the lesson as either completed or remove it.
 		$table_name = $wpdb->prefix . 'pmpro_courses_user_lesson_progress';
 		if ( $complete ) {
@@ -291,13 +291,13 @@ function pmpro_courses_migrate_course_progress() {
 	$previous_progress = get_user_meta( get_current_user_id(), 'pmpro_courses_progress_' . $course_id , true );
 
 	if ( is_array( $previous_progress ) && ! empty( $previous_progress ) ) {
-		foreach ( $previous_progress as $lesson_id ) {
+		foreach ( $previous_progress as $lesson_id => $lesson_status ) {
 			// Migrate each lesson to the new table.
-			// PMPro_Courses_User_Progress::toggle_lesson_progress( $lesson_id, get_current_user_id(), true );
+			PMPro_Courses_User_Progress::toggle_lesson_progress( $lesson_id, get_current_user_id(), true );
 		}
 
 		// Delete the old user meta to prevent re-migration.
-		// delete_user_meta( get_current_user_id(), 'pmpro_courses_progress_' . $course_id );
+		delete_user_meta( get_current_user_id(), 'pmpro_courses_progress_' . $course_id );
 	}
 }
 add_action( 'wp', 'pmpro_courses_migrate_course_progress' );
