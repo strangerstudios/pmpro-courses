@@ -166,3 +166,25 @@
   content: "\f347"; /* dashicons-arrow-down-alt2 */
 }
 
+/* Make the lesson title hold text + badge inline */
+.pmpro_courses-free-lesson .pmpro_courses-list-item-title {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem; /* little space between text and badge */
+}
+
+/* Show "Free" badge */
+.pmpro_courses-free-lesson .pmpro_courses-list-item-title::after {
+	content: "Free";
+	color: #28a745;
+	font-size: 0.7rem;
+	font-weight: 600;
+	border: 1px solid #28a745;
+	border-radius: 3px;
+	padding: 1px 4px;
+	text-transform: uppercase;
+	line-height: 1;
+	text-decoration: none;
+	display: inline-block;
+	pointer-events: none;
+}
