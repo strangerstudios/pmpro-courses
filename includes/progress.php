@@ -290,14 +290,20 @@ function pmpro_courses_migrate_course_progress() {
 	// Try to get the meta to see if there's any "old" progress to migrate.
 	$previous_progress = get_user_meta( get_current_user_id(), 'pmpro_courses_progress_' . $course_id , true );
 
+	$migrated = false;
 	if ( is_array( $previous_progress ) && ! empty( $previous_progress ) ) {
 		foreach ( $previous_progress as $lesson_id => $lesson_status ) {
 			// Migrate each lesson to the new table.
-			PMPro_Courses_User_Progress::toggle_lesson_progress( $lesson_id, get_current_user_id(), true );
+			$result = PMPro_Courses_User_Progress::toggle_lesson_progress( $lesson_id, get_current_user_id(), true );
+			if ( $result ) {
+				$migrated = true;
+			}
 		}
 
-		// Delete the old user meta to prevent re-migration.
-		delete_user_meta( get_current_user_id(), 'pmpro_courses_progress_' . $course_id );
+		// Only delete the old user meta if all rows were inserted successfully.
+		if ( $migrated ) {
+			delete_user_meta( get_current_user_id(), 'pmpro_courses_progress_' . $course_id );
+		}
 	}
 }
 add_action( 'wp', 'pmpro_courses_migrate_course_progress' );

@@ -3,7 +3,7 @@
 /**
  * Run an update function.
  */
-function pmpro_courses_upgrade_1_2() {
+function pmpro_courses_upgrade_1_3() {
 	pmpro_courses_create_progress_table();
 	update_option( 'pmpro_courses_db_version', '1.3' );
 	return 1.3;
