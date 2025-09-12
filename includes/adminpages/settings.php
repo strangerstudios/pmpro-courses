@@ -1,5 +1,7 @@
 <?php
-	require_once( PMPRO_DIR . "/adminpages/admin_header.php" );
+	if ( defined( 'PMPRO_DIR' ) ) {
+		require_once( PMPRO_DIR . "/adminpages/admin_header.php" );
+	}
 	?>
 	<h1 class="wp-heading-inline">
 		<?php esc_html_e( 'Courses for Membership Settings', 'pmpro-courses' ); ?>
@@ -50,5 +52,7 @@
 	<hr />
 	<p><a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses-admin&utm_campaign=add-ons" target="_blank"><?php esc_html_e( 'Documentation', 'pmpro_courses' ); ?></a> | <a href="https://www.paidmembershipspro.com/support/?utm_source=plugin&utm_medium=pmpro-courses-admin&utm_campaign=support" target="_blank"><?php esc_html_e( 'Support', 'pmpro_courses' ); ?></a></p>
 	<?php
-	require_once( PMPRO_DIR . "/adminpages/admin_footer.php" );
+	if ( defined( 'PMPRO_DIR' ) ) {
+		require_once( PMPRO_DIR . "/adminpages/admin_footer.php" );
+	}
 ?>
