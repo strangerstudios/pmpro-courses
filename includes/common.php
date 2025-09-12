@@ -197,12 +197,12 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 	ob_start();
 
 	// Get the lessons assigned to this course.
-	// $lessons = pmpro_courses_get_lessons( $course_id );
 	$sections = get_post_meta( $course_id, 'pmpro_course_sections', true );
 
 	// Return if there are no lessons for this course.
 	if ( empty( $sections ) ) {
-		return;
+		$sections = array();
+		$sections[]['lessons'] = pmpro_courses_get_lessons( $course_id );
 	}
 
 	// Check whether the current user has access to these lessons.
