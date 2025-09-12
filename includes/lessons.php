@@ -35,9 +35,9 @@ add_filter( 'the_content', 'pmpro_courses_the_content_lesson', 10, 1 );
  * Adds "Course" column to the lessons page
  */
 function pmpro_courses_lessons_columns( $columns ) {
-    $columns['pmpro_course_assigned'] = esc_html__( 'Course', 'pmpro-courses' );
+	$columns['pmpro_course_assigned'] = esc_html__( 'Course', 'pmpro-courses' );
 	$columns['pmpro_course_section'] = esc_html__( 'Section', 'pmpro-courses' );
-    return $columns;
+	return $columns;
 }
 add_filter( 'manage_pmpro_lesson_posts_columns', 'pmpro_courses_lessons_columns' );
 
@@ -69,7 +69,7 @@ function pmpro_courses_lessons_columns_content( $column, $post_id ) {
 			// Get the section name which the lesson belongs to.
 			foreach( $sections as $section ) {
 				if ( in_array( $post_id, $section['lessons'] ) ) {
-					echo esc_html( $section['section_name'] );
+					echo ! empty( $section['section_name'] ) ? esc_html( $section['section_name'] ) : '&mdash;';
 				}
 			}
 		break;
