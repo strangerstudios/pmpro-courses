@@ -15,7 +15,7 @@ function pmpro_courses_shortcode_my_courses( $atts ) {
 
 	// User not logged-in, output the login link.
 	if ( ! is_user_logged_in() ) {
-		return '<p><a href="' . esc_url( wp_login_url() ) . '">' . esc_html__( 'Log in to view your courses »', 'paid-memberships-pro') . '</a></p>';
+		return '<p><a href="' . esc_url( wp_login_url() ) . '">' . esc_html__( 'Log in to view your courses »', 'pmpro-courses') . '</a></p>';
 	}
 
 	// Sanitize the shortcode attributes.

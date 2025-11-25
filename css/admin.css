@@ -43,7 +43,7 @@ table#newmeta {
 	margin-bottom: 1em;
 }
 
-/* Settings Form*/
+/* Settings Form */
 .form-table.pmpro-courses, .form-table.pmpro-courses tr.pmpro-courses-default, .form-table.pmpro-courses tr.pmpro-courses-lifterlms {
 	border-bottom: 1px solid #CCC;
 }
@@ -62,9 +62,9 @@ table#newmeta {
 
 /* Update Lesson Order Notice, force the styling. */
 .pmpro-lesson-notice{
-  margin:0 !important;
-  padding-top:0.5rem !important;
-  padding-bottom:0.5rem !important;
+	margin: 0 !important;
+	padding-top: 0.5rem !important;
+	padding-bottom: 0.5rem !important;
 }
 
 .pmpro_courses_lessons-section-header {
@@ -216,6 +216,18 @@ li.pmpro_courses_lessons-section-column-type { flex: 2; }
 
 #pmpro_courses_lessons .text-center .dashicons{
   vertical-align: middle;
+}
+
+/* Admin styles for PMPro Lessons */
+#pmpro_courses_lesson_settings .inside {
+	display: flex;
+	flex-direction: column;
+	gap: var(--pmpro--spacing--medium);
+}
+
+/* Edit Member panel */
+#pmpro-member-edit-pmpro-courses-panel table {
+	margin-top: var(--pmpro--spacing--medium);
 }
 
 /* ≥1200px adjustments */

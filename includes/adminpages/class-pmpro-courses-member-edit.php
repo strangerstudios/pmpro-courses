@@ -8,7 +8,7 @@ class PMPro_Courses_Member_Edit_Panel extends PMPro_Member_Edit_Panel {
 	 */
 	public function __construct() {
 		$this->slug        = 'pmpro-courses';
-		$this->title       = __( 'Courses Overview', 'pmpro-courses' );
+		$this->title       = __( 'Courses', 'pmpro-courses' );
 	}
 
 	/**
@@ -20,13 +20,16 @@ class PMPro_Courses_Member_Edit_Panel extends PMPro_Member_Edit_Panel {
 		// Get a list of courses that the member has access to OR has completed lessons.
 		$member_courses = pmpro_courses_get_courses( 200, $user_id );
 		?>
-		<table class="wp-list-table widefat fixed striped">
-			<tr>
-				<th><?php esc_html_e( 'Course', 'pmpro-courses' ); ?></th>
-				<th><?php esc_html_e( 'First Lesson Completed On', 'pmpro-courses' ); ?></th>
-				<th><?php esc_html_e( 'Latest Lesson Completed On', 'pmpro-courses' ); ?></th>
-				<th><?php esc_html_e( 'Completed', 'pmpro-courses' ); ?></th>
-			</tr>
+		<table class="wp-list-table widefat striped fixed">
+			<thead>
+				<tr>
+					<th><?php esc_html_e( 'Course', 'pmpro-courses' ); ?></th>
+					<th><?php esc_html_e( 'First Seen', 'pmpro-courses' ); ?></th>
+					<th><?php esc_html_e( 'Last Seen', 'pmpro-courses' ); ?></th>
+					<th><?php esc_html_e( 'Progress', 'pmpro-courses' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
 			<?php
 			if ( ! empty( $member_courses ) ) {
 				foreach( $member_courses as $course ) {
@@ -50,10 +53,38 @@ class PMPro_Courses_Member_Edit_Panel extends PMPro_Member_Edit_Panel {
 							</a>
 						</td>
 						<td>
-							<?php echo ! empty( $first_completed_lesson ) ? esc_html( $first_completed_lesson->completed_at ) : '-'; ?>
+							<?php
+								if ( empty( $first_completed_lesson ) && empty( $first_completed_lesson->completed_at ) ) {
+									echo esc_html_x( '&#8212;', 'A dash is shown when there is no first seen date.', 'pmpro-courses' );
+								} else {
+									$first_completed_lesson_timestamp = strtotime( $first_completed_lesson->completed_at );
+									echo esc_html(
+										sprintf(
+											// translators: %1$s is the date and %2$s is the time.
+											__( '%1$s at %2$s', 'pmpro-courses' ),
+											esc_html( date_i18n( get_option( 'date_format' ), $first_completed_lesson_timestamp ) ),
+											esc_html( date_i18n( get_option( 'time_format' ), $first_completed_lesson_timestamp ) )
+										)
+									);
+								}
+							?>
 						</td>
 						<td>
-							<?php echo ! empty( $last_completed_lesson ) ? esc_html( $last_completed_lesson->completed_at ) : '-'; ?>
+							<?php
+								if ( empty( $last_completed_lesson ) && empty( $last_completed_lesson->completed_at ) ) {
+									echo esc_html_x( '&#8212;', 'A dash is shown when there is no last seen date.', 'pmpro-courses' );
+								} else {
+									$last_completed_lesson_timestamp = strtotime( $last_completed_lesson->completed_at );
+									echo esc_html(
+										sprintf(
+											// translators: %1$s is the date and %2$s is the time.
+											__( '%1$s at %2$s', 'pmpro-courses' ),
+											esc_html( date_i18n( get_option( 'date_format' ), $last_completed_lesson_timestamp ) ),
+											esc_html( date_i18n( get_option( 'time_format' ), $last_completed_lesson_timestamp ) )
+										)
+									);
+								}
+							?>
 						</td>
 						<td><?php echo esc_html( $progress ); ?>%</td>
 					</tr>

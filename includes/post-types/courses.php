@@ -108,7 +108,7 @@ function pmpro_courses_course_cpt_lessons() {
 		if ( ! current_user_can( 'edit_posts' ) ) {
 			return false;
 		}
-		
+
 		// Get the current settings for course outline/sections. If this is empty, let's create a blank array with dummy data.
 		$sections = get_post_meta( get_the_ID(), 'pmpro_course_sections', true ) ?: array( array( 'section_id' => 1, 'section_name' => '', 'lessons' => array() ) );
 
@@ -128,19 +128,22 @@ function pmpro_courses_course_cpt_lessons() {
 		}
 		
 		// Callback points to a DOM template for the Course Outline/Sections.
-		foreach( $sections as $section ) {
-			pmpro_courses_get_sections_html( $section );
-		}
-
 		?>
-		<p class="text-center">
-			<button id="pmpro_courses_add_section" name="pmpro_courses_add_section" class="button button-primary button-hero">
-				<?php
-					echo '<span class="dashicons dashicons-plus"></span>' . ' ' . esc_html__( 'Add New Section', 'pmpro-courses' );
-				?>
-			</button>			
-		</p>
-		<input type="hidden" name="pmpro_course_sections_nonce" value="<?php echo esc_attr( wp_create_nonce( 'pmpro_course_sections_save' ) ); ?>" />
+		<div class="pmpro_admin">
+			<?php
+				foreach( $sections as $section ) {
+					pmpro_courses_get_sections_html( $section );
+				}
+			?>
+			<p class="text-center">
+				<button id="pmpro_courses_add_section" name="pmpro_courses_add_section" class="button button-primary button-hero">
+					<?php
+						echo '<span class="dashicons dashicons-plus"></span>' . ' ' . esc_html__( 'Add New Section', 'pmpro-courses' );
+					?>
+				</button>
+			</p>
+			<input type="hidden" name="pmpro_course_sections_nonce" value="<?php echo esc_attr( wp_create_nonce( 'pmpro_course_sections_save' ) ); ?>" />
+		</div> <!-- .pmpro_admin -->
 		<?php
 }
 

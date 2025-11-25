@@ -109,14 +109,39 @@ add_action( 'plugins_loaded', 'pmpro_courses_load_textdomain' );
  * Enqueue Admin Scripts and Styles
  */
 function pmpro_courses_admin_styles( $hook ) {
-	$editing_course = in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'pmpro_course' == get_post_type();
-	$on_settings_page = ! empty( $_REQUEST['page'] ) && $_REQUEST['page'] === 'pmpro-courses-settings';
+	$load_css = false;
+	$load_js = false;
+	$editing_course = false;
+	$on_settings_page = false;
 
-	if ( $editing_course || $on_settings_page ) {
+	// Are we editing a course?
+	if ( in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'pmpro_course' === get_post_type() ) {
+		$load_css = true;
+		$load_js = true;
+		$editing_course = true;
+	}
 
+	// Are we editing a lesson?
+	if ( in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'pmpro_lesson' === get_post_type() ) {
+		$load_css = true;
+	}
+
+	// Are we on the settings or Edit Member page?
+	if ( ! empty( $_REQUEST['page'] ) && in_array( $_REQUEST['page'], array( 'pmpro-courses-settings', 'pmpro-member' ) ) ) {
+		$load_css = true;
+		$load_js = true;
+		$on_settings_page = true;
+	}
+
+	if ( $load_css ) {
 		wp_enqueue_style( 'pmpro-courses-admin', plugins_url( 'css/admin.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
-		wp_enqueue_style( 'pmpro-courses-select2', plugins_url( 'css/select2.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
-		wp_enqueue_script( 'pmpro-courses-select2', plugins_url( 'js/select2.js', __FILE__ ), array( 'jquery' ), PMPRO_COURSES_VERSION );
+	}
+
+	if ( $load_js ) {
+		if ( $editing_course ) {
+			wp_enqueue_style( 'pmpro-courses-select2', plugins_url( 'css/select2.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
+			wp_enqueue_script( 'pmpro-courses-select2', plugins_url( 'js/select2.js', __FILE__ ), array( 'jquery' ), PMPRO_COURSES_VERSION );
+		}
 		wp_register_script( 'pmpro_courses', plugins_url( 'js/admin.js', __FILE__ ), array( 'jquery' ), null, true );
 
 		if ( ! empty( $_GET['post'] ) ) {
