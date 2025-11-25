@@ -60,7 +60,7 @@ function pmpro_courses_show_course_content_to_nonmembers() {
  * AJAX callback to add/edit a lesson to a course from the edit course page.
  * This DOES NOT SAVE THE DATA. This will happen on post save.
  */
-function pmpro_courses_update_course_callback(){
+function pmpro_courses_update_course_callback() {
 
 	if ( ! current_user_can( 'edit_posts' ) ) {
 		return;
@@ -73,20 +73,27 @@ function pmpro_courses_update_course_callback(){
 	// Got to get the value 
 	$course_id = intval( $_REQUEST['course_id'] );
 	$lesson_id = intval( $_REQUEST['lesson_id'] );
-	// $order = intval( $_REQUEST['order'] );
-	$section_id = intval( $_REQUEST['section_id'] ); // This is to save lessons to a specific section.
+	$section_id = intval( $_REQUEST['section_id'] );
 
 	// Get the lesson object.
 	$lesson = get_post( $lesson_id );
 
-	$table_row = "<tr data-lesson_id='" . intval( $lesson_id ) . "'>";
-	$table_row .= "<td class='pmpro-lesson-order'><span class='dashicons dashicons-menu'></span></td>";
-	$table_row .= "<td><a href='" . admin_url( 'post.php?post=' . esc_attr( intval( $lesson_id ) ) . '&action=edit' ) . "' title='" . esc_attr__('Edit', 'pmpro-courses') .' '. esc_attr( $lesson->post_title ) . "' target='_BLANK'>". esc_html( $lesson->post_title . ' (#' . $lesson_id . ')' ) ."</a></td>";
-	$table_row .= "<input type='hidden' name='pmpro_courses_lessons[" . intval( $section_id ) . "][]' value='". intval( $lesson_id ) ."' />";
-	$table_row .= "<td class='pmpro-courses-lesson-remove'>";
-	$table_row .= "<a class='button button-secondary' href='javascript:pmpro_courses_remove_lesson(". intval( $lesson_id ) ."); void(0);'>". esc_html__( 'Remove', 'pmpro-courses' )."</a>";
-	$table_row .= "</td>";
-	$table_row .= "</tr>";
+	$table_row  = '<tr data-lesson_id="' . esc_attr( $lesson_id ) . '">';
+	$table_row .= '<td class="pmpro-lesson-sort-handle"><span class="dashicons dashicons-menu"></span></td>';
+	$table_row .= '<td>';
+	$table_row .= '<a href="' . esc_url( admin_url( 'post.php?post=' . $lesson_id . '&action=edit' ) ) . '" ';
+	$table_row .= 'title="' . esc_attr__( 'Edit', 'pmpro-courses' ) . ' ' . esc_attr( $lesson->post_title ) . '" ';
+	$table_row .= 'target="_blank">';
+	$table_row .= esc_html( $lesson->post_title ) . ' (#' . esc_html( $lesson_id ) . ')';
+	$table_row .= '</a>';
+	$table_row .= '<input type="hidden" name="pmpro_courses_lessons[' . esc_attr( $section_id ) . '][]" value="' . esc_attr( $lesson_id ) . '" />';
+	$table_row .= '</td>';
+	$table_row .= '<td class="pmpro-courses-lesson-remove">';
+	$table_row .= '<a class="button button-secondary" href="javascript:pmpro_courses_remove_lesson(' . esc_attr( $lesson_id ) . '); void(0);">';
+	$table_row .= esc_html__( 'Remove', 'pmpro-courses' );
+	$table_row .= '</a>';
+	$table_row .= '</td>';
+	$table_row .= '</tr>';
 
 	echo $table_row;
 
@@ -125,15 +132,23 @@ function pmpro_courses_create_lesson_cb() {
 
 	$post_id = wp_insert_post( $postarr );
 
-	// Build a single table row for this lesson so the JS can append it immediately.
-	$table_row = "<tr data-lesson_id='" . intval( $post_id ) . "'>";
-	$table_row .= "<td class='pmpro-lesson-order'><span class='dashicons dashicons-menu'></span></td>";
-	$table_row .= "<td><a href='" . admin_url( 'post.php?post=' . esc_attr( intval( $post_id ) ) . '&action=edit' ) . "' title='" . esc_attr__('Edit', 'pmpro-courses') .' '. esc_attr( $title ) . "' target='_BLANK'>". esc_html( $title . ' (#' . $post_id . ')' ) ."</a></td>";
-	$table_row .= "<input type='hidden' name='pmpro_courses_lessons[" . intval( $section_id ) . "][]' value='". intval( $post_id ) ."' />";
-	$table_row .= "<td class='pmpro-courses-lesson-remove'>";
-	$table_row .= "<a class='button button-secondary' href='javascript:pmpro_courses_remove_lesson(". intval( $post_id ) ."); void(0);'>". esc_html__( 'Remove', 'pmpro-courses' )."</a>";
-	$table_row .= "</td>";
-	$table_row .= "</tr>";
+	$table_row  = '<tr data-lesson_id="' . esc_attr( $post_id ) . '">';
+	$table_row .= '<td class="pmpro-lesson-sort-handle"><span class="dashicons dashicons-menu"></span></td>';
+	$table_row .= '<td>';
+	$table_row .= '<a href="' . esc_url( admin_url( 'post.php?post=' . $post_id . '&action=edit' ) ) . '" ';
+	$table_row .= 'title="' . esc_attr__( 'Edit', 'pmpro-courses' ) . ' ' . esc_attr( $title ) . '" ';
+	$table_row .= 'target="_blank">';
+	$table_row .= esc_html( $title ) . ' (#' . esc_html( $post_id ) . ')';
+	$table_row .= '</a>';
+	$table_row .= ' &mdash; ' . esc_html__( 'Draft', 'pmpro-courses' );
+	$table_row .= '<input type="hidden" name="pmpro_courses_lessons[' . esc_attr( $section_id ) . '][]" value="' . esc_attr( $post_id ) . '" />';
+	$table_row .= '</td>';
+	$table_row .= '<td class="pmpro-courses-lesson-remove">';
+	$table_row .= '<a class="button button-secondary" href="javascript:pmpro_courses_remove_lesson(' . esc_attr( $post_id ) . '); void(0);">';
+	$table_row .= esc_html__( 'Remove', 'pmpro-courses' );
+	$table_row .= '</a>';
+	$table_row .= '</td>';
+	$table_row .= '</tr>';
 
 	echo $table_row;
 }
