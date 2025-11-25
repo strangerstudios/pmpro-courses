@@ -27,7 +27,7 @@ function pmpro_courses_remove_lesson(lesson_id) {
 	// If no lesson rows left, add "No Lessons" default row
 	if ($table.find('tr[data-lesson_id]').length === 0) {
 		$table.find('tbody').html(
-			'<tr class="no-lessons"><td colspan="3" style="text-align:center;">No Lessons Added</td></tr>'
+			'<tr class="pmpro-courses-no-lessons"><td colspan="3">No Lessons Added</td></tr>'
 		);
 	}
 
@@ -89,14 +89,14 @@ function pmpro_courses_update_post(button_element) {
 				button.html('Add Lesson');
 				button.removeAttr('disabled');
 			} else {
-				// If there is a row with the class ".no-lessons", remove it.
+				// If there is a row with the class ".pmpro-courses-no-lessons", remove it.
 				const tbody = section.find('.pmpro_courses_lesson_table tbody');
 				const valToRemove = String(lesson_id);
 				const $allSelects = jQuery('.pmpro_courses_lessons_select');
 
 
 				// Remove "No Added Lessons"
-				tbody.find('.no-lessons').remove();
+				tbody.find('.pmpro-courses-no-lessons').remove();
 
 				// Loop through all selects and remove the lesson value.
 				$allSelects.each(function () {
@@ -170,7 +170,7 @@ function pmpro_courses_create_lesson(buttonEl) {
 			const tbody = $section.find('.pmpro_courses_lesson_table tbody');
 
 			// Remove "No Lessons Added" placeholder if present
-			tbody.find('.no-lessons').remove();
+			tbody.find('.pmpro-courses-no-lessons').remove();
 
 			// Append the new row HTML returned by PHP (already includes the post ID)
 			tbody.append(responseHTML);
@@ -205,7 +205,6 @@ function pmpro_courses_setup() {
 	pmpro_courses_select2();
 	pmpro_courses_make_table_sortable( '.pmpro_courses_lesson_table' );
 
-
 	// Editing a course.
 	if (pmpro_courses.editing_course) {
 		jQuery('#pmpro_courses_order').keypress(function (e) {
@@ -239,33 +238,36 @@ function pmpro_courses_select2() {
     });
 }
 
-function pmpro_courses_make_table_sortable( $table ) {
-	const $tbody = jQuery($table).find('tbody');
+function pmpro_courses_make_table_sortable(tableSelector) {
+	const $ = jQuery;
+	const $table = $(tableSelector);
+	const $tbody = $table.find('tbody');
 
-	// Make rows draggable; no renumbering or extra work needed.
+	if (!$tbody.length) {
+		return;
+	}
+
+	// Core-style helper: preserve column widths while dragging.
+	const fixHelper = function(e, ui) {
+		ui.children().each(function() {
+			$(this).width($(this).width());
+		});
+		return ui;
+	};
+
 	$tbody.sortable({
 		items: '> tr',
+		handle: '.pmpro-lesson-sort-handle',   // drag from the menu icon column
 		axis: 'y',
 		cursor: 'move',
 		tolerance: 'pointer',
-		helper: function(e, tr) {
-		// Keep column widths while dragging
-		const $originals = tr.children();
-		const $helper = tr.clone();
-		$helper.children().each(function(i) {
-			jQuery(this).width($originals.eq(i).width());
-		});
-		return $helper;
-		},
+		helper: fixHelper,
 		placeholder: 'pmpro-row-placeholder',
+		forcePlaceholderSize: true,
 		start: function(e, ui) {
-		ui.placeholder.height(ui.item.height());
-		},
-		update: function() {
-		// Nothing to do: inputs move with the row, so $_POST order is correct.
+			ui.placeholder.height(ui.item.height());
 		}
 	}).disableSelection();
-
 }
 
 // Function to prep click events.
@@ -322,7 +324,7 @@ function pmpro_courses_prep_click_events() {
 	});
 
 	// Delete a specific section.
-	jQuery('.pmpro_courses_lessons-section-buttons-button.delete-section-btn').unbind('click').on('click', function () {
+	jQuery('.pmpro-has-icon-trash').unbind('click').on('click', function () {
 		var the_section = jQuery(this).closest('.pmpro_courses_lessons-section');
 		var section_name = the_section.find('input[name="pmpro_course_lessons_section_name[]"]').val();
 
@@ -340,54 +342,29 @@ function pmpro_courses_prep_click_events() {
 		}
 		if (answer) {
 			the_section.remove();
+			pmpro_courses_made_a_change();
 		}
 	});
 
-	// Toggle a specific section.
-	jQuery('button.pmpro_courses_lessons-section-buttons-button-toggle-section, div.pmpro_courses_lessons-section-header h3').unbind('click').on('click', function (event) {
-		event.preventDefault();
-
-		// Ignore if the text field was clicked.
-		if (jQuery(event.target).prop('nodeName') === 'INPUT') {
-			return;
-		}
-
-		// Find the toggle button and open or close.
-		let the_button = jQuery(event.target).parents('.pmpro_courses_lessons-section').find('button.pmpro_courses_lessons-section-buttons-button-toggle-section');
-		let button_icon = the_button.children('.dashicons');
-		let section_header = the_button.closest('.pmpro_courses_lessons-section-header');
-		let section_inside = section_header.siblings('.pmpro_course_lesson-inside');
-
-		if (button_icon.hasClass('dashicons-arrow-up')) {
-			// closing
-			button_icon.removeClass('dashicons-arrow-up');
-			button_icon.addClass('dashicons-arrow-down');
-			section_inside.slideUp();
-		} else {
-			// opening
-			button_icon.removeClass('dashicons-arrow-down');
-			button_icon.addClass('dashicons-arrow-up');
-			section_inside.slideDown();
-		}
-	});
-
-	// Move section up or down.
-	jQuery('.pmpro_courses_lessons-section-buttons-button-move-up').unbind('click').on('click', function (event) {
-		var the_section = jQuery(this).closest('.pmpro_courses_lessons-section');
+	// Move section up.
+	jQuery(document).on('click', '.pmpro_courses_lessons-section-sort .pmpro_section-sort-button-move-up', function (event) {
+		var the_section  = jQuery(this).closest('.pmpro_courses_lessons-section');
 		var prev_section = the_section.prev('.pmpro_courses_lessons-section');
+
 		if (prev_section.length > 0) {
 			the_section.insertBefore(prev_section);
-			// pmpro_courses_made_a_change();
+			pmpro_courses_made_a_change();
 		}
 	});
 
 	// Move section down.
-	jQuery('.pmpro_courses_lessons-section-buttons-button-move-down').unbind('click').on('click', function (event) {
-		var the_section = jQuery(this).closest('.pmpro_courses_lessons-section');
+	jQuery(document).on('click', '.pmpro_courses_lessons-section-sort .pmpro_section-sort-button-move-down', function (event) {
+		var the_section  = jQuery(this).closest('.pmpro_courses_lessons-section');
 		var next_section = the_section.next('.pmpro_courses_lessons-section');
+
 		if (next_section.length > 0) {
 			the_section.insertAfter(next_section);
-			// pmpro_courses_made_a_change();
+			pmpro_courses_made_a_change();
 		}
 	});
 
