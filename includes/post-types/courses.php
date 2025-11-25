@@ -149,27 +149,34 @@ function pmpro_courses_course_cpt_lessons() {
 
 // Get the course lesson table for a section.
 function pmpro_courses_get_lessons_table_html( $lessons, $section_id = 1 ){
-
-	if ( ! empty( $lessons ) ) {
-		
-		$ret = '';
-		
-		foreach ( $lessons as $lesson ) {
-			
-			$ret .= "<tr data-lesson_id='" . intval( $lesson->ID ) . "'>";
-			$ret .= "<td class='pmpro-lesson-order'><span class='dashicons dashicons-menu'></span></td>";
-			$ret .= "<td><a href='".admin_url( 'post.php?post=' . esc_attr( intval( $lesson->ID ) ) . '&action=edit' ) . "' title='" . esc_attr__('Edit', 'pmpro-courses') .' '. esc_attr( $lesson->post_title ) . "' target='_BLANK'>". esc_html( $lesson->post_title ) . " (#" . esc_attr( $lesson->ID ) . ")</a></td>";
-			$ret .= "<input type='hidden' name='pmpro_courses_lessons[" . intval( $section_id ) . "][]' value='". intval( $lesson->ID ) ."' />";
-			$ret .= "<td class='pmpro-courses-lesson-remove'>";
-			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_remove_lesson(". intval( $lesson->ID ) ."); void(0);'>". esc_html__( 'Remove', 'pmpro-courses' )."</a>";
-			$ret .= "</td>";
-			$ret .= "</tr>";
-		}
-
-	} 
-
+	ob_start();
+	foreach ( $lessons as $lesson ) {
+		$lesson_id  = intval( $lesson->ID );
+		$section_id = intval( $section_id );
+		?>
+		<tr data-lesson_id="<?php echo esc_attr( $lesson_id ); ?>">
+			<td class="pmpro-lesson-sort-handle"><span class="dashicons dashicons-menu"></span></td>
+			<td>
+				<a href="<?php echo esc_url( add_query_arg( array( 'post' => $lesson_id, 'action' => 'edit' ), admin_url( 'post.php' ) ) ); ?>" title="<?php echo esc_attr__( 'Edit', 'pmpro-courses' ) . ' ' . esc_attr( $lesson->post_title ); ?>" target="_blank">
+					<?php echo esc_html( $lesson->post_title ) . " (#" . $lesson_id . ")"; ?>
+				</a>
+				<?php
+					if ( $lesson->post_status === 'draft' ) {
+						echo ' &mdash; ' . esc_html__( 'Draft', 'pmpro-courses' );
+					}
+				?>
+				<input type="hidden" name="pmpro_courses_lessons[<?php echo esc_attr( $section_id ); ?>][]" value="<?php echo esc_attr( $lesson_id ); ?>" />
+			</td>
+			<td class="pmpro-courses-lesson-remove">
+				<a class="button button-secondary" href="javascript:pmpro_courses_remove_lesson(<?php echo esc_attr( $lesson_id ); ?>); void(0);">
+					<?php echo esc_html__( 'Remove', 'pmpro-courses' ); ?>
+				</a>
+			</td>
+		</tr>
+		<?php
+	}
+	$ret = ob_get_clean();
 	return $ret;
-
 }
 
 /**
