@@ -155,7 +155,7 @@ function pmpro_courses_get_lessons_table_html( $lessons, $section_id = 1 ){
 		$section_id = intval( $section_id );
 		?>
 		<tr data-lesson_id="<?php echo esc_attr( $lesson_id ); ?>">
-			<td class="pmpro-lesson-sort-handle"><span class="dashicons dashicons-menu"></span></td>
+			<td class="pmpro-sort-handle"><span class="dashicons dashicons-menu" aria-hidden="true"></span></td>
 			<td>
 				<a href="<?php echo esc_url( add_query_arg( array( 'post' => $lesson_id, 'action' => 'edit' ), admin_url( 'post.php' ) ) ); ?>" title="<?php echo esc_attr__( 'Edit', 'pmpro-courses' ) . ' ' . esc_attr( $lesson->post_title ); ?>" target="_blank">
 					<?php echo esc_html( $lesson->post_title ) . " (#" . $lesson_id . ")"; ?>

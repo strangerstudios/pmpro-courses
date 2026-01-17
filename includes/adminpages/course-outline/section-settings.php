@@ -30,25 +30,18 @@ if ( empty( $section ) ) {
 $exclude_assigned_lessons = isset( $section['lessons'] ) ? array_map( 'intval', $section['lessons'] ) : array();
 $lessons_options = pmpro_courses_lessons_settings( $exclude_assigned_lessons, $post->ID );
 ?>
-<div class="pmpro_section pmpro_courses_lessons-section" data-section-id="<?php echo esc_attr( $section_id ); ?>">
+<div class="pmpro_section pmpro_courses_lessons-section" data-section-id="<?php echo esc_attr( $section_id ); ?>" data-visibility="hidden">
 	<div class="pmpro_section_toggle">
 		<div class="pmpro_section-sort pmpro_courses_lessons-section-sort">
-			<button type="button" aria-disabled="false" class="pmpro_section-sort-button pmpro_section-sort-button-move-up pmpro_courses_lessons-section-buttons-button" aria-label="<?php echo esc_attr__( 'Move up', 'pmpro-courses' ); ?>">
-				<span class="dashicons dashicons-arrow-up-alt2"></span>
+			<button type="button" class="pmpro_section-sort-button pmpro_section-sort-button-move-up pmpro_courses_lessons-section-buttons-button" aria-label="<?php echo esc_attr__( 'Move section up', 'pmpro-courses' ); ?>">
+				<span class="dashicons dashicons-arrow-up-alt2" aria-hidden="true"></span>
 			</button>
-			<span class="pmpro_section-sort-button-description pmpro_courses_lessons-section-buttons-description">
-				<?php echo esc_html__( 'Move Section Up', 'pmpro-courses' ); ?>
-			</span>
-			<button type="button" aria-disabled="false" class="pmpro_section-sort-button pmpro_section-sort-button-move-down pmpro_courses_lessons-section-buttons-button" aria-label="<?php echo esc_attr__( 'Move down', 'pmpro-courses' ); ?>">
-				<span class="dashicons dashicons-arrow-down-alt2"></span>
+			<button type="button" class="pmpro_section-sort-button pmpro_section-sort-button-move-down pmpro_courses_lessons-section-buttons-button" aria-label="<?php echo esc_attr__( 'Move section down', 'pmpro-courses' ); ?>">
+				<span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>
 			</button>
-			<span id="pmpro_courses_lessons-section-buttons-description-2" class="pmpro_section-sort-button-description pmpro_courses_lessons-section-buttons-description"
-			>
-				<?php echo esc_html__( 'Move Section Down', 'pmpro-courses' ); ?>
-			</span>
 		</div>
-		<button class="pmpro_section-toggle-button" aria-expanded="false">
-			<span class="dashicons dashicons-arrow-down-alt2"></span>
+		<button class="pmpro_section-toggle-button" aria-expanded="false" aria-label="<?php echo esc_attr__( 'Toggle section content', 'pmpro-courses' ); ?>">
+			<span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>
 			<label for="pmpro_course_lessons_section_name_<?php echo esc_attr( $section_id ); ?>">
 				<?php esc_html_e( 'Section Name', 'pmpro-courses' ); ?>
 				<input type="text" name="pmpro_course_lessons_section_name[]" id="pmpro_course_lessons_section_name_<?php echo esc_attr( $section_id ); ?>" placeholder="<?php echo esc_attr__('Section Name', 'pmpro-courses'); ?>" value="<?php echo esc_attr( $section_name ); ?>" />
@@ -103,7 +96,7 @@ $lessons_options = pmpro_courses_lessons_settings( $exclude_assigned_lessons, $p
 			</tbody>
 		</table>
 		<div class="pmpro_section_actions">
-			<button type="button" class="button is-destructive pmpro-has-icon pmpro-has-icon-trash" aria-disabled="false" aria-label="<?php echo esc_attr__('Delete section', 'pmpro-courses'); ?>">
+			<button type="button" class="button is-destructive pmpro-has-icon pmpro-has-icon-trash" aria-label="<?php echo esc_attr__('Delete section', 'pmpro-courses'); ?>">
 				<?php echo esc_html__('Delete Section', 'pmpro-courses'); ?>
 			</button>
 		</div> <!-- .pmpro_section_actions -->
