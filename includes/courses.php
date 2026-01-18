@@ -79,7 +79,7 @@ function pmpro_courses_update_course_callback() {
 	$lesson = get_post( $lesson_id );
 
 	$table_row  = '<tr data-lesson_id="' . esc_attr( $lesson_id ) . '">';
-	$table_row .= '<td class="pmpro-lesson-sort-handle"><span class="dashicons dashicons-menu"></span></td>';
+	$table_row .= '<td class="pmpro-sort-handle"><span class="dashicons dashicons-menu"></span></td>';
 	$table_row .= '<td>';
 	$table_row .= '<a href="' . esc_url( admin_url( 'post.php?post=' . $lesson_id . '&action=edit' ) ) . '" ';
 	$table_row .= 'title="' . esc_attr__( 'Edit', 'pmpro-courses' ) . ' ' . esc_attr( $lesson->post_title ) . '" ';
@@ -133,7 +133,7 @@ function pmpro_courses_create_lesson_cb() {
 	$post_id = wp_insert_post( $postarr );
 
 	$table_row  = '<tr data-lesson_id="' . esc_attr( $post_id ) . '">';
-	$table_row .= '<td class="pmpro-lesson-sort-handle"><span class="dashicons dashicons-menu"></span></td>';
+	$table_row .= '<td class="pmpro-sort-handle"><span class="dashicons dashicons-menu"></span></td>';
 	$table_row .= '<td>';
 	$table_row .= '<a href="' . esc_url( admin_url( 'post.php?post=' . $post_id . '&action=edit' ) ) . '" ';
 	$table_row .= 'title="' . esc_attr__( 'Edit', 'pmpro-courses' ) . ' ' . esc_attr( $title ) . '" ';

@@ -23,6 +23,10 @@
 	width: 1%;
 }
 
+.pmpro_courses_lesson_table td:nth-child(2) a {
+	word-break: break-word;
+}
+
 .pmpro_courses_lesson_table .pmpro-sort-handle {
 	color: #CCC;
 }
@@ -36,6 +40,7 @@
 }
 
 .pmpro_courses_lesson_table .ui-sortable-helper {
+	background-color: #FFF;
 	border: 2px solid #2997C8;
 }
 

@@ -41,37 +41,27 @@
 
 /* Lists of Courses and Lessons */
 .pmpro_courses {
-	border-bottom: 5px solid #CCC;
-	border-top: 5px solid #CCC;
-	margin: 30px 0;
-	padding: 15px 0 0 0;
+	margin: var(--pmpro--base--spacing--large) 0;
 }
-.pmpro_courses .pmpro_courses-title {
+
+.pmpro_courses h2 {
 	margin: 0;
 	padding: 0;
-	text-transform: uppercase;
 }
-.pmpro_courses ol.pmpro_courses-list {
-	list-style-type: decimal;
-	list-style-position: inside;
-	margin: 15px 0 0 0;
-	padding: 0;
-}
-.pmpro_courses ul.pmpro_courses-list {
+
+.pmpro_courses .pmpro_courses-list,
+.pmpro_courses .pmpro_courses-list-item {
 	list-style-type: none;
-	margin: 15px 0 0 0;
-	padding: 0;
-}
-.pmpro_courses ol.pmpro_courses-list li.pmpro_courses-list-item,
-.pmpro_courses ul.pmpro_courses-list li.pmpro_courses-list-item {
-	border-top: 1px solid #CCC;
-	list-style: none;
 	margin: 0;
 	padding: 0;
 }
-.pmpro_courses.pmpro-courses-no-access ol.pmpro_courses-list li.pmpro_courses-list-item,
-.pmpro_courses.pmpro-courses-no-access ul.pmpro_courses-list li.pmpro_courses-list-item {
-	padding:  15px 3px;
+
+.pmpro_courses .pmpro_courses-list-item {
+	border-bottom: 1px solid var(--pmpro--color--border--variation);
+}
+
+.pmpro_courses .pmpro_courses-list-item:last-child {
+	border-bottom: none;
 }
 
 .pmpro_courses ol.pmpro_courses-list li.pmpro_courses-list-item h4.pmpro_courses-list-item-title,
@@ -107,84 +97,68 @@
 	grid-area: lessonProgress;
 }
 
+/* Course outline styles */
+.pmpro_courses-course-outline .pmpro_card_title {
+	padding: 0;
+}
+
+.pmpro_courses-course-outline h3 {
+	margin: 0;
+	padding: 0;
+}
+
+.pmpro_courses-course-outline [id^="pmpro_courses-section-toggle-"] {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	padding-left: var(--pmpro--base--spacing--large);
+	padding-right: var(--pmpro--base--spacing--large);
+	width: 100%;
+}
+
+.pmpro_courses-course-outline [id^="pmpro_courses-section-toggle-"][aria-expanded="true"] {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
 /* Lesson-specific list styles */
-.pmpro_courses-lessons ol.pmpro_courses-list li.pmpro_courses-list-item .pmpro_courses-list-item-link {
+.pmpro_courses-lessons .pmpro_courses-list .pmpro_courses-list-item > * {
+	align-items: center;
 	border: none;
-	display: grid;
-	grid-column-gap: 5px;
-	grid-template-areas: 'lessonTitle lessonStatus';
-	grid-template-columns: auto 50px;
-	padding: 15px 3px;
+	display: flex;
+	justify-content: space-between;
+	min-width: 0;
+	padding: var(--pmpro--base--spacing--medium) 0;
 	text-decoration: none;
 }
 
-.pmpro_courses-lessons ol.pmpro_courses-list li.pmpro_courses-list-item .pmpro_courses-list-item-link:hover .pmpro_courses-list-item-title {
-	text-decoration: underline;	
+.pmpro_courses-lessons .pmpro_courses-list .pmpro_courses-list-item .pmpro_courses-list-item-link .pmpro_courses-list-item-title,
+.pmpro_courses-lessons .pmpro_courses-list .pmpro_courses-list-item .pmpro_courses-list-item-link .pmpro_tag {
+	display: inline;
 }
 
-.pmpro_courses-lessons ol.pmpro_courses-list li.pmpro_courses-list-item .pmpro_courses-list-item-title {
-	align-self: center;
-	grid-area: lessonTitle;
+.pmpro_courses-lessons .pmpro_courses-list .pmpro_courses-list-item-title {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
+	word-break: break-word;
 }
 
-.pmpro_courses-lessons ol.pmpro_courses-list li.pmpro_courses-list-item .pmpro_courses-lesson-status {
-	align-self: center;
-	grid-area: lessonStatus;
+.pmpro_courses-lessons .pmpro_courses-list .pmpro_courses-list-item > .pmpro_courses-list-item-link .pmpro_courses-lesson-status {
+	margin-left: auto;
+	white-space: nowrap;
+}
+
+.pmpro_courses-lessons .pmpro_courses-list .pmpro_courses-list-item .pmpro_courses-list-item-link:hover .pmpro_courses-list-item-title {
+	text-decoration: underline;
+}
+
+.pmpro_courses-lessons .pmpro_courses-list .pmpro_courses-list-item .pmpro_tag-success {
+	margin-left: 8px;
 }
 
 /* Additional content added to single Lesson page */
 .pmpro_courses_lesson-status,
 .pmpro_courses_lesson-back-to-course {
 	margin: 30px 0;
-}
-
-/* Course Frontend Section */
-.pmpro_courses-section-title[role="button"] {
-  cursor: pointer;
-}
-.pmpro_courses-section-title[role="button"]:focus {
-  outline: 2px solid #555; /* adjust to your theme */
-  outline-offset: 2px;
-}
-
-.pmpro_courses-section-title {
-  position: relative;
-  cursor: pointer;
-  padding-right: 24px; /* space for icon */
-}
-
-.pmpro_courses-section-title::after {
-  font-family: dashicons;
-  content: "\f343"; /* dashicons-arrow-up-alt2 */
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.pmpro_courses-section-title:not(.pmpro_courses_course_open)::after {
-  content: "\f347"; /* dashicons-arrow-down-alt2 */
-}
-
-/* Make the lesson title hold text + badge inline */
-.pmpro_courses-free-lesson .pmpro_courses-list-item-title {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.35rem; /* little space between text and badge */
-}
-
-/* Show "Free" badge */
-.pmpro_courses-free-lesson .pmpro_courses-list-item-title::after {
-	content: "Free";
-	color: #28a745;
-	font-size: 0.7rem;
-	font-weight: 600;
-	border: 1px solid #28a745;
-	border-radius: 3px;
-	padding: 1px 4px;
-	text-transform: uppercase;
-	line-height: 1;
-	text-decoration: none;
-	display: inline-block;
-	pointer-events: none;
 }

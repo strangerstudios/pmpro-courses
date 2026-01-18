@@ -20,41 +20,46 @@ jQuery(document).ready(function(){
 	});
 
 
-	// Find the next sibling that is an OL, stopping if we hit another H3.
-	function pmpro_courses_find_ol_list(h3) {
-	const lists = [];
-	let el = h3.nextElementSibling;
-	while (el && el.tagName !== 'H3') {
-		if (el.tagName === 'OL') lists.push(el);
-		el = el.nextElementSibling;
-	}
-	return lists;
-	}
+	// Toggle the course section content via aria-controls.
+	function pmpro_courses_toggle_course_section(button) {
+		var contentId = button.getAttribute('aria-controls');
+		if (!contentId) return;
 
-	function pmpro_courses_toggle_course_section(h3) {
-	const lists = pmpro_courses_find_ol_list(h3);
-	if (!lists.length) return;
+		var buttonicon = button.querySelector('.dashicons');
 
-	const isOpen = !lists[0].hasAttribute('hidden');
-	lists.forEach(ol => isOpen ? ol.setAttribute('hidden', '') : ol.removeAttribute('hidden'));
+		var content = document.getElementById(contentId);
+		if (!content) return;
 
-	h3.classList.toggle('pmpro_courses_course_open', !isOpen);
-	h3.setAttribute('aria-expanded', String(!isOpen));
-	}
+		var isOpen = button.getAttribute('aria-expanded') === 'true';
 
-	document.querySelectorAll('.pmpro_courses-section-title').forEach(h3 => {
-	h3.setAttribute('role', 'button');
-	h3.setAttribute('tabindex', '0');
-	h3.setAttribute('aria-expanded', 'true');
-	h3.classList.add('pmpro_courses_course_open');
-
-	h3.addEventListener('click', () => pmpro_courses_toggle_course_section(h3));
-	h3.addEventListener('keydown', (e) => {
-		if (e.key === 'Enter' || e.key === ' ') {
-		e.preventDefault();
-		pmpro_courses_toggle_course_section(h3);
+		// Toggle visibility.
+		if (isOpen) {
+			content.setAttribute('hidden', '');
+			button.setAttribute('aria-expanded', 'false');
+			buttonicon.classList.remove('dashicons-arrow-up-alt2');
+			buttonicon.classList.add('dashicons-arrow-down-alt2');
+		} else {
+			content.removeAttribute('hidden');
+			button.setAttribute('aria-expanded', 'true');
+			buttonicon.classList.remove('dashicons-arrow-down-alt2');
+			buttonicon.classList.add('dashicons-arrow-up-alt2');
 		}
-	});
+	}
+
+	document.querySelectorAll('[id^="pmpro_courses-section-toggle-"]').forEach(function(button) {
+		// Set initial state to open.
+		button.setAttribute('aria-expanded', 'true');
+
+		button.addEventListener('click', function() {
+			pmpro_courses_toggle_course_section(button);
+		});
+
+		button.addEventListener('keydown', function(e) {
+			if (e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				pmpro_courses_toggle_course_section(button);
+			}
+		});
 	});
 
-	});
+});
