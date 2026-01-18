@@ -151,9 +151,12 @@ function pmpro_courses_admin_styles( $hook ) {
 		}
 
 		// Get the HTML template to localize.
-		ob_start();
-		pmpro_courses_get_sections_html();
-		$section_template = ob_get_clean();
+		$section_template = '';
+		if ( $editing_course ) {
+			ob_start();
+			pmpro_courses_get_sections_html();
+			$section_template = ob_get_clean();
+		}
 
 		$localize = array(
 			'editing_course'   => $editing_course,
