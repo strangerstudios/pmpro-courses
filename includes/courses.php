@@ -58,73 +58,104 @@ function pmpro_courses_show_course_content_to_nonmembers() {
 
 /**
  * AJAX callback to add/edit a lesson to a course from the edit course page.
+ * This DOES NOT SAVE THE DATA. This will happen on post save.
  */
-function pmpro_courses_update_course_callback(){
+function pmpro_courses_update_course_callback() {
 
-	if( !empty( $_REQUEST['action'] ) ){
-
-		if( $_REQUEST['action'] == 'pmpro_courses_update_course' ){
-
-			if ( ! current_user_can( 'edit_posts' ) ) {
-				return;
-			}
-
-			if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'pmpro_courses_admin_nonce' ) ) {
-				wp_die( __( 'Nonce is invalid', 'pmpro-courses' ) );
-			}
-			
-			$course = intval( $_REQUEST['course'] );
-			$lesson = intval( $_REQUEST['lesson'] );
-			$order = intval( $_REQUEST['order'] );
-			
-			// If no order, set to the max.
-			if ( empty( $order ) ) {
-				$order = pmpro_courses_get_next_lesson_order( $course );
-			}			
-			
-			wp_update_post( array( 'ID' => $lesson, 'post_parent' => $course, 'menu_order' => $order ) );
-						
-			echo pmpro_courses_get_lessons_table_html( pmpro_courses_get_lessons( $course ) );
-			
-			wp_die();
-		}
-
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		return;
 	}
+
+	if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'pmpro_courses_admin_nonce' ) ) {
+		wp_die( __( 'Nonce is invalid', 'pmpro-courses' ) );
+	}
+	
+	// Got to get the value 
+	$course_id = intval( $_REQUEST['course_id'] );
+	$lesson_id = intval( $_REQUEST['lesson_id'] );
+	$section_id = intval( $_REQUEST['section_id'] );
+
+	// Get the lesson object.
+	$lesson = get_post( $lesson_id );
+
+	$table_row  = '<tr data-lesson_id="' . esc_attr( $lesson_id ) . '">';
+	$table_row .= '<td class="pmpro-sort-handle"><span class="dashicons dashicons-menu"></span></td>';
+	$table_row .= '<td>';
+	$table_row .= '<a href="' . esc_url( admin_url( 'post.php?post=' . $lesson_id . '&action=edit' ) ) . '" ';
+	$table_row .= 'title="' . esc_attr__( 'Edit', 'pmpro-courses' ) . ' ' . esc_attr( $lesson->post_title ) . '" ';
+	$table_row .= 'target="_blank">';
+	$table_row .= esc_html( $lesson->post_title ) . ' (#' . esc_html( $lesson_id ) . ')';
+	$table_row .= '</a>';
+	if ( $lesson->post_status === 'draft' ) {
+		$table_row .= ' &mdash; ' . esc_html__( 'Draft', 'pmpro-courses' );
+	}
+	$table_row .= '<input type="hidden" name="pmpro_courses_lessons[' . esc_attr( $section_id ) . '][]" value="' . esc_attr( $lesson_id ) . '" />';
+	$table_row .= '</td>';
+	$table_row .= '<td class="pmpro-courses-lesson-remove">';
+	$table_row .= '<a class="button button-secondary" href="javascript:pmpro_courses_remove_lesson(' . esc_attr( $lesson_id ) . '); void(0);">';
+	$table_row .= esc_html__( 'Remove', 'pmpro-courses' );
+	$table_row .= '</a>';
+	$table_row .= '</td>';
+	$table_row .= '</tr>';
+
+	echo $table_row;
 
 }
 add_action( 'wp_ajax_pmpro_courses_update_course', 'pmpro_courses_update_course_callback' );
 
 /**
- * AJAX callback to remove a lesson from a course on the edit course page.
+ * Ajax function to allow creation and assignment of a draft lesson.
+ *
+ * @since TBD
  */
-function pmpro_courses_remove_course_callback(){
-
-	if( !empty( $_REQUEST['action'] ) ){
-
-		if( $_REQUEST['action'] == 'pmpro_courses_remove_course' ){
-
-			if ( ! current_user_can( 'edit_posts' ) ) {
-				return;
-			}
-
-			// check if nonce is valid
-			if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'pmpro_courses_admin_nonce' ) ) {
-				wp_die( __( 'Nonce is invalid', 'pmpro-courses' ) );
-			}
-
-			$course = intval( $_REQUEST['course'] );
-			$lesson = intval( $_REQUEST['lesson'] );
-			
-			wp_update_post( array( 'ID' => $lesson, 'post_parent' => '' ) );
-			
-			echo pmpro_courses_get_lessons_table_html( pmpro_courses_get_lessons( $course ) );
-			
-			wp_die();
-		}
+function pmpro_courses_create_lesson_cb() {
+	
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		return;
 	}
 
+	if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'pmpro_courses_admin_nonce' ) ) {
+		wp_die( __( 'Nonce is invalid', 'pmpro-courses' ) );
+	}
+
+	$title      = isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '';
+	$section_id = isset( $_POST['section_id'] ) ? (int) $_POST['section_id'] : 0;
+	$course_id  = isset( $_POST['course_id'] ) ? (int) $_POST['course_id'] : 0;
+
+	if ( '' === $title ) {
+		$title = __( 'Untitled Lesson', 'pmpro-courses' );
+	}
+
+	$postarr = array(
+		'post_type'   => 'pmpro_lesson',
+		'post_status' => 'draft', // or 'publish' if you prefer
+		'post_title'  => $title,
+		'post_author' => get_current_user_id(),
+	);
+
+	$post_id = wp_insert_post( $postarr );
+
+	$table_row  = '<tr data-lesson_id="' . esc_attr( $post_id ) . '">';
+	$table_row .= '<td class="pmpro-sort-handle"><span class="dashicons dashicons-menu"></span></td>';
+	$table_row .= '<td>';
+	$table_row .= '<a href="' . esc_url( admin_url( 'post.php?post=' . $post_id . '&action=edit' ) ) . '" ';
+	$table_row .= 'title="' . esc_attr__( 'Edit', 'pmpro-courses' ) . ' ' . esc_attr( $title ) . '" ';
+	$table_row .= 'target="_blank">';
+	$table_row .= esc_html( $title ) . ' (#' . esc_html( $post_id ) . ')';
+	$table_row .= '</a>';
+	$table_row .= ' &mdash; ' . esc_html__( 'Draft', 'pmpro-courses' );
+	$table_row .= '<input type="hidden" name="pmpro_courses_lessons[' . esc_attr( $section_id ) . '][]" value="' . esc_attr( $post_id ) . '" />';
+	$table_row .= '</td>';
+	$table_row .= '<td class="pmpro-courses-lesson-remove">';
+	$table_row .= '<a class="button button-secondary" href="javascript:pmpro_courses_remove_lesson(' . esc_attr( $post_id ) . '); void(0);">';
+	$table_row .= esc_html__( 'Remove', 'pmpro-courses' );
+	$table_row .= '</a>';
+	$table_row .= '</td>';
+	$table_row .= '</tr>';
+
+	echo $table_row;
 }
-add_action( 'wp_ajax_pmpro_courses_remove_course', 'pmpro_courses_remove_course_callback' );
+add_action( 'wp_ajax_pmpro_courses_create_lesson', 'pmpro_courses_create_lesson_cb' );
 
 /**
  * Adds columns to the Courses table.
@@ -203,13 +234,23 @@ function pmpro_courses_template_redirect() {
 		if ( current_user_can( 'manage_options' ) ) {
 			return;
 		}
+
+		// PMPro is installed and active.
+		if ( ! function_exists( 'pmpro_has_membership_access' ) ) {
+			return;
+		}
 		
 		// Okay check access.
-		if ( $post->post_type == 'pmpro_course' ) {
+		if ( $post->post_type === 'pmpro_course' ) {
 			$access = pmpro_has_membership_access( $post->ID );
 		} else {
 			$access = pmpro_has_membership_access( $post->post_parent );
-		}	
+		}
+		
+		// If they don't have access to the course, let's see if they have access to a specific lesson which will be filtered.
+		if ( ! $access && $post->post_type === 'pmpro_lesson' ) {
+			$access = pmpro_has_membership_access( $post->ID );
+		}
 		
 		// They have access. Let em in.
 		if ( $access ) {
@@ -222,7 +263,7 @@ function pmpro_courses_template_redirect() {
 		}
 		
 		// No access.
-		if ( $post->post_type == 'pmpro_course' ) {
+		if ( $post->post_type === 'pmpro_course' ) {
 			// Don't redirect courses unless a url is passed in filter.
 			$redirect_to = apply_filters( 'pmpro_courses_course_redirect_to', null );			
 		} else {
@@ -254,34 +295,3 @@ function pmpro_courses_hide_adjacent_post_links_for_courses( $output, $format, $
 }
 add_action( 'previous_post_link', 'pmpro_courses_hide_adjacent_post_links_for_courses', 10, 5 );
 add_action( 'next_post_link', 'pmpro_courses_hide_adjacent_post_links_for_courses', 10, 5 );
-
-/**
- * Update All Course Lessons menu_order attrbute based on the UI drag and drop.
- *
- * @return void Despite the void return, this function echoes JSON response for AJAX callback and dies the WP standard way.
- * @since TBD
- */
-function pmpro_courses_update_lesson_order_callback() {
-	//Bail if user can't edit posts
-	if ( ! current_user_can( 'edit_posts' ) ) {
-		wp_send_json_error( esc_html__( 'User cannot edit posts', 'pmpro-courses' ) );
-	}
-
-	//Check nonce
-	if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'pmpro_courses_admin_nonce' ) ) {
-		wp_send_json_error( esc_html__( 'Nonce is invalid', 'pmpro-courses' ) );
-	}
-
-	$course = intval( $_REQUEST['course'] );
-	$lessons = $_REQUEST['lessons'];
-
-	// Update the course order
-	foreach ( $lessons as $order => $lesson ) {
-		wp_update_post( array( 'ID' => $lesson, 'menu_order' => $order + 1, 'post_parent' => $course ) );
-	}
-
-	//return success json
-	wp_send_json_success( esc_html__( 'Lesson order updated', 'pmpro-courses' ) );
-}
-
-add_action( 'wp_ajax_pmpro_courses_update_lesson_order', 'pmpro_courses_update_lesson_order_callback' );
