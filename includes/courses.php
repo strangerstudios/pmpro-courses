@@ -241,14 +241,14 @@ function pmpro_courses_template_redirect() {
 		}
 		
 		// Okay check access.
-		if ( $post->post_type == 'pmpro_course' ) {
+		if ( $post->post_type === 'pmpro_course' ) {
 			$access = pmpro_has_membership_access( $post->ID );
 		} else {
 			$access = pmpro_has_membership_access( $post->post_parent );
 		}
 		
 		// If they don't have access to the course, let's see if they have access to a specific lesson which will be filtered.
-		if ( ! $access && $post->post_type == 'pmpro_lesson' ) {
+		if ( ! $access && $post->post_type === 'pmpro_lesson' ) {
 			$access = pmpro_has_membership_access( $post->ID );
 		}
 		
@@ -263,7 +263,7 @@ function pmpro_courses_template_redirect() {
 		}
 		
 		// No access.
-		if ( $post->post_type == 'pmpro_course' ) {
+		if ( $post->post_type === 'pmpro_course' ) {
 			// Don't redirect courses unless a url is passed in filter.
 			$redirect_to = apply_filters( 'pmpro_courses_course_redirect_to', null );			
 		} else {
