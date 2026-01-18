@@ -47,3 +47,4 @@ function pmpro_courses_shortcode_my_courses( $atts ) {
 	return pmpro_courses_get_courses_html( $courses );
 }
 add_shortcode( 'pmpro_my_courses', 'pmpro_courses_shortcode_my_courses' );
+
