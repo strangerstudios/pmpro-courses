@@ -54,7 +54,7 @@ class PMPro_Courses_Member_Edit_Panel extends PMPro_Member_Edit_Panel {
 						</td>
 						<td>
 							<?php
-								if ( empty( $first_completed_lesson ) && empty( $first_completed_lesson->completed_at ) ) {
+								if ( empty( $first_completed_lesson ) || empty( $first_completed_lesson->completed_at ) ) {
 									echo esc_html_x( '&#8212;', 'A dash is shown when there is no first seen date.', 'pmpro-courses' );
 								} else {
 									$first_completed_lesson_timestamp = strtotime( $first_completed_lesson->completed_at );
@@ -71,7 +71,7 @@ class PMPro_Courses_Member_Edit_Panel extends PMPro_Member_Edit_Panel {
 						</td>
 						<td>
 							<?php
-								if ( empty( $last_completed_lesson ) && empty( $last_completed_lesson->completed_at ) ) {
+								if ( empty( $last_completed_lesson ) || empty( $last_completed_lesson->completed_at ) ) {
 									echo esc_html_x( '&#8212;', 'A dash is shown when there is no last seen date.', 'pmpro-courses' );
 								} else {
 									$last_completed_lesson_timestamp = strtotime( $last_completed_lesson->completed_at );
