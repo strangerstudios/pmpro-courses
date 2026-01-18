@@ -117,7 +117,7 @@ class PMPro_Courses_User_Progress {
 			return 0;
 		}
 
-		return round( ( $completed_count / count( $lessons) ) * 100 );
+		return round( ( $completed_count / count( $lessons ) ) * 100 );
 	}
 
 	/**
