@@ -40,7 +40,7 @@ class PMPro_Courses_Member_Edit_Panel extends PMPro_Member_Edit_Panel {
 					$first_completed_lesson = ! empty( $lessons ) ? reset( $lessons ) : null;
 
 					// If the course has more than one lesson or the progress of the course is 100 (i.e. 1 lesson in the course)
-					if ( $progress == 100  || count( $lessons ) > 1 ) {
+					if ( $progress === 100 || count( $lessons ) > 1 ) {
 						$last_completed_lesson  = ! empty( $lessons ) ? end( $lessons ) : null;
 					} else {
 						$last_completed_lesson = null;
