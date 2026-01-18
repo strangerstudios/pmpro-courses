@@ -15,7 +15,7 @@ if ( empty( $section ) ) {
 			'post__in' => $section['lessons'],
 			'post_type' => 'pmpro_lesson',
 			'numberposts' => 99,
-			'post_status' => array( 'draft', 'publish' ),
+			'post_status' => array( 'any' ),
 			'orderby' => 'menu_order',
 			'order' => 'ASC'
 		) );

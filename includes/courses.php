@@ -86,6 +86,9 @@ function pmpro_courses_update_course_callback() {
 	$table_row .= 'target="_blank">';
 	$table_row .= esc_html( $lesson->post_title ) . ' (#' . esc_html( $lesson_id ) . ')';
 	$table_row .= '</a>';
+	if ( $lesson->post_status == 'draft' ) {
+		$table_row .= ' &mdash; ' . esc_html__( 'Draft', 'pmpro-courses' );
+	}
 	$table_row .= '<input type="hidden" name="pmpro_courses_lessons[' . esc_attr( $section_id ) . '][]" value="' . esc_attr( $lesson_id ) . '" />';
 	$table_row .= '</td>';
 	$table_row .= '<td class="pmpro-courses-lesson-remove">';

@@ -118,7 +118,7 @@ function pmpro_courses_lessons_filter_dropdown() {
 
 	$courses = get_posts( array(
 		'post_type'      => 'pmpro_course',
-		'post_status'    => 'publish',
+		'post_status'    => 'any',
 		'posts_per_page' => 500,
 		'orderby'        => 'title',
 		'order'          => 'ASC',
