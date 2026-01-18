@@ -207,12 +207,6 @@ class PMPro_Courses_User_Progress {
 	}
 } // End of class.
 
-function pmpro_courses_get_user_lesson_status(){
-	return true;
-}
-
-
-/// This should rather be in another file I think.
 /**
  * Display a button that allows a user to mark a lesson as complete or show completed if the lesson is completed.
  */
