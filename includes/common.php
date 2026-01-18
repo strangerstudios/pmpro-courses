@@ -277,7 +277,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 										</span>
 										<?php if ( $lesson_access ) { ?>
 											<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_tag pmpro_tag-success' ) ); ?>">
-												<?php echo esc_html__( 'Free', 'pmpro-courses' ); ?>
+												<?php esc_html_e( 'Free', 'pmpro-courses' ); ?>
 											</span>
 										<?php } ?>
 										<?php
@@ -287,12 +287,12 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 												if ( $lesson_completed ) { ?>
 													<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-lesson-status pmpro_courses-lesson-status-complete' ) ); ?>">
 														<i class="dashicons dashicons-yes" aria-hidden="true"></i>
-														<span class="pmpro_courses-lesson-status-label"><?php echo esc_html__( 'Complete', 'pmpro-courses' ); ?></span>
+														<span class="pmpro_courses-lesson-status-label"><?php esc_html_e( 'Complete', 'pmpro-courses' ); ?></span>
 													</span>
 												<?php } else { ?>
 													<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-lesson-status pmpro_courses-lesson-status-incomplete' ) ); ?>">
 														<i class="dashicons dashicons-marker" aria-hidden="true"></i>
-														<span class="pmpro_courses-lesson-status-label"><?php echo esc_html__( 'Incomplete', 'pmpro-courses' ); ?></span>
+														<span class="pmpro_courses-lesson-status-label"><?php esc_html_e( 'Incomplete', 'pmpro-courses' ); ?></span>
 													</span>
 													<?php
 												}

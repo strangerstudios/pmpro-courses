@@ -169,7 +169,7 @@ function pmpro_courses_get_lessons_table_html( $lessons, $section_id = 1 ){
 			</td>
 			<td class="pmpro-courses-lesson-remove">
 				<a class="button button-secondary" href="javascript:pmpro_courses_remove_lesson(<?php echo esc_attr( $lesson_id ); ?>); void(0);">
-					<?php echo esc_html__( 'Remove', 'pmpro-courses' ); ?>
+					<?php esc_html_e( 'Remove', 'pmpro-courses' ); ?>
 				</a>
 			</td>
 		</tr>

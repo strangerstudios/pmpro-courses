@@ -65,13 +65,13 @@ $lessons_options = pmpro_courses_lessons_settings( $exclude_assigned_lessons, $p
 		<table class="wp-list-table widefat striped pmpro_courses_add_lesson_table">
 			<thead>
 				<tr>
-					<th colspan="3"><strong><?php echo esc_html__('Add Lessons to Section', 'pmpro-courses'); ?></strong></th>
+					<th colspan="3"><strong><?php esc_html_e('Add Lessons to Section', 'pmpro-courses'); ?></strong></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td>
-						<label for="pmpro_courses_post_<?php echo esc_attr( $section_id ); ?>"><?php echo esc_html_e( 'Add Existing Lessons', 'pmpro-courses' ); ?></label>
+						<label for="pmpro_courses_post_<?php echo esc_attr( $section_id ); ?>"><?php esc_html_e( 'Add Existing Lessons', 'pmpro-courses' ); ?></label>
 					</td>
 					<td>
 						<select class="pmpro_courses_lessons_select" name="pmpro_courses_post" id="pmpro_courses_post_<?php echo esc_attr( $section_id ); ?>">
@@ -79,7 +79,7 @@ $lessons_options = pmpro_courses_lessons_settings( $exclude_assigned_lessons, $p
 						</select>
 					</td>
 					<td>
-						<a class="button button-primary pmpro_courses_save_lesson" id="pmpro_courses_save_<?php echo esc_attr( $section_id ); ?>" data-section-id="<?php echo esc_attr( $section_id ); ?>"><?php echo esc_html_e( 'Add Lesson', 'pmpro-courses' ); ?></a>
+						<a class="button button-primary pmpro_courses_save_lesson" id="pmpro_courses_save_<?php echo esc_attr( $section_id ); ?>" data-section-id="<?php echo esc_attr( $section_id ); ?>"><?php esc_html_e( 'Add Lesson', 'pmpro-courses' ); ?></a>
 					</td>
 				</tr>
 				<tr>
@@ -90,14 +90,14 @@ $lessons_options = pmpro_courses_lessons_settings( $exclude_assigned_lessons, $p
 						<input type="text" id="pmpro_courses_new_lesson_title_<?php echo esc_attr( $section_id ); ?>" name="pmpro_courses_new_lesson_title" class="pmpro_courses_new_lesson_title" placeholder="<?php esc_attr_e( 'Enter a lesson title', 'pmpro-courses' ); ?>" />
 					</td>
 					<td>
-						<a class="button button-primary pmpro_courses_create_lesson" id="pmpro_courses_create_lesson" data-section-id="<?php echo esc_attr( $section_id ); ?>"><?php echo esc_html_e( 'Create Lesson', 'pmpro-courses' ); ?></a>
+						<a class="button button-primary pmpro_courses_create_lesson" id="pmpro_courses_create_lesson" data-section-id="<?php echo esc_attr( $section_id ); ?>"><?php esc_html_e( 'Create Lesson', 'pmpro-courses' ); ?></a>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 		<div class="pmpro_section_actions">
 			<button type="button" class="button is-destructive pmpro-has-icon pmpro-has-icon-trash" aria-label="<?php echo esc_attr__('Delete section', 'pmpro-courses'); ?>">
-				<?php echo esc_html__('Delete Section', 'pmpro-courses'); ?>
+				<?php esc_html_e( 'Delete Section', 'pmpro-courses' ); ?>
 			</button>
 		</div> <!-- .pmpro_section_actions -->
 	</div> <!-- .pmpro_section_inside -->
