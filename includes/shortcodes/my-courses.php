@@ -32,7 +32,7 @@ function pmpro_courses_shortcode_my_courses( $atts ) {
 		
 		foreach( $courses as $key => $course ) {
 			foreach( $empty_progress_courses as $empty_course ) {
-				if ( $course->ID == $empty_course->ID ) {
+				if ( $course->ID === $empty_course->ID ) {
 					unset( $courses[$key] );
 				}
 			}
