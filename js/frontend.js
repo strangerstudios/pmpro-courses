@@ -26,11 +26,11 @@ jQuery(document).ready(function(){
 		var contentId = button.getAttribute('aria-controls');
 		if (!contentId) return;
 
-		var svgicon = button.querySelector('.pmpro_courses-feather-icon');
-		var useElement = svgicon.querySelector('use');
-
 		var content = document.getElementById(contentId);
 		if (!content) return;
+
+		var svgicon = button.querySelector('.pmpro_courses-feather-icon');
+		var useElement = svgicon ? svgicon.querySelector('use') : null;
 
 		var isOpen = button.getAttribute('aria-expanded') === 'true';
 
@@ -38,21 +38,33 @@ jQuery(document).ready(function(){
 		if (isOpen) {
 			content.setAttribute('hidden', '');
 			button.setAttribute('aria-expanded', 'false');
-			svgicon.classList.remove('pmpro_courses-feather-icon-chevron-up');
-			svgicon.classList.add('pmpro_courses-feather-icon-chevron-down');
 			
-			// Swap SVG icon to chevron-down
-			var currentHref = useElement.getAttribute('href');
-			useElement.setAttribute('href', currentHref.replace('#chevron-up', '#chevron-down'));
+			// Update icon if it exists
+			if (svgicon) {
+				svgicon.classList.remove('pmpro_courses-feather-icon-chevron-up');
+				svgicon.classList.add('pmpro_courses-feather-icon-chevron-down');
+				
+				// Swap SVG icon to chevron-down
+				if (useElement) {
+					var currentHref = useElement.getAttribute('href');
+					useElement.setAttribute('href', currentHref.replace('#chevron-up', '#chevron-down'));
+				}
+			}
 		} else {
 			content.removeAttribute('hidden');
 			button.setAttribute('aria-expanded', 'true');
-			svgicon.classList.remove('pmpro_courses-feather-icon-chevron-down');
-			svgicon.classList.add('pmpro_courses-feather-icon-chevron-up');
 			
-			// Swap SVG icon to chevron-up
-			var currentHref = useElement.getAttribute('href');
-			useElement.setAttribute('href', currentHref.replace('#chevron-down', '#chevron-up'));
+			// Update icon if it exists
+			if (svgicon) {
+				svgicon.classList.remove('pmpro_courses-feather-icon-chevron-down');
+				svgicon.classList.add('pmpro_courses-feather-icon-chevron-up');
+				
+				// Swap SVG icon to chevron-up
+				if (useElement) {
+					var currentHref = useElement.getAttribute('href');
+					useElement.setAttribute('href', currentHref.replace('#chevron-down', '#chevron-up'));
+				}
+			}
 		}
 	}
 
