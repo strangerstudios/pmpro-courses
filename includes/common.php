@@ -93,19 +93,23 @@ function pmpro_courses_get_next_lesson_order( $course ) {
 
 /**
  * Get a count of lessons assigned to this course ID.
+ *
+ * @param int $course_id The course ID.
+ * @param string|array $post_status The post status or array of post statuses to count. Default is 'publish'.
+ * @return int The number of lessons.
  */
-function pmpro_courses_get_lesson_count( $course_id ) {
-	global $wpdb;
-
-	$results = $wpdb->get_var(
-		$wpdb->prepare(
-			"SELECT count(*) FROM {$wpdb->posts} WHERE post_parent = %d AND post_type = %s",
-			$course_id,
-			'pmpro_lesson'
-		)
+function pmpro_courses_get_lesson_count( $course_id, $post_status = array( 'publish' ) ) {
+	$args = array(
+		'post_type'      => 'pmpro_lesson',
+		'post_parent'    => $course_id,
+		'post_status'    => $post_status,
+		'posts_per_page' => -1,
+		'fields'         => 'ids',
+		'no_found_rows'  => true,
 	);
 
-	return intval( $results );
+	$query = new WP_Query( $args );
+	return $query->post_count;
 }
 
 /**
@@ -284,6 +288,20 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 		<div class="<?php echo esc_attr( pmpro_get_element_class( $pmpro_courses_lessons_class ) ); ?>">
 				<h2 class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_font-x-large' ) ); ?>"><?php esc_html_e( 'Course Outline', 'pmpro-courses' ); ?></h2>
 				<?php foreach ( $sections as $section ) {
+					// Filter out non-published lessons so we can skip empty sections.
+					$published_lessons = array();
+					foreach ( $section['lessons'] as $lesson_id ) {
+						$lesson = get_post( $lesson_id );
+						if ( ! empty( $lesson ) && $lesson->post_status === 'publish' ) {
+							$published_lessons[] = $lesson;
+						}
+					}
+
+					// Skip this section entirely if it has no published lessons.
+					if ( empty( $published_lessons ) ) {
+						continue;
+					}
+
 					// If section name is empty, show as Section X, where X is the section number.
 					if ( empty( $section['section_name'] ) ) {
 						/* translators: %s: section number */
@@ -303,8 +321,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 						</div> <!-- end pmpro_card_title -->
 						<div id="pmpro_courses-section-lessons-<?php echo intval( $section['section_id'] ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_content pmpro_courses-lessons', 'pmpro_courses-lessons' ) ); ?>" role="region" aria-labelledby="pmpro_courses-section-toggle-<?php echo intval( $section['section_id'] ); ?>">
 							<ol class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list' ) ); ?>">
-								<?php foreach( $section['lessons'] as $lesson_id ) {
-									$lesson = get_post( $lesson_id ); 
+								<?php foreach( $published_lessons as $lesson ) {
 									$lesson_access = get_post_meta( $lesson->ID, 'pmpro_courses_bypass_restriction', true );
 									?>
 									<li id="pmpro_courses-lesson-<?php echo intval( $lesson->ID ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item' ) ); ?>">
