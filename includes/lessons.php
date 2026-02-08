@@ -16,13 +16,18 @@ function pmpro_courses_the_content_lesson( $content ) {
 	}
 
 	$course_id = wp_get_post_parent_id( $post->ID );
+	$complete_button = pmpro_courses_complete_lesson_button( $post->ID, get_current_user_id() );
+
+	// If there is no complete button and no parent course, don't add empty wrapper markup.
+	if ( empty( $complete_button ) && empty( $course_id ) ) {
+		return $content;
+	}
 
 	ob_start();
 	?>
 	<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro pmpro_courses', 'pmpro_courses' ) ); ?>">
 		<?php
 			// Show a link to mark the lesson complete or incomplete.
-			$complete_button = pmpro_courses_complete_lesson_button( $post->ID, get_current_user_id() );
 			if ( ! empty( $complete_button ) ) {
 				$allowed_tags = wp_kses_allowed_html( 'post' );
 

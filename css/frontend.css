@@ -77,7 +77,6 @@
 
 .pmpro_courses .pmpro_courses-list-item:last-child > * {
 	border-bottom: none;
-	padding-bottom: 0;
 }
 
 /* List item titles */
@@ -98,6 +97,10 @@
 /**
  * Course-Specific List Styles
  */
+
+.pmpro_courses-courses .pmpro_card_content {
+	padding-bottom: var(--pmpro--base--spacing--small);
+}
 
 /* Course title */
 .pmpro_courses-courses .pmpro_courses-list .pmpro_courses-list-item-title {
@@ -148,6 +151,9 @@
 /**
  * Lesson-Specific List Styles
  */
+.pmpro .pmpro_courses-lessons.pmpro_card_content {
+	padding-bottom: var(--pmpro--base--spacing--small);
+}
 
 /* Inline title and tag */
 .pmpro_courses-lessons .pmpro_courses-list .pmpro_courses-list-item .pmpro_courses-list-item-link .pmpro_courses-list-item-title,
