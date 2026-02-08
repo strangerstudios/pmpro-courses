@@ -1,4 +1,8 @@
 <?php
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Register Custom Post Type for lessons
@@ -85,7 +89,7 @@ function pmpro_courses_lesson_course_metabox( $post ) {
 				<td>
 					<?php
 						wp_dropdown_pages( array(
-							'selected' => $post->post_parent,
+							'selected' => esc_attr( $post->post_parent ),
 							'echo' => 1,
 							'show_option_none' => '-- ' . esc_html__( 'None', 'pmpro-courses' ) . ' --',
 							'name' => 'pmpro_courses_parent',

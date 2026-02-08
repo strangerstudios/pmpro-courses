@@ -1,4 +1,9 @@
 <?php
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class PMPro_Courses_Module {
     // Single instance of this class.
     protected static $_instance = null;

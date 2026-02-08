@@ -1,4 +1,9 @@
 <?php
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Content filter to show lesson and course information on the single lesson page.
  */
@@ -20,7 +25,7 @@ function pmpro_courses_the_content_lesson( $content ) {
 			$complete_button = pmpro_courses_complete_lesson_button( $post->ID, get_current_user_id() );
 			if ( ! empty( $complete_button ) ) {
 				$allowed_tags = wp_kses_allowed_html( 'post' );
-			
+
 				// Add aria-pressed to existing button attributes
 				if ( isset( $allowed_tags['button'] ) ) {
 					$allowed_tags['button']['aria-pressed'] = true;
@@ -51,10 +56,7 @@ function pmpro_courses_the_content_lesson( $content ) {
 			<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses_lesson-back-to-course' ) ); ?>">
 				<?php
 					/* translators: %s: link to the course for this lesson. */
-					printf(
-						esc_html__( 'Course: %s', 'pmpro-courses' ),
-						'<a href="' . esc_url( get_permalink( $course_id ) ) . '" title="' . esc_attr( get_the_title( $course_id ) ) . '">' . esc_html( get_the_title( $course_id ) ) . '</a>'
-					);
+					printf( esc_html__( 'Course: %s', 'pmpro-courses' ), '<a href="' . esc_url( get_permalink( $course_id ) ) . '" title="' . esc_attr( get_the_title( $course_id ) ) . '">' . esc_html( get_the_title( $course_id ) ) . '</a>' );
 				?>
 			</div> <!-- .pmpro_courses_lesson-back-to-course -->
 		<?php } ?>
@@ -88,7 +90,7 @@ function pmpro_courses_lessons_columns_content( $column, $post_id ) {
 			if ( empty( $lesson_parent ) ) {
 				echo '&mdash;';
 			} else {
-				echo pmpro_courses_get_edit_course_link( wp_get_post_parent_id( $post_id ) );
+				echo wp_kses_post( pmpro_courses_get_edit_course_link( wp_get_post_parent_id( $post_id ) ) );
 			}
 			break;
 		case 'pmpro_course_section':

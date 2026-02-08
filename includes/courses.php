@@ -39,7 +39,25 @@ function pmpro_courses_show_course_content_and_lessons( $filtered_content, $orig
 function pmpro_courses_add_lessons_to_course( $content ) {
 	global $post;
 	if ( is_singular( 'pmpro_course' ) ) {
-		$content .= pmpro_courses_get_lessons_html( $post->ID );
+		// Allow SVG in the course outline.
+		$allowed_tags = wp_kses_allowed_html( 'post' );
+		$allowed_tags = array_merge(
+			$allowed_tags,
+			array(
+				'svg' => array(
+					'class' => true,
+					'aria-hidden' => true,
+					'xmlns' => true,
+					'width' => true,
+					'height' => true,
+					'viewBox' => true,
+				),
+				'use' => array(
+					'href' => true,
+				)
+			)
+		);
+		$content .= wp_kses( pmpro_courses_get_lessons_html( $post->ID ), $allowed_tags );
 	}
 	return $content;
 }
@@ -66,10 +84,10 @@ function pmpro_courses_update_course_callback() {
 		return;
 	}
 
-	if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'pmpro_courses_admin_nonce' ) ) {
-		wp_die( __( 'Nonce is invalid', 'pmpro-courses' ) );
+	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'pmpro_courses_admin_nonce' ) ) {
+		wp_die( esc_html__( 'Nonce is invalid', 'pmpro-courses' ) );
 	}
-	
+
 	// Got to get the value 
 	$course_id = intval( $_REQUEST['course_id'] );
 	$lesson_id = intval( $_REQUEST['lesson_id'] );
@@ -114,8 +132,8 @@ function pmpro_courses_create_lesson_cb() {
 		return;
 	}
 
-	if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'pmpro_courses_admin_nonce' ) ) {
-		wp_die( __( 'Nonce is invalid', 'pmpro-courses' ) );
+	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'pmpro_courses_admin_nonce' ) ) {
+		wp_die( esc_html__( 'Nonce is invalid', 'pmpro-courses' ) );
 	}
 
 	$title      = isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '';
@@ -177,7 +195,8 @@ function pmpro_courses_columns_content( $column, $course_id ) {
 	switch ( $column ) {
 		case 'pmpro_courses_num_lessons' :
 			$lesson_count = pmpro_courses_get_lesson_count( $course_id );
-			printf( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ), number_format_i18n( $lesson_count ) );
+			/* translators: %s: number of lessons in the course. */
+			printf( esc_html( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ) ), esc_html( number_format_i18n( $lesson_count ) ) );
 			break;
 		case 'pmpro_courses_level' :
 			if ( ! function_exists( 'pmpro_getAllLevels' ) ) {

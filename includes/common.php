@@ -1,4 +1,9 @@
 <?php
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Get an array of all PMPro Courses modules.
  * Use the pmpro_courses_modules filter to add your own modules.
@@ -92,12 +97,14 @@ function pmpro_courses_get_next_lesson_order( $course ) {
 function pmpro_courses_get_lesson_count( $course_id ) {
 	global $wpdb;
 
-	$sql = $wpdb->prepare(
-		"SELECT count(*) FROM $wpdb->posts WHERE post_parent = %d AND post_type = %s",
-		$course_id,
-		'pmpro_lesson'
+	$results = $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT count(*) FROM {$wpdb->posts} WHERE post_parent = %d AND post_type = %s",
+			$course_id,
+			'pmpro_lesson'
+		)
 	);
-	$results = $wpdb->get_var( $sql );
+
 	return intval( $results );
 }
 
@@ -160,9 +167,7 @@ function pmpro_courses_get_courses_html( $courses ) {
 											<span class="screen-reader-text">
 												<?php
 													/* translators: %s is the course name. */
-													printf(
-														esc_html__( 'Progress for course %s', 'pmpro-courses' ),
-														esc_html( $course->post_title )
+													printf( esc_html__( 'Progress for course %s', 'pmpro-courses' ), esc_html( $course->post_title )
 													);
 												?>
 											</span>
@@ -190,7 +195,7 @@ function pmpro_courses_get_courses_html( $courses ) {
 										<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-course-lesson-count' ) ); ?>">
 											<?php
 												/* translators: %s is the number of lessons. */
-												printf( esc_html( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ) ), number_format_i18n( $lesson_count ) );
+												printf( esc_html( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ) ), esc_html( number_format_i18n( $lesson_count ) ) );
 											?>
 										</span>
 										<?php
@@ -280,7 +285,10 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 				<h2 class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_font-x-large' ) ); ?>"><?php esc_html_e( 'Course Outline', 'pmpro-courses' ); ?></h2>
 				<?php foreach ( $sections as $section ) {
 					// If section name is empty, show as Section X, where X is the section number.
-					$section['section_name'] = ! empty( $section['section_name'] ) ? $section['section_name'] : sprintf( esc_html__( 'Section %s', 'pmpro-courses' ), intval( $section['section_id'] ) );
+					if ( empty( $section['section_name'] ) ) {
+						/* translators: %s: section number */
+						$section['section_name'] = sprintf( esc_html__( 'Section %s', 'pmpro-courses' ), intval( $section['section_id'] ) );
+					}
 					?>
 					<div id="pmpro_courses-section-<?php echo intval( $section['section_id'] ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card' ) ); ?>">
 						<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_title' ) ); ?>">

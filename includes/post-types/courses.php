@@ -1,4 +1,9 @@
 <?php
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Register Custom Post Type for Courses
  * Hooks into init.
@@ -66,7 +71,7 @@ function pmpro_courses_course_cpt() {
 	    'pmpro_course_category',
 	    'pmpro_course',
 	    array(
-			'label' => esc_html__( 'Course Categories' ),
+			'label' => esc_html__( 'Course Categories', 'pmpro-courses' ),
 			'rewrite' => array( 'slug' => 'course-category' ),
 		    'hierarchical' => true,
 			'show_in_rest' => true,
@@ -158,7 +163,7 @@ function pmpro_courses_get_lessons_table_html( $lessons, $section_id = 1 ){
 			<td class="pmpro-sort-handle"><span class="dashicons dashicons-menu" aria-hidden="true"></span></td>
 			<td>
 				<a href="<?php echo esc_url( add_query_arg( array( 'post' => $lesson_id, 'action' => 'edit' ), admin_url( 'post.php' ) ) ); ?>" title="<?php echo esc_attr__( 'Edit', 'pmpro-courses' ) . ' ' . esc_attr( $lesson->post_title ); ?>" target="_blank">
-					<?php echo esc_html( $lesson->post_title ) . " (#" . $lesson_id . ")"; ?>
+					<?php echo esc_html( $lesson->post_title ) . " (#" . esc_html( $lesson_id ) . ")"; ?>
 				</a>
 				<?php
 					if ( $lesson->post_status === 'draft' ) {

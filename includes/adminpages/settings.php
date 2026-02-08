@@ -1,7 +1,12 @@
 <?php
-	if ( defined( 'PMPRO_DIR' ) ) {
-		require_once( PMPRO_DIR . "/adminpages/admin_header.php" );
-	}
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+if ( defined( 'PMPRO_DIR' ) ) {
+	require_once( PMPRO_DIR . "/adminpages/admin_header.php" );
+}
 ?>
 <hr class="wp-header-end" />
 

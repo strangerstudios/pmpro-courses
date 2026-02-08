@@ -8,6 +8,7 @@
  * Author URI: https://www.paidmembershipspro.com
  * Text Domain: pmpro-courses
  * Domain Path: /languages
+ * License: GPLv2 or later
  */
 
 defined( 'ABSPATH' ) || die( 'File cannot be accessed directly' );

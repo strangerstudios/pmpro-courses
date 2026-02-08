@@ -262,9 +262,38 @@ function pmpro_courses_toggle_lesson_progress_ajax(){
 	$complete  = isset($_REQUEST['complete']) ? (bool) intval($_REQUEST['complete']) : null;
 
 	if ( ! empty( $user_id ) ) {
-		PMPro_Courses_User_Progress::toggle_lesson_progress( $lesson_id, $user_id, $complete );		
-		echo pmpro_courses_complete_lesson_button( $lesson_id, $user_id );
-				
+		PMPro_Courses_User_Progress::toggle_lesson_progress( $lesson_id, $user_id, $complete );
+
+		// Show a link to mark the lesson complete or incomplete.
+		$complete_button = pmpro_courses_complete_lesson_button( $lesson_id, $user_id );
+		if ( ! empty( $complete_button ) ) {
+			$allowed_tags = wp_kses_allowed_html( 'post' );
+
+			// Add aria-pressed to existing button attributes
+			if ( isset( $allowed_tags['button'] ) ) {
+				$allowed_tags['button']['aria-pressed'] = true;
+			}
+
+			// Allow SVG in the complete button.
+			$allowed_tags = array_merge(
+				$allowed_tags,
+				array(
+					'svg' => array(
+						'class' => true,
+						'aria-hidden' => true,
+						'xmlns' => true,
+						'width' => true,
+						'height' => true,
+						'viewBox' => true,
+					),
+					'use' => array(
+						'href' => true,
+					)
+				)
+			);
+			echo wp_kses( $complete_button, $allowed_tags );
+		}
+		
 		wp_die();
 	}
 }

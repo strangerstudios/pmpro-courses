@@ -1,4 +1,9 @@
 <?php
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Runs only when the plugin is activated.
  *
@@ -86,8 +91,8 @@ add_filter( 'plugin_action_links_' . PMPRO_COURSES_BASENAME, 'pmpro_courses_plug
 function pmpro_courses_plugin_row_meta( $links, $file ) {
 	if ( strpos( $file, 'pmpro-courses.php' ) !== false ) {
 		$new_links = array(
-			'<a href="' . esc_url( 'https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/' ) . '" title="' . esc_attr__( 'View Documentation', 'pmpro' ) . '">' . esc_html__( 'Docs', 'pmpro-courses' ) . '</a>',
-			'<a href="' . esc_url( 'https://www.paidmembershipspro.com/support/' ) . '" title="' . esc_attr__( 'Visit Customer Support Forum', 'pmpro' ) . '">' . esc_html__( 'Support', 'pmpro-courses' ) . '</a>',
+			'<a href="' . esc_url( 'https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/' ) . '" title="' . esc_attr__( 'View Documentation', 'pmpro-courses' ) . '">' . esc_html__( 'Docs', 'pmpro-courses' ) . '</a>',
+			'<a href="' . esc_url( 'https://www.paidmembershipspro.com/support/' ) . '" title="' . esc_attr__( 'Visit Customer Support Forum', 'pmpro-courses' ) . '">' . esc_html__( 'Support', 'pmpro-courses' ) . '</a>',
 		);
 		$links = array_merge( $links, $new_links );
 	}
