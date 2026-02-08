@@ -29,7 +29,7 @@ function pmpro_courses_course_outline( $atts ) {
 		}
 
 		if ( $show_course_title ) {
-			$course_outline .= '<h1><a href="' . get_permalink( $id ) . '">' . get_post( $id )->post_title . '</a></h1>';
+			$course_outline .= '<h2 class="' . esc_attr( pmpro_get_element_class( 'pmpro_font-x-large' ) ) . '"><a href="' . esc_url( get_permalink( $id ) ) . '">' . esc_html( get_post( $id )->post_title ) . '</a></h2>';
 		}
 		$course_outline .= pmpro_courses_get_lessons_html( $id );
 	}

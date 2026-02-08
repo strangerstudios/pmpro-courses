@@ -142,33 +142,66 @@ function pmpro_courses_get_courses_html( $courses ) {
 	}
 
 	ob_start(); ?>
-	<div class="pmpro_courses pmpro_courses-courses">
-		<h4 class="pmpro_courses-title"><?php esc_html_e( 'Courses', 'pmpro-courses' ); ?></h4>
-		<ul class="pmpro_courses-list">
-			<?php
-				foreach( $courses as $course ) { 
-					$progress = PMPro_Courses_User_Progress::get_course_progress_for_user( $course->ID, get_current_user_id() );
-
-					?>
-					<li id="pmpro_courses-course-<?php echo intval( $course->ID ); ?>" class="pmpro_courses-list-item">
-						<a class="pmpro_courses-list-item-link" href="<?php echo esc_url( get_permalink( $course->ID ) ); ?>">
-							<div class="pmpro_courses-list-item-title">
-								<?php echo esc_html( $course->post_title ); ?>
-							</div>
-							<?php
-								$lesson_count = pmpro_courses_get_lesson_count( $course->ID );
-								if ( ! empty( $lesson_count ) ) { ?>
-								<span class="pmpro_courses-course-lesson-count">
-									<?php printf( esc_html( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ) ), number_format_i18n( $lesson_count ) ); ?>
-								</span>
-							<?php } ?>
-							<span class="pmpro_courses-list-item-progress"><?php echo esc_html( $progress ) . '%'; ?></span>
-						</a>
-					</li>
-					<?php
-				}
-			?>
-		</ul> <!-- end pmpro_courses-list -->
+	<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro pmpro_courses', 'pmpro_courses' ) ); ?>">
+		<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card pmpro_courses-courses', 'pmpro_courses-courses' ) ); ?>">
+			<h2 class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_title pmpro_font-x-large' ) ); ?>"><?php esc_html_e( 'Courses', 'pmpro-courses' ); ?></h2>
+			<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_content' ) ); ?>">
+				<ul class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list' ) ); ?>">
+					<?php foreach ( $courses as $course ) { ?>
+						<li id="pmpro_courses-course-<?php echo intval( $course->ID ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item' ) ); ?>">
+							<a class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item-link' ) ); ?>" href="<?php echo esc_url( get_permalink( $course->ID ) ); ?>">
+								<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item-title' ) ); ?>"><?php echo esc_html( $course->post_title ); ?></span>
+								<?php
+									// Show progress if user is logged in and has started the course.
+									if ( is_user_logged_in() ) {
+										$progress = PMPro_Courses_User_Progress::get_course_progress_for_user( $course->ID, get_current_user_id() );
+										if ( $progress > 0 ) {
+											?>
+											<span class="screen-reader-text">
+												<?php
+													/* translators: %s is the course name. */
+													printf(
+														esc_html__( 'Progress for course %s', 'pmpro-courses' ),
+														esc_html( $course->post_title )
+													);
+												?>
+											</span>
+											<?php
+												// Build the selectors for the status tag.
+												$progress_classes = array();
+												$progress_classes[] = 'pmpro_tag';
+												if ( $progress == 100 ) {
+													$progress_classes[] = 'pmpro_tag-success';
+												} else {
+													$progress_classes[] = 'pmpro_tag-alert';
+												}
+												$progress_class = implode( ' ', $progress_classes );
+											?>
+											<span class="<?php echo esc_attr( pmpro_get_element_class( $progress_class ) ); ?>">
+												<?php echo esc_html( $progress ) . '%'; ?>
+											</span>
+											<?php
+										}
+									}
+								?>
+								<?php
+									$lesson_count = pmpro_courses_get_lesson_count( $course->ID );
+									if ( ! empty( $lesson_count ) ) { ?>
+										<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-course-lesson-count' ) ); ?>">
+											<?php
+												/* translators: %s is the number of lessons. */
+												printf( esc_html( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ) ), number_format_i18n( $lesson_count ) );
+											?>
+										</span>
+										<?php
+									}
+								?>
+							</a>
+						</li>
+					<?php } ?>
+				</ul> <!-- end pmpro_courses-list -->
+			</div> <!-- end pmpro_card_content -->
+		</div> <!-- end pmpro_courses-courses -->
 	</div> <!-- end pmpro_courses -->
 	<?php
 	$temp_content = ob_get_contents();
@@ -234,9 +267,9 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 	$pmpro_courses_lessons_classes = array();
 	$pmpro_courses_lessons_classes[] = 'pmpro_courses-course-outline';
 	if ( ! empty( $hasaccess ) ) {
-		$pmpro_courses_lessons_classes[] = 'pmpro-courses-has-access';
+		$pmpro_courses_lessons_classes[] = 'pmpro_courses-has-access';
 	} else {
-		$pmpro_courses_lessons_classes[] = 'pmpro-courses-no-access';
+		$pmpro_courses_lessons_classes[] = 'pmpro_courses-no-access';
 	}
 	$pmpro_courses_lessons_class = implode( ' ', $pmpro_courses_lessons_classes );
 
@@ -254,25 +287,27 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 							<h3>
 								<button id="pmpro_courses-section-toggle-<?php echo intval( $section['section_id'] ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_btn' ) ); ?>" type="button" aria-controls="pmpro_courses-section-lessons-<?php echo intval( $section['section_id'] ); ?>">
 									<?php echo esc_html( $section['section_name'] ); ?>
-									<i class="dashicons dashicons-arrow-up-alt2" aria-hidden="true"></i>
+									<svg class="<?php echo( esc_attr( pmpro_get_element_class( 'pmpro_courses-feather-icon pmpro_courses-feather-icon-chevron-up' ) ) ); ?>" aria-hidden="true">
+										<use href="<?php echo esc_url( PMPRO_COURSES_URL . 'images/feather-sprite.svg#chevron-up' ); ?>"></use>
+									</svg>
 								</button>
 							</h3>
 						</div> <!-- end pmpro_card_title -->
 						<div id="pmpro_courses-section-lessons-<?php echo intval( $section['section_id'] ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_content pmpro_courses-lessons', 'pmpro_courses-lessons' ) ); ?>" role="region" aria-labelledby="pmpro_courses-section-toggle-<?php echo intval( $section['section_id'] ); ?>">
-							<ol class="pmpro_courses-list">
+							<ol class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list' ) ); ?>">
 								<?php foreach( $section['lessons'] as $lesson_id ) {
 									$lesson = get_post( $lesson_id ); 
 									$lesson_access = get_post_meta( $lesson->ID, 'pmpro_courses_bypass_restriction', true );
 									?>
-									<li id="pmpro_courses-lesson-<?php echo intval( $lesson->ID ); ?>" class="pmpro_courses-list-item">
+									<li id="pmpro_courses-lesson-<?php echo intval( $lesson->ID ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item' ) ); ?>">
 										<?php
 											// Only add link to single section page if current user has access.
 											if ( ! empty( $hasaccess ) || ! empty( $lesson_access ) ) { ?>
-												<a class="pmpro_courses-list-item-link" href="<?php echo esc_url( get_permalink( $lesson->ID ) ); ?>">
+												<a class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item-link' ) ); ?>" href="<?php echo esc_url( get_permalink( $lesson->ID ) ); ?>">
 												<?php
 											}
 										?>
-										<span class="pmpro_courses-list-item-title">
+										<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item-title' ) ); ?>">
 											<?php echo esc_html( $lesson->post_title ); ?>
 										</span>
 										<?php if ( $lesson_access ) { ?>
@@ -286,13 +321,21 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 												$lesson_completed = PMPro_Courses_User_Progress::get_user_lesson_status( $lesson->ID, get_current_user_id() );
 												if ( $lesson_completed ) { ?>
 													<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-lesson-status pmpro_courses-lesson-status-complete' ) ); ?>">
-														<i class="dashicons dashicons-yes" aria-hidden="true"></i>
-														<span class="pmpro_courses-lesson-status-label"><?php esc_html_e( 'Complete', 'pmpro-courses' ); ?></span>
+														<svg class="<?php echo( esc_attr( pmpro_get_element_class( 'pmpro_courses-feather-icon pmpro_courses-feather-icon-complete' ) ) ); ?>" aria-hidden="true">
+															<use href="<?php echo esc_url( PMPRO_COURSES_URL . 'images/feather-sprite.svg#check-circle' ); ?>"></use>
+														</svg>
+														<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-lesson-status-label' ) ); ?>">
+															<?php esc_html_e( 'Complete', 'pmpro-courses' ); ?>
+														</span>
 													</span>
 												<?php } else { ?>
 													<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-lesson-status pmpro_courses-lesson-status-incomplete' ) ); ?>">
-														<i class="dashicons dashicons-marker" aria-hidden="true"></i>
-														<span class="pmpro_courses-lesson-status-label"><?php esc_html_e( 'Incomplete', 'pmpro-courses' ); ?></span>
+														<svg class="<?php echo( esc_attr( pmpro_get_element_class( 'pmpro_courses-feather-icon pmpro_courses-feather-icon-incomplete' ) ) ); ?>" aria-hidden="true">
+															<use href="<?php echo esc_url( PMPRO_COURSES_URL . 'images/feather-sprite.svg#circle' ); ?>"></use>
+														</svg>
+														<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-lesson-status-label' ) ); ?>">
+															<?php esc_html_e( 'Incomplete', 'pmpro-courses' ); ?>
+														</span>
 													</span>
 													<?php
 												}
@@ -410,7 +453,7 @@ function pmpro_courses_unique_rewrite_slug( $slug ) {
  */
 function pmpro_courses_adjacent_post_where( $sql ) {
 	// Bail if not a main query or not a PMPro Lesson post type.
-	if ( !is_main_query() || get_post_type() !== 'pmpro_lesson' ) {
+	if ( ! is_main_query() || get_post_type() !== 'pmpro_lesson' ) {
 		return $sql;
 	}
 
@@ -422,9 +465,8 @@ function pmpro_courses_adjacent_post_where( $sql ) {
 	// Replace post_date with menu_order
 	$sql = preg_replace( $patterns, $replacements, $sql );
 	//Ensure the query fetches only lessons that are children of the same course.
-	return $sql . ' AND p.post_parent = ' . $the_post->post_parent;
+	return $sql . ' AND p.post_parent = ' . absint( $the_post->post_parent );
   }
-
   add_filter( 'get_next_post_where', 'pmpro_courses_adjacent_post_where' );
   add_filter( 'get_previous_post_where', 'pmpro_courses_adjacent_post_where' );
 
