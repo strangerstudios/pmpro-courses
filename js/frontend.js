@@ -2,9 +2,10 @@ jQuery(document).ready(function(){
 
 	jQuery("body").on("click", ".pmpro_courses_lesson_toggle", function(){
 
-		var checkbox = jQuery(this);
-		var lid = checkbox.attr('data-lid');
-		var complete = checkbox.is(":checked") ? 1 : 0;
+		var button = jQuery(this);
+		var lid = button.attr('data-lid');
+		var isPressed = button.attr('aria-pressed') === 'true';
+		var complete = isPressed ? 0 : 1;
 
 		var data = {
 			action: 'pmpro_courses_toggle_lesson_progress',
@@ -14,7 +15,7 @@ jQuery(document).ready(function(){
 
 		jQuery.get( pmpro_courses.ajaxurl, data, function( response ){
 			if ( response ) {
-				checkbox.parent().replaceWith( response );
+				button.closest('.pmpro_courses_lesson-toggle').replaceWith( response );
 			}
 		});
 	});
@@ -25,10 +26,11 @@ jQuery(document).ready(function(){
 		var contentId = button.getAttribute('aria-controls');
 		if (!contentId) return;
 
-		var buttonicon = button.querySelector('.dashicons');
-
 		var content = document.getElementById(contentId);
 		if (!content) return;
+
+		var svgicon = button.querySelector('.pmpro_courses-feather-icon');
+		var useElement = svgicon ? svgicon.querySelector('use') : null;
 
 		var isOpen = button.getAttribute('aria-expanded') === 'true';
 
@@ -36,29 +38,39 @@ jQuery(document).ready(function(){
 		if (isOpen) {
 			content.setAttribute('hidden', '');
 			button.setAttribute('aria-expanded', 'false');
-			buttonicon.classList.remove('dashicons-arrow-up-alt2');
-			buttonicon.classList.add('dashicons-arrow-down-alt2');
+			
+			// Update icon if it exists
+			if (svgicon) {
+				svgicon.classList.remove('pmpro_courses-feather-icon-chevron-up');
+				svgicon.classList.add('pmpro_courses-feather-icon-chevron-down');
+				
+				// Swap SVG icon to chevron-down
+				if (useElement) {
+					var currentHref = useElement.getAttribute('href');
+					useElement.setAttribute('href', currentHref.replace('#chevron-up', '#chevron-down'));
+				}
+			}
 		} else {
 			content.removeAttribute('hidden');
 			button.setAttribute('aria-expanded', 'true');
-			buttonicon.classList.remove('dashicons-arrow-down-alt2');
-			buttonicon.classList.add('dashicons-arrow-up-alt2');
+			
+			// Update icon if it exists
+			if (svgicon) {
+				svgicon.classList.remove('pmpro_courses-feather-icon-chevron-down');
+				svgicon.classList.add('pmpro_courses-feather-icon-chevron-up');
+				
+				// Swap SVG icon to chevron-up
+				if (useElement) {
+					var currentHref = useElement.getAttribute('href');
+					useElement.setAttribute('href', currentHref.replace('#chevron-down', '#chevron-up'));
+				}
+			}
 		}
 	}
 
 	document.querySelectorAll('[id^="pmpro_courses-section-toggle-"]').forEach(function(button) {
-		// Set initial state to open.
-		button.setAttribute('aria-expanded', 'true');
-
 		button.addEventListener('click', function() {
 			pmpro_courses_toggle_course_section(button);
-		});
-
-		button.addEventListener('keydown', function(e) {
-			if (e.key === 'Enter' || e.key === ' ') {
-				e.preventDefault();
-				pmpro_courses_toggle_course_section(button);
-			}
 		});
 	});
 

@@ -5,6 +5,12 @@
  * @since 0.1.0
  *
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 function pmpro_courses_shortcode_all_courses( $atts ) {
 
 	extract( shortcode_atts( array(

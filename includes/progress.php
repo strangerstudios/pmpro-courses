@@ -4,6 +4,10 @@ class PMPro_Courses_User_Progress {
 	 * Toggle progress for lesson completion (complete or reset/clear)
 	 * 
 	 * @since TBD
+	 *
+	 * @param int $lesson_id The lesson ID.
+	 * @param int $user_id The user ID. Optional.
+	 * @param bool $complete Whether to mark the lesson as complete or incomplete. Optional.
 	 * @return bool $result Returns the result.
 	 */
 	public static function toggle_lesson_progress( $lesson_id, $user_id = null, $complete = null ) {
@@ -77,7 +81,12 @@ class PMPro_Courses_User_Progress {
 
 	/**
 	 * Get the user's progress for a specific course.
+	 *
 	 * @since TBD
+	 *
+	 * @param int $course_id The course ID.
+	 * @param int $user_id The user ID. Optional.
+	 * @return int The user's progress percentage for the course.
 	 */
 	public static function get_course_progress_for_user( $course_id, $user_id = null ) {
 		global $wpdb;
@@ -224,13 +233,22 @@ function pmpro_courses_complete_lesson_button( $lid, $user_id = null ) {
 	// Has the lesson been completed, return true or false.
 	$is_completed = isset( $_REQUEST['complete'] ) ? (int) $_REQUEST['complete'] : PMPro_Courses_User_Progress::get_user_lesson_status( $lid, $user_id );
 
-	// Get the user's status for this lesson.
-	if ( $is_completed ) {
-		$content = '<p><input class="pmpro_courses_lesson_toggle" id="pmpro_courses_lesson' . esc_attr( $lid ) . '_toggle" data-lid="' . esc_attr( $lid ) . '" type="checkbox" checked="checked" /> <label for="pmpro_courses_lesson' . esc_attr( $lid ) . '_toggle">' . esc_html__( 'Completed', 'pmpro-courses' ) . '</label></p>';
-	} else {		
-		$content = '<p><input class="pmpro_courses_lesson_toggle" id="pmpro_courses_lesson' . esc_attr( $lid ) . '_toggle" data-lid="' . esc_attr( $lid ) . '" type="checkbox" /> <label for="pmpro_courses_lesson' . esc_attr( $lid ) . '_toggle">' . esc_html__( 'Mark Complete', 'pmpro-courses' ) . '</label></p>';
-	}
+	// Build the feather sprite URL.
+	$sprite_url =  PMPRO_COURSES_URL . 'images/feather-sprite.svg' . ( $is_completed ? '#check-circle' : '#circle' );
 
+	// Start the output buffer.
+	ob_start();
+	?>
+	<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses_lesson-toggle' ) ); ?>">
+		<button class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_btn pmpro_courses_lesson_toggle' ) ); ?>" data-lid="<?php echo esc_attr( $lid ); ?>" type="button" aria-pressed="<?php echo esc_attr( $is_completed ? 'true' : 'false' ); ?>">
+			<svg class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-feather-icon' ) ); ?>" aria-hidden="true"><use href="<?php echo esc_url( $sprite_url ); ?>"></use></svg>
+			<?php
+				echo $is_completed ? esc_html__( 'Lesson Completed', 'pmpro-courses' ) : esc_html__( 'Mark Lesson Complete', 'pmpro-courses' );
+			?>
+		</button>
+	</div>
+	<?php
+	$content = ob_get_clean();
 	return $content;
 }
 
@@ -244,9 +262,38 @@ function pmpro_courses_toggle_lesson_progress_ajax(){
 	$complete  = isset($_REQUEST['complete']) ? (bool) intval($_REQUEST['complete']) : null;
 
 	if ( ! empty( $user_id ) ) {
-		PMPro_Courses_User_Progress::toggle_lesson_progress( $lesson_id, $user_id, $complete );		
-		echo pmpro_courses_complete_lesson_button( $lesson_id, $user_id );
-				
+		PMPro_Courses_User_Progress::toggle_lesson_progress( $lesson_id, $user_id, $complete );
+
+		// Show a link to mark the lesson complete or incomplete.
+		$complete_button = pmpro_courses_complete_lesson_button( $lesson_id, $user_id );
+		if ( ! empty( $complete_button ) ) {
+			$allowed_tags = wp_kses_allowed_html( 'post' );
+
+			// Add aria-pressed to existing button attributes
+			if ( isset( $allowed_tags['button'] ) ) {
+				$allowed_tags['button']['aria-pressed'] = true;
+			}
+
+			// Allow SVG in the complete button.
+			$allowed_tags = array_merge(
+				$allowed_tags,
+				array(
+					'svg' => array(
+						'class' => true,
+						'aria-hidden' => true,
+						'xmlns' => true,
+						'width' => true,
+						'height' => true,
+						'viewBox' => true,
+					),
+					'use' => array(
+						'href' => true,
+					)
+				)
+			);
+			echo wp_kses( $complete_button, $allowed_tags );
+		}
+		
 		wp_die();
 	}
 }

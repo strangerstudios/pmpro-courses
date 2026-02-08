@@ -1,33 +1,74 @@
 <?php
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Content filter to show lesson and course information on the single lesson page.
  */
 function pmpro_courses_the_content_lesson( $content ) {
 	global $post;
-	if ( is_singular( 'pmpro_lesson' ) ) {
-		$course_id = wp_get_post_parent_id( $post->ID );
 
-		$after_the_content = '';
-
-		// Show a link to mark the lesson complete or incomplete.	
-		$complete_button = pmpro_courses_complete_lesson_button( $post->ID, get_current_user_id() );
-		if ( ! empty( $complete_button ) ) {			
-			$after_the_content .= '<div class="pmpro_courses_lesson-status">';
-			$after_the_content .= $complete_button;
-			$after_the_content .= '</div>';			
-		}
- 
-		if ( ! empty( $course_id ) ) {
-			$after_the_content .= sprintf(
-				/* translators: %s: link to the course for this lesson. */
-				'<div class="pmpro_courses_lesson-back-to-course">' . esc_html__( 'Course: %s', 'pmpro-courses' ) . '</div>',
-				'<a href="' . get_permalink( $course_id ) . '" title="' . get_the_title( $course_id ) . '">' . get_the_title( $course_id ) . '</a>'
-			);
-		}
-		
-		return $content . $after_the_content;
+	// Return early if not a single lesson page.
+	if ( ! is_singular( 'pmpro_lesson' ) ) {
+		return $content;
 	}
-	return $content;
+
+	$course_id = wp_get_post_parent_id( $post->ID );
+	$complete_button = pmpro_courses_complete_lesson_button( $post->ID, get_current_user_id() );
+
+	// If there is no complete button and no parent course, don't add empty wrapper markup.
+	if ( empty( $complete_button ) && empty( $course_id ) ) {
+		return $content;
+	}
+
+	ob_start();
+	?>
+	<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro pmpro_courses', 'pmpro_courses' ) ); ?>">
+		<?php
+			// Show a link to mark the lesson complete or incomplete.
+			if ( ! empty( $complete_button ) ) {
+				$allowed_tags = wp_kses_allowed_html( 'post' );
+
+				// Add aria-pressed to existing button attributes
+				if ( isset( $allowed_tags['button'] ) ) {
+					$allowed_tags['button']['aria-pressed'] = true;
+				}
+
+				// Allow SVG in the complete button.
+				$allowed_tags = array_merge(
+					$allowed_tags,
+					array(
+						'svg' => array(
+							'class' => true,
+							'aria-hidden' => true,
+							'xmlns' => true,
+							'width' => true,
+							'height' => true,
+							'viewBox' => true,
+						),
+						'use' => array(
+							'href' => true,
+						)
+					)
+				);
+				echo wp_kses( $complete_button, $allowed_tags );
+			}
+		?>
+
+		<?php if ( ! empty( $course_id ) ) { ?>
+			<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses_lesson-back-to-course' ) ); ?>">
+				<?php
+					/* translators: %s: link to the course for this lesson. */
+					printf( esc_html__( 'Course: %s', 'pmpro-courses' ), '<a href="' . esc_url( get_permalink( $course_id ) ) . '" title="' . esc_attr( get_the_title( $course_id ) ) . '">' . esc_html( get_the_title( $course_id ) ) . '</a>' );
+				?>
+			</div> <!-- .pmpro_courses_lesson-back-to-course -->
+		<?php } ?>
+	</div> <!-- .pmpro_courses -->
+	<?php
+	$after_the_content = ob_get_clean();
+	return $content . $after_the_content;
 }
 add_filter( 'the_content', 'pmpro_courses_the_content_lesson', 10, 1 );
 
@@ -43,9 +84,9 @@ add_filter( 'manage_pmpro_lesson_posts_columns', 'pmpro_courses_lessons_columns'
 
 /**
  * Show the course assigned to the lesson.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
 function pmpro_courses_lessons_columns_content( $column, $post_id ) {
 	$lesson_parent = wp_get_post_parent_id( $post_id );
@@ -54,7 +95,7 @@ function pmpro_courses_lessons_columns_content( $column, $post_id ) {
 			if ( empty( $lesson_parent ) ) {
 				echo '&mdash;';
 			} else {
-				echo pmpro_courses_get_edit_course_link( wp_get_post_parent_id( $post_id ) ); 
+				echo wp_kses_post( pmpro_courses_get_edit_course_link( wp_get_post_parent_id( $post_id ) ) );
 			}
 			break;
 		case 'pmpro_course_section':
@@ -103,7 +144,7 @@ add_action( 'pre_get_posts', 'pmpro_courses_lessons_pre_get_posts_table_sorting'
 
 /**
  * Add a "Course" dropdown filter to the Lessons list table.
- * 
+ *
  * @since TBD
  */
 function pmpro_courses_lessons_filter_dropdown() {
@@ -142,7 +183,7 @@ add_action( 'restrict_manage_posts', 'pmpro_courses_lessons_filter_dropdown' );
 
 /**
  * Apply the Course filter to the Lessons query based on the dropdown.
- * 
+ *
  * @since TBD
  */
 function pmpro_courses_lessons_filter_query( WP_Query $query ) {
@@ -162,40 +203,6 @@ function pmpro_courses_lessons_filter_query( WP_Query $query ) {
 	}
 }
 add_action( 'pre_get_posts', 'pmpro_courses_lessons_filter_query' );
-
-/**
- * Hide some prev/next links for lessons.
- * We only want to show links for lessons in the same course.
- * Hook in on init and remove_action(...) to disable this.
- * @since .1
- */
-function pmpro_courses_hide_adjacent_post_links_for_lessons( $output, $format, $link, $adjacent_post, $adjacent ) {
-	global $post;
-	
-	// No post or adjacent post. Probably no link.
-	if ( empty( $post ) || empty( $adjacent_post ) ) {
-		return $output;
-	}
-	
-	// Not a lesson. Bail.
-	if ( empty( $post->post_type ) || $post->post_type != 'pmpro_lesson' ) {
-		return $output;
-	}
-	
-	// Lesson without a course. Hide the link.
-	if ( empty( $post->post_parent ) || $post->post_parent == $post->ID ) {
-		return '';
-	}
-	
-	// Lessons from different courses. Hide the link.
-	if ( $post->post_parent !== $adjacent_post->post_parent ) {
-		return '';
-	}
-		
-	return $output;
-}
-add_action( 'previous_post_link', 'pmpro_courses_hide_adjacent_post_links_for_lessons', 10, 5 );
-add_action( 'next_post_link', 'pmpro_courses_hide_adjacent_post_links_for_lessons', 10, 5 );
 
 /**
  * Bypass any level restrictions for a PMPro Lesson CPT and mark it as "Free/Public"

@@ -1,4 +1,9 @@
 <?php
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	public $slug = 'learndash';
 	
@@ -191,7 +196,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 				$post_membership_levels_names = $hasaccess[2];
 				$hasaccess = $hasaccess[0];
 				if ( ! $hasaccess ) {
-					echo pmpro_get_no_access_message( '', $post_membership_levels_ids, $post_membership_levels_names );
+					echo wp_kses_post( pmpro_get_no_access_message( '', $post_membership_levels_ids, $post_membership_levels_names ) );
 				}
 			}
 			$after_the_content = ob_get_contents();

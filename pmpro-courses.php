@@ -8,6 +8,7 @@
  * Author URI: https://www.paidmembershipspro.com
  * Text Domain: pmpro-courses
  * Domain Path: /languages
+ * License: GPLv2 or later
  */
 
 defined( 'ABSPATH' ) || die( 'File cannot be accessed directly' );
@@ -15,6 +16,7 @@ defined( 'ABSPATH' ) || die( 'File cannot be accessed directly' );
 define( 'PMPRO_COURSES_VERSION', '1.2.7' );
 define( 'PMPRO_COURSES_DIR', dirname( __FILE__ ) );
 define( 'PMPRO_COURSES_BASENAME', plugin_basename( __FILE__ ) );
+define( 'PMPRO_COURSES_URL', plugin_dir_url( __FILE__ ) );
 
 // Includes.
 require_once PMPRO_COURSES_DIR . '/includes/common.php';
@@ -193,7 +195,6 @@ function pmpro_courses_frontend_styles(){
 		( $post && has_shortcode( $post->post_content, 'pmpro_course_outline' ) )
 	){
 		wp_enqueue_script( 'jquery' );
-		wp_enqueue_style( 'dashicons' );
 		wp_enqueue_style( 'pmpro-courses-styles', plugins_url( 'css/frontend.css', __FILE__ ) );
 		wp_enqueue_script( 'pmpro-courses-scripts', plugins_url( 'js/frontend.js', __FILE__ ), array( 'jquery' ) );
 		wp_localize_script( 'pmpro-courses-scripts', 'pmpro_courses', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
