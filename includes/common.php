@@ -293,7 +293,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 					<div id="pmpro_courses-section-<?php echo intval( $section['section_id'] ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card' ) ); ?>">
 						<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_title' ) ); ?>">
 							<h3>
-								<button id="pmpro_courses-section-toggle-<?php echo intval( $section['section_id'] ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_btn' ) ); ?>" type="button" aria-controls="pmpro_courses-section-lessons-<?php echo intval( $section['section_id'] ); ?>">
+								<button id="pmpro_courses-section-toggle-<?php echo intval( $section['section_id'] ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_btn' ) ); ?>" type="button" aria-controls="pmpro_courses-section-lessons-<?php echo intval( $section['section_id'] ); ?>" aria-expanded="true">
 									<?php echo esc_html( $section['section_name'] ); ?>
 									<svg class="<?php echo( esc_attr( pmpro_get_element_class( 'pmpro_courses-feather-icon pmpro_courses-feather-icon-chevron-up' ) ) ); ?>" aria-hidden="true">
 										<use href="<?php echo esc_url( PMPRO_COURSES_URL . 'images/feather-sprite.svg#chevron-up' ); ?>"></use>

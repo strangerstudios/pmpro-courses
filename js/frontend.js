@@ -69,18 +69,8 @@ jQuery(document).ready(function(){
 	}
 
 	document.querySelectorAll('[id^="pmpro_courses-section-toggle-"]').forEach(function(button) {
-		// Set initial state to open.
-		button.setAttribute('aria-expanded', 'true');
-
 		button.addEventListener('click', function() {
 			pmpro_courses_toggle_course_section(button);
-		});
-
-		button.addEventListener('keydown', function(e) {
-			if (e.key === 'Enter' || e.key === ' ') {
-				e.preventDefault();
-				pmpro_courses_toggle_course_section(button);
-			}
 		});
 	});
 
