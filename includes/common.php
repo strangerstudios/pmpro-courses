@@ -332,7 +332,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 						</div> <!-- end pmpro_card_title -->
 						<div id="pmpro_courses-section-lessons-<?php echo intval( $section['section_id'] ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_content pmpro_courses-lessons', 'pmpro_courses-lessons' ) ); ?>" role="region" aria-labelledby="pmpro_courses-section-toggle-<?php echo intval( $section['section_id'] ); ?>">
 							<ol class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list' ) ); ?>">
-								<?php foreach( $published_lessons as $lesson ) {
+								<?php foreach ( $published_lessons as $lesson ) {
 									$lesson_access = get_post_meta( $lesson->ID, 'pmpro_courses_bypass_restriction', true );
 									?>
 									<li id="pmpro_courses-lesson-<?php echo intval( $lesson->ID ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item' ) ); ?>">
