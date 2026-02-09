@@ -101,17 +101,26 @@ function pmpro_courses_get_next_lesson_order( $course ) {
  * @return int The number of lessons.
  */
 function pmpro_courses_get_lesson_count( $course_id, $post_status = array( 'publish' ) ) {
-	$args = array(
-		'post_type'      => 'pmpro_lesson',
-		'post_parent'    => $course_id,
-		'post_status'    => $post_status,
-		'posts_per_page' => -1,
-		'fields'         => 'ids',
-		'no_found_rows'  => true,
+	global $wpdb;
+
+	// Ensure $post_status is always an array.
+	if ( ! is_array( $post_status ) ) {
+		$post_status = array( $post_status );
+	}
+
+	// Sanitize statuses for IN clause.
+	$post_status = array_map( 'esc_sql', $post_status );
+	$status_list = "'" . implode( "','", $post_status ) . "'";
+
+	$count = $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_parent = %d AND post_type = %s AND post_status IN ($status_list)",
+			$course_id,
+			'pmpro_lesson'
+		)
 	);
 
-	$query = new WP_Query( $args );
-	return $query->post_count;
+	return intval( $count );
 }
 
 /**
