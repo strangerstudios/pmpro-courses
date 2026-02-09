@@ -201,9 +201,9 @@
 }
 
 .pmpro_courses_lesson-toggle .pmpro_courses_lesson_toggle[aria-pressed="true"] {
-	background: var(--pmpro--color--success-bg, #dff0d8);
-	border-color: var(--pmpro--color--success-text, #3c763d);
-	color: var(--pmpro--color--success-text, #3c763d);
+	background: var(--pmpro--color--success-background, #d4edda);
+	border-color: var(--pmpro--color--success-text, #0f441c);
+	color: var(--pmpro--color--success-text, #0f441c);
 }
 
 /**
