@@ -94,8 +94,10 @@ function pmpro_courses_get_next_lesson_order( $course ) {
 /**
  * Get a count of lessons assigned to this course ID.
  *
+ * @since 1.0
+ *
  * @param int $course_id The course ID.
- * @param string|array $post_status The post status or array of post statuses to count. Default is 'publish'.
+ * @param string|array $post_status Optional. The post status or array of post statuses to count. Default array( 'publish' ).
  * @return int The number of lessons.
  */
 function pmpro_courses_get_lesson_count( $course_id, $post_status = array( 'publish' ) ) {
