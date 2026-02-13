@@ -215,7 +215,7 @@ function pmpro_courses_setup() {
 // Make select2 elements.
 function pmpro_courses_select2() {
 	jQuery('select.pmpro_courses_lessons_select').select2({
-		width: 'elements'
+		width: '100%'
 	});
 }
 
@@ -333,6 +333,32 @@ function pmpro_courses_prep_click_events() {
 			inserted_section.find('.pmpro_section-toggle-button input[type="text"]').on('click.pmpro_courses', function (e) {
 				e.stopPropagation();
 			});
+
+			// Bind toggle handler to the new section (PMPro core only binds to existing sections)
+			inserted_section.find('button.pmpro_section-toggle-button').on('click', function (event) {
+				event.preventDefault();
+				let thebutton = jQuery(event.target).parents('.pmpro_section').find('button.pmpro_section-toggle-button');
+				let buttonicon = thebutton.children('.dashicons');
+				let section = thebutton.closest('.pmpro_section');
+				let sectioninside = section.children('.pmpro_section_inside');
+				if (buttonicon.hasClass('dashicons-arrow-down-alt2')) {
+					jQuery(sectioninside).show();
+					jQuery(buttonicon).removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
+					jQuery(section).attr('data-visibility', 'shown');
+					jQuery(thebutton).attr('aria-expanded', 'true');
+				} else {
+					jQuery(sectioninside).hide();
+					jQuery(buttonicon).removeClass('dashicons-arrow-up-alt2').addClass('dashicons-arrow-down-alt2');
+					jQuery(section).attr('data-visibility', 'hidden');
+					jQuery(thebutton).attr('aria-expanded', 'false');
+				}
+			});
+
+			// Auto-open the new section
+			inserted_section.find('.pmpro_section_inside').show();
+			inserted_section.find('button.pmpro_section-toggle-button .dashicons').removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
+			inserted_section.attr('data-visibility', 'shown');
+			inserted_section.find('button.pmpro_section-toggle-button').attr('aria-expanded', 'true');
 
 			pmpro_courses_made_a_change();
 
