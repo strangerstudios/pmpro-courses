@@ -294,7 +294,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 
 					// If section name is empty, show as Section X, where X is the section number.
 					if ( empty( $section['section_name'] ) ) {
-					/* translators: %s: section number */
+						/* translators: %d: section number (integer) */
 						$section['section_name'] = sprintf( esc_html__( 'Section %d', 'pmpro-courses' ), intval( $section['section_id'] ) );
 					}
 					?>
