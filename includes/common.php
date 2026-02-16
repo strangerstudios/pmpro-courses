@@ -93,19 +93,34 @@ function pmpro_courses_get_next_lesson_order( $course ) {
 
 /**
  * Get a count of lessons assigned to this course ID.
+ *
+ * @since 1.0
+ *
+ * @param int $course_id The course ID.
+ * @param string|array $post_status Optional. The post status or array of post statuses to count. Default array( 'publish' ).
+ * @return int The number of lessons.
  */
-function pmpro_courses_get_lesson_count( $course_id ) {
+function pmpro_courses_get_lesson_count( $course_id, $post_status = array( 'publish' ) ) {
 	global $wpdb;
 
-	$results = $wpdb->get_var(
+	// Ensure $post_status is always an array.
+	if ( ! is_array( $post_status ) ) {
+		$post_status = array( $post_status );
+	}
+
+	// Sanitize statuses for IN clause.
+	$post_status = array_map( 'esc_sql', $post_status );
+	$status_list = "'" . implode( "','", $post_status ) . "'";
+
+	$count = $wpdb->get_var(
 		$wpdb->prepare(
-			"SELECT count(*) FROM {$wpdb->posts} WHERE post_parent = %d AND post_type = %s",
+			"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_parent = %d AND post_type = %s AND post_status IN ($status_list)",
 			$course_id,
 			'pmpro_lesson'
 		)
 	);
 
-	return intval( $results );
+	return intval( $count );
 }
 
 /**
@@ -283,10 +298,24 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 	<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro pmpro_courses', 'pmpro_courses' ) ); ?>">
 		<div class="<?php echo esc_attr( pmpro_get_element_class( $pmpro_courses_lessons_class ) ); ?>">
 				<h2 class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_font-x-large' ) ); ?>"><?php esc_html_e( 'Course Outline', 'pmpro-courses' ); ?></h2>
-				<?php
-				$section_id = 1;
-				foreach ( $sections as $section ) {
-					// If we don't have an ID, let's just use an incrementing number. This allows for sections to be added without an ID and still have a unique ID for the HTML.
+				<?php 
+          $section_id = 1;
+          foreach ( $sections as $section ) {
+					// Filter out non-published lessons so we can skip empty sections.
+					$published_lessons = array();
+					foreach ( $section['lessons'] as $lesson_id ) {
+						$lesson = get_post( $lesson_id );
+						if ( ! empty( $lesson ) && $lesson->post_status === 'publish' ) {
+							$published_lessons[] = $lesson;
+						}
+					}
+
+					// Skip this section entirely if it has no published lessons.
+					if ( empty( $published_lessons ) ) {
+						continue;
+					}
+            
+           // If we don't have an ID, let's just use an incrementing number. This allows for sections to be added without an ID and still have a unique ID for the HTML.
 					if ( empty( $section['section_id'] ) ) {
 						$section['section_id'] = $section_id;
 					}
@@ -311,8 +340,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 						</div> <!-- end pmpro_card_title -->
 						<div id="pmpro_courses-section-lessons-<?php echo intval( $section['section_id'] ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_content pmpro_courses-lessons', 'pmpro_courses-lessons' ) ); ?>" role="region" aria-labelledby="pmpro_courses-section-toggle-<?php echo intval( $section['section_id'] ); ?>">
 							<ol class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list' ) ); ?>">
-								<?php foreach( $section['lessons'] as $lesson_id ) {
-									$lesson = get_post( $lesson_id ); 
+								<?php foreach ( $published_lessons as $lesson ) {
 									$lesson_access = get_post_meta( $lesson->ID, 'pmpro_courses_bypass_restriction', true );
 									?>
 									<li id="pmpro_courses-lesson-<?php echo intval( $lesson->ID ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item' ) ); ?>">
