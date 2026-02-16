@@ -194,7 +194,7 @@ function pmpro_courses_columns_content( $column, $course_id ) {
 	global $wpdb;
 	switch ( $column ) {
 		case 'pmpro_courses_num_lessons' :
-			$lesson_count = pmpro_courses_get_lesson_count( $course_id );
+			$lesson_count = pmpro_courses_get_lesson_count( $course_id, array( 'publish', 'draft' ) );
 			/* translators: %s: number of lessons in the course. */
 			printf( esc_html( _n( '%s Lesson', '%s Lessons', $lesson_count, 'pmpro-courses' ) ), esc_html( number_format_i18n( $lesson_count ) ) );
 			break;
