@@ -337,7 +337,7 @@ function pmpro_courses_prep_click_events() {
 			// Bind toggle handler to the new section (PMPro core only binds to existing sections)
 			inserted_section.find('button.pmpro_section-toggle-button').on('click', function (event) {
 				event.preventDefault();
-				let thebutton = jQuery(event.target).parents('.pmpro_section').find('button.pmpro_section-toggle-button');
+				let thebutton = jQuery(this);
 				let buttonicon = thebutton.children('.dashicons');
 				let section = thebutton.closest('.pmpro_section');
 				let sectioninside = section.children('.pmpro_section_inside');
