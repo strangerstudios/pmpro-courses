@@ -342,15 +342,15 @@ function pmpro_courses_prep_click_events() {
 				let section = thebutton.closest('.pmpro_section');
 				let sectioninside = section.children('.pmpro_section_inside');
 				if (buttonicon.hasClass('dashicons-arrow-down-alt2')) {
-					jQuery(sectioninside).show();
-					jQuery(buttonicon).removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
-					jQuery(section).attr('data-visibility', 'shown');
-					jQuery(thebutton).attr('aria-expanded', 'true');
+					sectioninside.show();
+					buttonicon.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
+					section.attr('data-visibility', 'shown');
+					thebutton.attr('aria-expanded', 'true');
 				} else {
-					jQuery(sectioninside).hide();
-					jQuery(buttonicon).removeClass('dashicons-arrow-up-alt2').addClass('dashicons-arrow-down-alt2');
-					jQuery(section).attr('data-visibility', 'hidden');
-					jQuery(thebutton).attr('aria-expanded', 'false');
+					sectioninside.hide();
+					buttonicon.removeClass('dashicons-arrow-up-alt2').addClass('dashicons-arrow-down-alt2');
+					section.attr('data-visibility', 'hidden');
+					thebutton.attr('aria-expanded', 'false');
 				}
 			});
 
