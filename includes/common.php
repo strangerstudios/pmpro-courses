@@ -298,7 +298,9 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 	<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro pmpro_courses', 'pmpro_courses' ) ); ?>">
 		<div class="<?php echo esc_attr( pmpro_get_element_class( $pmpro_courses_lessons_class ) ); ?>">
 				<h2 class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_font-x-large' ) ); ?>"><?php esc_html_e( 'Course Outline', 'pmpro-courses' ); ?></h2>
-				<?php foreach ( $sections as $section ) {
+				<?php 
+          $section_id = 1;
+          foreach ( $sections as $section ) {
 					// Filter out non-published lessons so we can skip empty sections.
 					$published_lessons = array();
 					foreach ( $section['lessons'] as $lesson_id ) {
@@ -312,11 +314,17 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 					if ( empty( $published_lessons ) ) {
 						continue;
 					}
+            
+           // If we don't have an ID, let's just use an incrementing number. This allows for sections to be added without an ID and still have a unique ID for the HTML.
+					if ( empty( $section['section_id'] ) ) {
+						$section['section_id'] = $section_id;
+					}
+					$section_id++;
 
 					// If section name is empty, show as Section X, where X is the section number.
 					if ( empty( $section['section_name'] ) ) {
-						/* translators: %s: section number */
-						$section['section_name'] = sprintf( esc_html__( 'Section %s', 'pmpro-courses' ), intval( $section['section_id'] ) );
+						/* translators: %d: section number (integer) */
+						$section['section_name'] = sprintf( esc_html__( 'Section %d', 'pmpro-courses' ), intval( $section['section_id'] ) );
 					}
 					?>
 					<div id="pmpro_courses-section-<?php echo intval( $section['section_id'] ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card' ) ); ?>">
