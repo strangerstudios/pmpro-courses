@@ -337,10 +337,10 @@ function pmpro_courses_prep_click_events() {
 			// Bind toggle handler to the new section (PMPro core only binds to existing sections)
 			inserted_section.find('button.pmpro_section-toggle-button').on('click', function (event) {
 				event.preventDefault();
-				let thebutton = jQuery(this);
-				let buttonicon = thebutton.children('.dashicons');
-				let section = thebutton.closest('.pmpro_section');
-				let sectioninside = section.children('.pmpro_section_inside');
+				var thebutton = jQuery(this);
+				var buttonicon = thebutton.children('.dashicons');
+				var section = thebutton.closest('.pmpro_section');
+				var sectioninside = section.children('.pmpro_section_inside');
 				if (buttonicon.hasClass('dashicons-arrow-down-alt2')) {
 					sectioninside.show();
 					buttonicon.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
