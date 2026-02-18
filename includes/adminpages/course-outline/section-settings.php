@@ -82,7 +82,7 @@ $lessons_options = pmpro_courses_lessons_settings( $exclude_assigned_lessons, $p
 							<p><?php esc_html_e( 'No existing lessons available. Please add a new draft lesson.', 'pmpro-courses' ); ?></p>
 						<?php } else { ?>
 						<select class="pmpro_courses_lessons_select" name="pmpro_courses_post" id="pmpro_courses_post_<?php echo esc_attr( $section_id ); ?>">
-							<?php echo $lessons_options ? $lessons_options : ''; ?>
+							<?php echo $lessons_options; ?>
 						</select>
 						<?php } ?>
 					</td>
