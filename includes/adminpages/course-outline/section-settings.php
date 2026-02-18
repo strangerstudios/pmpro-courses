@@ -87,7 +87,7 @@ $lessons_options = pmpro_courses_lessons_settings( $exclude_assigned_lessons, $p
 						<?php } ?>
 					</td>
 					<td>
-						<?php if ( ! empty( $lesson_options ) ) { ?>
+						<?php if ( ! empty( $lessons_options ) ) { ?>
 						<a class="button button-primary pmpro_courses_save_lesson" id="pmpro_courses_save_<?php echo esc_attr( $section_id ); ?>" data-section-id="<?php echo esc_attr( $section_id ); ?>"><?php esc_html_e( 'Add Lesson', 'pmpro-courses' ); ?></a>
 						<?php } ?>
 					</td>
