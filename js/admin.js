@@ -27,7 +27,7 @@ function pmpro_courses_remove_lesson(lesson_id) {
 	if (lesson_text) {
 		// Adjust the lesson text to match the existing logic of not showing too long of a title.
 		lesson_text = lesson_text.replace(/\s*\(#\d+\)$/, '').trim();
-		if (lesson_text.length > 10) {
+		if (lesson_text.length > 50) {
 			lesson_text = lesson_text.substring(0, 50) + '...';
 		}
 		lesson_text += ' (#' + lesson_id + ')';
