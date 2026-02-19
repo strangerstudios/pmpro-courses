@@ -440,6 +440,12 @@ function pmpro_courses_lessons_settings( $exclude_lessons = array(), $parent_id 
 
 	// Build lessons options HTML
 	$lessons_options = '<option value="0">' . esc_html__( 'Select a lesson...', 'pmpro-courses' ) . '</option>';
+	
+	if ( empty( $all_lessons ) ) {
+		$lessons_options = false;
+		return $lessons_options;
+	}
+
 	foreach ($all_lessons as $lesson) {
 		$lessons_options .= sprintf(
 			'<option value="%d">%s (#%d)</option>',
