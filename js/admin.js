@@ -11,7 +11,7 @@
 function pmpro_courses_remove_lesson(lesson_id) {
 	const $row = jQuery('tr[data-lesson_id="' + lesson_id + '"]');
 	const $table = $row.closest('table');
-	var lesson_text = $row.find('a').first().text().trim();
+	let lesson_text = $row.find('a').first().text().trim();
 
 	if (window.confirm('Are you sure you want to remove the lesson: ' + lesson_text + '?')) {
 		$row.remove();
