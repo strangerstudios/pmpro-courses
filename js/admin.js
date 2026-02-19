@@ -11,7 +11,7 @@
 function pmpro_courses_remove_lesson(lesson_id) {
 	const $row = jQuery('tr[data-lesson_id="' + lesson_id + '"]');
 	const $table = $row.closest('table');
-	const lesson_text = $row.find('a').first().text().trim();
+	var lesson_text = $row.find('a').first().text().trim();
 
 	if (window.confirm('Are you sure you want to remove the lesson: ' + lesson_text + '?')) {
 		$row.remove();
@@ -24,8 +24,14 @@ function pmpro_courses_remove_lesson(lesson_id) {
 		);
 	}
 
-	// Put the select2 option back to the dropdown when removing.
 	if (lesson_text) {
+		// Adjust the lesson text to match the existing logic of not showing too long of a title.
+		lesson_text = lesson_text.replace(/\s*\(#\d+\)$/, '').trim();
+		if (lesson_text.length > 10) {
+			lesson_text = lesson_text.substring(0, 50) + '...';
+		}
+		lesson_text += ' (#' + lesson_id + ')';
+
 		jQuery('.pmpro_courses_lessons_select').each(function () {
 			const $sel = jQuery(this);
 			const option = new Option(lesson_text, lesson_id, false, false);
