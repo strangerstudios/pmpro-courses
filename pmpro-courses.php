@@ -26,6 +26,10 @@ require_once PMPRO_COURSES_DIR . '/includes/blocks.php';
 
 // Modules.
 function pmpro_courses_setup_modules() {
+	if ( ! defined( 'PMPRO_VERSION' ) ) {
+		return;
+	}
+	
 	require_once PMPRO_COURSES_DIR . '/includes/modules/default.php';
 	$default_module = new PMPro_Courses_Module();
 	require_once PMPRO_COURSES_DIR . '/includes/modules/lifterlms.php';
