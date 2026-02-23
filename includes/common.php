@@ -449,9 +449,9 @@ function pmpro_courses_lessons_settings( $exclude_lessons = array(), $parent_id 
 	foreach ($all_lessons as $lesson) {
 		$lessons_options .= sprintf(
 			'<option value="%d">%s (#%d)</option>',
-			intval($lesson->ID),
-			esc_html($lesson->post_title),
-			$lesson->ID
+			intval( $lesson->ID ),
+			esc_html( wp_html_excerpt( $lesson->post_title, 50, '...' ) ),
+			intval( $lesson->ID )
 		);
 	}
 
