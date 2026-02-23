@@ -50,6 +50,12 @@ function pmpro_courses_remove_lesson(lesson_id, section_id) {
 	let $labelTd = $section.find('td').filter(function() {
 		return jQuery(this).find('label[for^="pmpro_courses_post_"]').length > 0;
 	});
+
+	// No label found, let's bail.
+	if ($labelTd.length === 0) {
+		return;
+	}
+
 	const $existingSelect = $section.find('.pmpro_courses_lessons_select');
 	let $select;
 
