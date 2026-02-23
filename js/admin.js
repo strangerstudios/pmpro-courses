@@ -26,6 +26,11 @@ function pmpro_courses_remove_lesson(lesson_id, section_id) {
 
 	let lesson_text = $row.find('a').first().text().trim();
 
+	// If no matching row was found, exit early to avoid operating on an empty jQuery object.
+	if (!$row || $row.length === 0) {
+		return;
+	}
+
 	if (window.confirm('Are you sure you want to remove the lesson: ' + lesson_text + '?')) {
 		$row.remove();
 	}
