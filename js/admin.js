@@ -8,9 +8,22 @@
  *
  * @since TBD
  */
-function pmpro_courses_remove_lesson(lesson_id) {
-	const $row = jQuery('tr[data-lesson_id="' + lesson_id + '"]');
-	const $table = $row.closest('table');
+function pmpro_courses_remove_lesson(lesson_id, section_id) {
+	let $row, $section, $table;
+
+	// Support both old calls (lesson_id only) and new calls (lesson_id + section_id).
+	if (typeof section_id !== 'undefined') {
+		$section = jQuery('.pmpro_courses_lessons-section[data-section-id="' + section_id + '"]');
+		$table = $section.find('.pmpro_courses_lesson_table');
+		$row = $table.find('tr[data-lesson_id="' + lesson_id + '"]');
+	} else {
+		// Fallback: find only the first matching row, then get its section.
+		$row = jQuery('tr[data-lesson_id="' + lesson_id + '"]').first();
+		$section = $row.closest('.pmpro_courses_lessons-section');
+		$table = $row.closest('.pmpro_courses_lesson_table');
+		section_id = $section.data('section-id');
+	}
+
 	let lesson_text = $row.find('a').first().text().trim();
 
 	if (window.confirm('Are you sure you want to remove the lesson: ' + lesson_text + '?')) {
@@ -18,7 +31,7 @@ function pmpro_courses_remove_lesson(lesson_id) {
 	}
 
 	// If no lesson rows left, add "No Lessons" default row.
-	if ($table.find('tr[data-lesson_id]').length === 0) {
+	if ($table.find('tbody tr[data-lesson_id]').length === 0) {
 		$table.find('tbody').html(
 			'<tr class="pmpro-courses-no-lessons"><td colspan="3">No Lessons Added</td></tr>'
 		);
@@ -31,13 +44,38 @@ function pmpro_courses_remove_lesson(lesson_id) {
 			lesson_text = lesson_text.substring(0, 50) + '...';
 		}
 		lesson_text += ' (#' + lesson_id + ')';
+	}
 
-		jQuery('.pmpro_courses_lessons_select').each(function () {
-			const $sel = jQuery(this);
-			const option = new Option(lesson_text, lesson_id, false, false);
-			$sel.append(option);
-			$sel.trigger('change.select2');
+	// Only process the containing section.
+	let $labelTd = $section.find('td').filter(function() {
+		return jQuery(this).find('label[for^="pmpro_courses_post_"]').length > 0;
+	});
+	const $existingSelect = $section.find('.pmpro_courses_lessons_select');
+	let $select;
+
+	// If no select element exists in this section, create it with the Add Lesson button.
+	if ($existingSelect.length === 0) {
+		$select = jQuery('<select class="pmpro_courses_lessons_select" name="pmpro_courses_post" id="pmpro_courses_post_' + section_id + '"></select>');
+		// Add the default "Select a lesson..." option.
+		$select.append(new Option('Select a lesson...', 0, false, false));
+		const $addLessonBtn = jQuery('<a class="button button-primary pmpro_courses_save_lesson" id="pmpro_courses_save_' + section_id + '" data-section-id="' + section_id + '">Add Lesson</a>');
+
+		// Replace the "No existing lessons..." text with the select and button.
+		$labelTd.next('td').html($select);
+		$labelTd.next('td').next('td').html($addLessonBtn);
+
+		// Initialize select2 on the new element.
+		$select.select2({
+			width: '100%'
 		});
+	} else {
+		$select = $existingSelect;
+	}
+
+	// Append the option to this section's select.
+	if (lesson_text) {
+		$select.append(new Option(lesson_text, lesson_id, false, false));
+		$select.trigger('change.select2');
 	}
 }
 
@@ -98,6 +136,25 @@ function pmpro_courses_update_post(button_element) {
 
 					$sel.find('option[value="' + valToRemove + '"]').remove();
 					$sel.trigger('change.select2');
+
+					// If no more options (except the default "Select a lesson..." option), replace with "No existing lessons..." message.
+					if ($sel.find('option').length <= 1) {
+						const $section = $sel.closest('.pmpro_courses_lessons-section');
+						let $labelTd = $section.find('td').filter(function() {
+							return jQuery(this).find('label[for^="pmpro_courses_post_"]').length > 0;
+						});
+
+						// Destroy select2 instance first.
+						if ($sel.data('select2')) {
+							$sel.select2('destroy');
+						}
+
+						// Replace select with the message.
+						$labelTd.next('td').html('No existing lessons are available to add to this course.');
+
+						// Remove the Add Lesson button.
+						$labelTd.next('td').next('td').html('');
+					}
 				});
 
 				// Append the new row HTML.
