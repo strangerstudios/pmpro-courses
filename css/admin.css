@@ -5,6 +5,7 @@
 /* Admin styles for pmpro_courses CPT */
 #pmpro_courses_lessons .pmpro_courses_add_lesson_table {
 	margin-top: var(--pmpro--spacing--medium);
+	table-layout: fixed;
 }
 
 #pmpro_courses_lessons .pmpro_courses_add_lesson_table input[type=text] {
