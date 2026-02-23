@@ -165,7 +165,7 @@ function pmpro_courses_create_lesson_cb() {
 	$table_row .= '<input type="hidden" name="pmpro_courses_lessons[' . esc_attr( $section_id ) . '][]" value="' . esc_attr( $post_id ) . '" />';
 	$table_row .= '</td>';
 	$table_row .= '<td class="pmpro-courses-lesson-remove">';
-$table_row .= '<a class="button button-secondary" href="javascript:pmpro_courses_remove_lesson(' . esc_attr( $post_id ) . ', ' . esc_attr( $section_id ) . '); void(0);">';
+	$table_row .= '<a class="button button-secondary" href="javascript:pmpro_courses_remove_lesson(' . esc_attr( $post_id ) . ', ' . esc_attr( $section_id ) . '); void(0);">';
 	$table_row .= esc_html__( 'Remove', 'pmpro-courses' );
 	$table_row .= '</a>';
 	$table_row .= '</td>';
