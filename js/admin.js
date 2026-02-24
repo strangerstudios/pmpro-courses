@@ -378,9 +378,9 @@ function pmpro_courses_prep_click_events() {
 			});
 			var new_id = max_id + 1;
 
-			// Insert the new section HTML, replacing the data-section-id.
+			// Insert the new section HTML, replacing all occurrences of data-section-id.
 			var new_section_html = pmpro_courses.empty_lesson_section_html.replace(
-				/data-section-id="\d*"/,
+				/data-section-id="\d*"/g,
 				'data-section-id="' + new_id + '"'
 			);
 
