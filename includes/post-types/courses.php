@@ -117,26 +117,26 @@ function pmpro_courses_course_cpt_lessons() {
 		// Get the current settings for course outline/sections. If this is empty, let's create a blank array with dummy data.
 		$sections = get_post_meta( get_the_ID(), 'pmpro_course_sections', true ) ?: array( array( 'section_id' => 1, 'section_name' => '', 'lessons' => array() ) );
 
-	// Let's also try to get lessons that may be missing from the 'lessons' for backwards compatibility and run on page load.
-	$all_lessons_for_course = array_map( 'intval', wp_list_pluck( pmpro_courses_get_lessons( get_the_ID() ), 'ID' ) );
+		// Let's also try to get lessons that may be missing from the 'lessons' for backwards compatibility and run on page load.
+		$all_lessons_for_course = array_map( 'intval', wp_list_pluck( pmpro_courses_get_lessons( get_the_ID() ), 'ID' ) );
 
-	// Collect all lessons currently in ALL sections
-	$existing = array();
-	foreach ( $sections as $section ) {
-		if ( is_array( $section['lessons'] ) ) {
-			$existing = array_merge( $existing, array_map( 'intval', $section['lessons'] ) );
+		// Collect all lessons currently in ALL sections
+		$existing = array();
+		foreach ( $sections as $section ) {
+			if ( isset( $section['lessons'] ) && is_array( $section['lessons'] ) ) {
+				$existing = array_merge( $existing, array_map( 'intval', $section['lessons'] ) );
+			}
 		}
-	}
 
-	$missing_lessons = array_values( array_diff( $all_lessons_for_course, $existing ) );
+		$missing_lessons = array_values( array_diff( $all_lessons_for_course, $existing ) );
 
-	// Let's just insert missing lessons into the first section. There will always be one section.
-	if ( $missing_lessons ) {
-		if ( empty( $sections[0]['lessons'] ) || ! is_array( $sections[0]['lessons'] ) ) {
-			$sections[0]['lessons'] = array();
+		// Let's just insert missing lessons into the first section. There will always be one section.
+		if ( $missing_lessons ) {
+			if ( empty( $sections[0]['lessons'] ) || ! is_array( $sections[0]['lessons'] ) ) {
+				$sections[0]['lessons'] = array();
+			}
+			$sections[0]['lessons'] = array_values( array_unique( array_merge( $sections[0]['lessons'], $missing_lessons ) ) );
 		}
-		$sections[0]['lessons'] = array_values( array_unique( array_merge( $sections[0]['lessons'], $missing_lessons ) ) );
-	}
 		
 		// Callback points to a DOM template for the Course Outline/Sections.
 		?>
