@@ -81,7 +81,7 @@ function pmpro_courses_show_course_content_to_nonmembers() {
 function pmpro_courses_update_course_callback() {
 
 	if ( ! current_user_can( 'edit_posts' ) ) {
-		return;
+		wp_die( esc_html__( 'You do not have permission to edit posts.', 'pmpro-courses' ) );
 	}
 
 	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'pmpro_courses_admin_nonce' ) ) {
@@ -94,8 +94,8 @@ function pmpro_courses_update_course_callback() {
 	$section_id = intval( $_REQUEST['section_id'] );
 
 	// Bail if lesson_id is empty or invalid.
-	if ( empty( $lesson_id )  || $lesson_id < 1 ) {
-		return;
+	if ( empty( $lesson_id ) || $lesson_id < 1 ) {
+		wp_die( esc_html__( 'Invalid lesson ID.', 'pmpro-courses' ) );
 	}
 
 	// Get the lesson object.
@@ -103,7 +103,7 @@ function pmpro_courses_update_course_callback() {
 
 	// Bail if lesson doesn't exist or is not a valid post type.
 	if ( ! $lesson || $lesson->post_type !== 'pmpro_lesson' ) {
-		return;
+		wp_die( esc_html__( 'Invalid lesson.', 'pmpro-courses' ) );
 	}
 
 	$table_row  = '<tr data-lesson_id="' . esc_attr( $lesson_id ) . '">';
