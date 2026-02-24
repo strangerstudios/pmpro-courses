@@ -99,12 +99,18 @@ function pmpro_courses_remove_lesson(lesson_id, section_id) {
  * @since TBD
  */
 function pmpro_courses_update_post(button_element) {
-	jQuery(button_element).attr('disabled', 'true');
-
 	var button = jQuery(button_element);
 	var section = button.closest('.pmpro_courses_lessons-section');
 	var lesson_id = section.find('.pmpro_courses_lessons_select').val();
 	var section_id = section.data('section-id');
+
+	// Bail silently if no real lesson is selected (e.g. "Select a lesson..." placeholder).
+	if (!lesson_id || parseInt(lesson_id, 10) < 1) {
+		return;
+	}
+
+	button.attr('disabled', 'true').html(pmpro_courses.adding);
+	pmpro_courses_made_a_change();
 
 	var data = {
 		action:    'pmpro_courses_update_course',
@@ -356,9 +362,7 @@ function pmpro_courses_prep_click_events() {
 		.off('click', '.pmpro_courses_save_lesson')
 		.on('click', '.pmpro_courses_save_lesson', function () {
 			if (jQuery(this).attr('disabled') !== 'true') {
-				jQuery(this).html(pmpro_courses.adding);
 				pmpro_courses_update_post(jQuery(this));
-				pmpro_courses_made_a_change();
 			}
 		});
 

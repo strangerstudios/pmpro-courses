@@ -93,8 +93,18 @@ function pmpro_courses_update_course_callback() {
 	$lesson_id = intval( $_REQUEST['lesson_id'] );
 	$section_id = intval( $_REQUEST['section_id'] );
 
+	// Bail if lesson_id is empty or invalid.
+	if ( empty( $lesson_id )  || $lesson_id < 1 ) {
+		return;
+	}
+
 	// Get the lesson object.
 	$lesson = get_post( $lesson_id );
+
+	// Bail if lesson doesn't exist or is not a valid post type.
+	if ( ! $lesson || $lesson->post_type !== 'pmpro_lesson' ) {
+		return;
+	}
 
 	$table_row  = '<tr data-lesson_id="' . esc_attr( $lesson_id ) . '">';
 	$table_row .= '<td class="pmpro-sort-handle"><span class="dashicons dashicons-menu"></span></td>';
