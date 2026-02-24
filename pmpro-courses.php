@@ -192,12 +192,14 @@ function pmpro_courses_frontend_styles(){
 
 	global $post;
 
-	if(
+	if (
 		is_singular( array( 'pmpro_course', 'pmpro_lesson' ) ) ||
 		( $post && has_shortcode( $post->post_content, 'pmpro_all_courses' ) ) ||
 		( $post && has_shortcode( $post->post_content, 'pmpro_my_courses' ) ) ||
-		( $post && has_shortcode( $post->post_content, 'pmpro_course_outline' ) )
-	){
+		( $post && has_shortcode( $post->post_content, 'pmpro_course_outline' ) ) ||
+		has_block( 'pmpro-courses/all-courses' ) || 
+		has_block( 'pmpro-courses/my-courses' )
+	) {
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_style( 'pmpro-courses-styles', plugins_url( 'css/frontend.css', __FILE__ ) );
 		wp_enqueue_script( 'pmpro-courses-scripts', plugins_url( 'js/frontend.js', __FILE__ ), array( 'jquery' ) );
