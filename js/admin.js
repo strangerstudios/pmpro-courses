@@ -99,12 +99,18 @@ function pmpro_courses_remove_lesson(lesson_id, section_id) {
  * @since TBD
  */
 function pmpro_courses_update_post(button_element) {
-	jQuery(button_element).attr('disabled', 'true');
-
 	var button = jQuery(button_element);
 	var section = button.closest('.pmpro_courses_lessons-section');
 	var lesson_id = section.find('.pmpro_courses_lessons_select').val();
 	var section_id = section.data('section-id');
+
+	// Bail silently if no real lesson is selected (e.g. "Select a lesson..." placeholder).
+	if (!lesson_id || parseInt(lesson_id, 10) < 1) {
+		return;
+	}
+
+	button.attr('disabled', 'true').html(pmpro_courses.adding);
+	pmpro_courses_made_a_change();
 
 	var data = {
 		action:    'pmpro_courses_update_course',
@@ -356,9 +362,7 @@ function pmpro_courses_prep_click_events() {
 		.off('click', '.pmpro_courses_save_lesson')
 		.on('click', '.pmpro_courses_save_lesson', function () {
 			if (jQuery(this).attr('disabled') !== 'true') {
-				jQuery(this).html(pmpro_courses.adding);
 				pmpro_courses_update_post(jQuery(this));
-				pmpro_courses_made_a_change();
 			}
 		});
 
@@ -378,66 +382,85 @@ function pmpro_courses_prep_click_events() {
 			});
 			var new_id = max_id + 1;
 
-			// Insert the new section HTML, replacing all occurrences of data-section-id.
-			var new_section_html = pmpro_courses.empty_lesson_section_html.replace(
-				/data-section-id="\d*"/g,
-				'data-section-id="' + new_id + '"'
-			);
-
-			jQuery('#pmpro_courses_add_section').parent('p').before(new_section_html);
-
-			// Grab the just-inserted section and update fields.
-			var inserted_section = jQuery('.pmpro_courses_lessons-section[data-section-id="' + new_id + '"]');
-			inserted_section.find('input[name="pmpro_course_lessons_section_id[]"]').val(new_id);
-			inserted_section.find('label[for^="pmpro_course_lessons_section_name_"]').attr('for', 'pmpro_course_lessons_section_name_' + new_id);
-			inserted_section.find('input[id^="pmpro_course_lessons_section_name_"]').attr('id', 'pmpro_course_lessons_section_name_' + new_id);
-			inserted_section.find('table[id^="pmpro_courses_table_"]').attr('id', 'pmpro_courses_table_' + new_id);
-			inserted_section.find('label[for^="pmpro_courses_post_"]').attr('for', 'pmpro_courses_post_' + new_id);
-			inserted_section.find('select[id^="pmpro_courses_post_"]').attr('id', 'pmpro_courses_post_' + new_id).attr('data-select2-id', 'pmpro_courses_post_' + new_id);
-			inserted_section.find('.pmpro_courses_save_lesson').attr('id', 'pmpro_courses_save_' + new_id).attr('data-section-id', new_id);
-			inserted_section.find('label[for^="pmpro_courses_new_lesson_title_"]').attr('for', 'pmpro_courses_new_lesson_title_' + new_id);
-			inserted_section.find('input[id^="pmpro_courses_new_lesson_title_"]').attr('id', 'pmpro_courses_new_lesson_title_' + new_id);
-			inserted_section.find('.pmpro_courses_create_lesson').attr('data-section-id', new_id);
-
-			// Make the table sortable and select2.
-			pmpro_courses_select2();
-			pmpro_courses_make_table_sortable(inserted_section.find('.pmpro_courses_lesson_table'));
-
-			// Prevent section toggle when clicking on the new section name input.
-			inserted_section.find('.pmpro_section-toggle-button input[type="text"]').on('click.pmpro_courses', function (e) {
-				e.stopPropagation();
-			});
-
-			// Bind toggle handler to the new section (PMPro core only binds to existing sections)
-			inserted_section.find('button.pmpro_section-toggle-button').on('click', function (event) {
-				event.preventDefault();
-				var thebutton = jQuery(this);
-				var buttonicon = thebutton.children('.dashicons');
-				var section = thebutton.closest('.pmpro_section');
-				var sectioninside = section.children('.pmpro_section_inside');
-				if (buttonicon.hasClass('dashicons-arrow-down-alt2')) {
-					sectioninside.show();
-					buttonicon.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
-					section.attr('data-visibility', 'shown');
-					thebutton.attr('aria-expanded', 'true');
-				} else {
-					sectioninside.hide();
-					buttonicon.removeClass('dashicons-arrow-up-alt2').addClass('dashicons-arrow-down-alt2');
-					section.attr('data-visibility', 'hidden');
-					thebutton.attr('aria-expanded', 'false');
+			// Collect all lesson IDs currently assigned across all sections in the DOM.
+			var assigned_lesson_ids = [];
+			jQuery('input[name^="pmpro_courses_lessons["]').each(function () {
+				var val = parseInt(jQuery(this).val(), 10);
+				if (val > 0) {
+					assigned_lesson_ids.push(val);
 				}
 			});
 
-			// Auto-open the new section
-			inserted_section.find('.pmpro_section_inside').show();
-			inserted_section.find('button.pmpro_section-toggle-button .dashicons').removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
-			inserted_section.attr('data-visibility', 'shown');
-			inserted_section.find('button.pmpro_section-toggle-button').attr('aria-expanded', 'true');
+			// Fetch fresh section HTML from the server so the lesson dropdown
+			// excludes any lessons already assigned to other sections.
+			jQuery.ajax({
+				url:      ajaxurl,
+				type:     'POST',
+				dataType: 'html',
+				data: {
+					action:              'pmpro_courses_new_section_html',
+					course_id:           pmpro_courses.course_id,
+					section_id:          new_id,
+					assigned_lesson_ids: assigned_lesson_ids,
+					nonce:               pmpro_courses.nonce,
+				},
+				success: function (new_section_html) {
+					jQuery('#pmpro_courses_add_section').parent('p').before(new_section_html);
 
-			pmpro_courses_made_a_change();
+					// Grab the just-inserted section and update fields.
+					var inserted_section = jQuery('.pmpro_courses_lessons-section[data-section-id="' + new_id + '"]');
+					inserted_section.find('input[name="pmpro_course_lessons_section_id[]"]').val(new_id);
+					inserted_section.find('label[for^="pmpro_course_lessons_section_name_"]').attr('for', 'pmpro_course_lessons_section_name_' + new_id);
+					inserted_section.find('input[id^="pmpro_course_lessons_section_name_"]').attr('id', 'pmpro_course_lessons_section_name_' + new_id);
+					inserted_section.find('table[id^="pmpro_courses_table_"]').attr('id', 'pmpro_courses_table_' + new_id);
+					inserted_section.find('label[for^="pmpro_courses_post_"]').attr('for', 'pmpro_courses_post_' + new_id);
+					inserted_section.find('select[id^="pmpro_courses_post_"]').attr('id', 'pmpro_courses_post_' + new_id).attr('data-select2-id', 'pmpro_courses_post_' + new_id);
+					inserted_section.find('.pmpro_courses_save_lesson').attr('id', 'pmpro_courses_save_' + new_id).attr('data-section-id', new_id);
+					inserted_section.find('label[for^="pmpro_courses_new_lesson_title_"]').attr('for', 'pmpro_courses_new_lesson_title_' + new_id);
+					inserted_section.find('input[id^="pmpro_courses_new_lesson_title_"]').attr('id', 'pmpro_courses_new_lesson_title_' + new_id);
+					inserted_section.find('.pmpro_courses_create_lesson').attr('data-section-id', new_id);
 
-			// Focus on the new section name input.
-			jQuery('#pmpro_course_lessons_section_name_' + new_id).focus().select();
+					// Make the table sortable and initialise select2.
+					pmpro_courses_select2();
+					pmpro_courses_make_table_sortable(inserted_section.find('.pmpro_courses_lesson_table'));
+
+					// Prevent section toggle when clicking on the new section name input.
+					inserted_section.find('.pmpro_section-toggle-button input[type="text"]').on('click.pmpro_courses', function (e) {
+						e.stopPropagation();
+					});
+
+					// Bind toggle handler to the new section (PMPro core only binds to existing sections).
+					inserted_section.find('button.pmpro_section-toggle-button').on('click', function (event) {
+						event.preventDefault();
+						var thebutton = jQuery(this);
+						var buttonicon = thebutton.children('.dashicons');
+						var section = thebutton.closest('.pmpro_section');
+						var sectioninside = section.children('.pmpro_section_inside');
+						if (buttonicon.hasClass('dashicons-arrow-down-alt2')) {
+							sectioninside.show();
+							buttonicon.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
+							section.attr('data-visibility', 'shown');
+							thebutton.attr('aria-expanded', 'true');
+						} else {
+							sectioninside.hide();
+							buttonicon.removeClass('dashicons-arrow-up-alt2').addClass('dashicons-arrow-down-alt2');
+							section.attr('data-visibility', 'hidden');
+							thebutton.attr('aria-expanded', 'false');
+						}
+					});
+
+					// Auto-open the new section.
+					inserted_section.find('.pmpro_section_inside').show();
+					inserted_section.find('button.pmpro_section-toggle-button .dashicons').removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-up-alt2');
+					inserted_section.attr('data-visibility', 'shown');
+					inserted_section.find('button.pmpro_section-toggle-button').attr('aria-expanded', 'true');
+
+					pmpro_courses_made_a_change();
+
+					// Focus on the new section name input.
+					jQuery('#pmpro_course_lessons_section_name_' + new_id).focus().select();
+				}
+			});
 		});
 
 	// Delete a specific section.
