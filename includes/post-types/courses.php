@@ -138,12 +138,23 @@ function pmpro_courses_course_cpt_lessons() {
 			$sections[0]['lessons'] = array_values( array_unique( array_merge( $sections[0]['lessons'], $missing_lessons ) ) );
 		}
 		
+		// Build the full list of lesson IDs assigned across all sections of this course.
+		// This is passed to each section's dropdown so that lessons already used in any
+		// section are excluded from every section's "Add Lesson" select.
+		$all_assigned_lessons = array();
+		foreach ( $sections as $section ) {
+			if ( isset( $section['lessons'] ) && is_array( $section['lessons'] ) ) {
+				$all_assigned_lessons = array_merge( $all_assigned_lessons, array_map( 'intval', $section['lessons'] ) );
+			}
+		}
+		$all_assigned_lessons = array_values( array_unique( $all_assigned_lessons ) );
+
 		// Callback points to a DOM template for the Course Outline/Sections.
 		?>
 		<div class="pmpro_admin">
 			<?php
 				foreach( $sections as $section ) {
-					pmpro_courses_get_sections_html( $section );
+					pmpro_courses_get_sections_html( $section, $all_assigned_lessons );
 				}
 			?>
 			<p class="text-center">
