@@ -31,9 +31,11 @@ function pmpro_courses_remove_lesson(lesson_id, section_id) {
 		return;
 	}
 
-	if (window.confirm('Are you sure you want to remove the lesson: ' + lesson_text + '?')) {
-		$row.remove();
+	if (!window.confirm('Are you sure you want to remove the lesson: ' + lesson_text + '?')) {
+		return;
 	}
+
+	$row.remove();
 
 	// If no lesson rows left, add "No Lessons" default row.
 	if ($table.find('tbody tr[data-lesson_id]').length === 0) {
@@ -51,43 +53,56 @@ function pmpro_courses_remove_lesson(lesson_id, section_id) {
 		lesson_text += ' (#' + lesson_id + ')';
 	}
 
-	// Only process the containing section.
-	let $labelTd = $section.find('td').filter(function() {
-		return jQuery(this).find('label[for^="pmpro_courses_post_"]').length > 0;
-	});
-
-	// No label found, let's bail.
-	if ($labelTd.length === 0) {
+	if (!lesson_text) {
 		return;
 	}
 
-	const $existingSelect = $section.find('.pmpro_courses_lessons_select');
-	let $select;
+	// Add the removed lesson option back to ALL section dropdowns on the page,
+	// since lessons are 1:1 with courses and removing it makes it available everywhere.
+	jQuery('.pmpro_courses_lessons-section').each(function() {
+		const $thisSectionEl = jQuery(this);
+		const thisSectionId  = $thisSectionEl.data('section-id');
 
-	// If no select element exists in this section, create it with the Add Lesson button.
-	if ($existingSelect.length === 0) {
-		$select = jQuery('<select class="pmpro_courses_lessons_select" name="pmpro_courses_post" id="pmpro_courses_post_' + section_id + '"></select>');
-		// Add the default "Select a lesson..." option.
-		$select.append(new Option('Select a lesson...', 0, false, false));
-		const $addLessonBtn = jQuery('<a class="button button-primary pmpro_courses_save_lesson" id="pmpro_courses_save_' + section_id + '" data-section-id="' + section_id + '">Add Lesson</a>');
-
-		// Replace the "No existing lessons..." text with the select and button.
-		$labelTd.next('td').html($select);
-		$labelTd.next('td').next('td').html($addLessonBtn);
-
-		// Initialize select2 on the new element.
-		$select.select2({
-			width: '100%'
+		let $labelTd = $thisSectionEl.find('td').filter(function() {
+			return jQuery(this).find('label[for^="pmpro_courses_post_"]').length > 0;
 		});
-	} else {
-		$select = $existingSelect;
-	}
 
-	// Append the option to this section's select.
-	if (lesson_text) {
-		$select.append(new Option(lesson_text, lesson_id, false, false));
-		$select.trigger('change.select2');
-	}
+		// No label found in this section; skip it.
+		if ($labelTd.length === 0) {
+			return;
+		}
+
+		const $existingSelect = $thisSectionEl.find('.pmpro_courses_lessons_select');
+		let $select;
+
+		// If no select element exists in this section (shows "No existing lessons..." text),
+		// recreate it along with the Add Lesson button.
+		if ($existingSelect.length === 0) {
+			$select = jQuery('<select class="pmpro_courses_lessons_select" name="pmpro_courses_post" id="pmpro_courses_post_' + thisSectionId + '"></select>');
+			// Add the default "Select a lesson..." option.
+			$select.append(new Option('Select a lesson...', 0, false, false));
+			const $addLessonBtn = jQuery('<a class="button button-primary pmpro_courses_save_lesson" id="pmpro_courses_save_' + thisSectionId + '" data-section-id="' + thisSectionId + '">Add Lesson</a>');
+
+			// Replace the "No existing lessons..." text with the select and button.
+			$labelTd.next('td').html($select);
+			$labelTd.next('td').next('td').html($addLessonBtn);
+
+			// Initialize select2 on the new element.
+			$select.select2({
+				width: '100%'
+			});
+		} else {
+			$select = $existingSelect;
+		}
+
+		// Append the lesson option to this section's select, unless the lesson is
+		// already in this section's lesson table (i.e. still assigned here).
+		const alreadyInThisSection = $thisSectionEl.find('.pmpro_courses_lesson_table tr[data-lesson_id="' + lesson_id + '"]').length > 0;
+		if (!alreadyInThisSection && $select.find('option[value="' + lesson_id + '"]').length === 0) {
+			$select.append(new Option(lesson_text, lesson_id, false, false));
+			$select.trigger('change.select2');
+		}
+	});
 }
 
 /**
@@ -234,6 +249,41 @@ function pmpro_courses_create_lesson(buttonEl) {
 
 			// Append the new row HTML returned by PHP.
 			tbody.append(responseHTML);
+
+			// Extract the new lesson ID from the appended row so we can remove it
+			// from all section dropdowns (lessons are 1:1 with courses).
+			const $newRow = tbody.find('tr[data-lesson_id]').last();
+			const newLessonId = $newRow.data('lesson_id');
+
+			if (newLessonId) {
+				const valToRemove = String(newLessonId);
+				jQuery('.pmpro_courses_lessons_select').each(function() {
+					const $sel = jQuery(this);
+
+					if (String($sel.val()) === valToRemove) {
+						$sel.val(null).trigger('change');
+					}
+
+					$sel.find('option[value="' + valToRemove + '"]').remove();
+					$sel.trigger('change.select2');
+
+					// If no options remain (except the default placeholder), replace with
+					// the "No existing lessons..." message and remove the Add Lesson button.
+					if ($sel.find('option').length <= 1) {
+						const $thisSectionEl = $sel.closest('.pmpro_courses_lessons-section');
+						let $labelTd = $thisSectionEl.find('td').filter(function() {
+							return jQuery(this).find('label[for^="pmpro_courses_post_"]').length > 0;
+						});
+
+						if ($sel.data('select2')) {
+							$sel.select2('destroy');
+						}
+
+						$labelTd.next('td').html('No existing lessons are available to add to this course.');
+						$labelTd.next('td').next('td').html('');
+					}
+				});
+			}
 
 			// Clear the input and restore the button.
 			$title.val('');

@@ -427,15 +427,18 @@ function pmpro_courses_get_lessons_html( $course_id ) {
  *
  */
 function pmpro_courses_lessons_settings( $exclude_lessons = array(), $parent_id = 0 ) {
-	// Get all available lessons for the dropdown, exclude any lessons that have 'another' post parent.
+	// Get all available lessons for the dropdown.
+	// Lessons are 1:1 with courses, so only lessons with no parent (post_parent = 0)
+	// are eligible. Lessons already assigned to any section of the current course
+	// are passed in via $exclude_lessons and excluded here too.
 	$all_lessons = get_posts(array(
-		'post_type' => 'pmpro_lesson',
+		'post_type'      => 'pmpro_lesson',
 		'posts_per_page' => 99,
-		'post_status' =>'any',
-		'exclude' => $exclude_lessons,
-		'orderby' => 'menu_order',
-		'order' => 'ASC',
-		'post_parent__in' => array(0, $parent_id),
+		'post_status'    => 'any',
+		'exclude'        => $exclude_lessons,
+		'orderby'        => 'menu_order',
+		'order'          => 'ASC',
+		'post_parent'    => 0,
 	));
 
 	// Build lessons options HTML
@@ -544,9 +547,13 @@ add_filter( 'get_previous_post_sort', 'pmpro_courses_adjacent_post_sort' );
 /**
  * Get the HTML section.
  *
- * @param [type] $section
+ * @param array|null $section              The section data array.
+ * @param array      $all_assigned_lessons All lesson IDs already assigned to any section
+ *                                         of the current course. Used to exclude them from
+ *                                         every section's "Add Lesson" dropdown so that a
+ *                                         lesson cannot be added twice within the same course.
  * @return void
  */
-function pmpro_courses_get_sections_html( $section = null ) {
+function pmpro_courses_get_sections_html( $section = null, $all_assigned_lessons = array() ) {
 	include( plugin_dir_path( __FILE__ ) . 'adminpages/course-outline/section-settings.php' );
 }
