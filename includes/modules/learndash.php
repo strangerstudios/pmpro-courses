@@ -1,4 +1,9 @@
 <?php
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	public $slug = 'learndash';
 	
@@ -37,7 +42,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 			'name' => esc_html__('LearnDash', 'pmpro-courses'),
 			'slug' => 'learndash',
 			'title'	=> esc_html__( 'Integrate with the LearnDash plugin for WordPress.', 'pmpro-courses' ),
-			'description' => '<a href="https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-learndash#learndash-module" target="_blank">' . esc_html__( 'Read the LearnDash Integration documentation &raquo;', 'pmpro-courses' ) . '</a>',
+			'description' => '<a href="https://www.paidmembershipspro.com/add-ons/learndash-integration/?utm_source=plugin&utm_medium=pmpro-courses&utm_campaign=add-ons&utm_content=courses-learndash" target="_blank">' . esc_html__( 'Read the LearnDash Integration documentation &raquo;', 'pmpro-courses' ) . '</a>',
 		);
 		
 		return $modules;
@@ -191,7 +196,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 				$post_membership_levels_names = $hasaccess[2];
 				$hasaccess = $hasaccess[0];
 				if ( ! $hasaccess ) {
-					echo pmpro_get_no_access_message( '', $post_membership_levels_ids, $post_membership_levels_names );
+					echo wp_kses_post( pmpro_get_no_access_message( '', $post_membership_levels_ids, $post_membership_levels_names ) );
 				}
 			}
 			$after_the_content = ob_get_contents();

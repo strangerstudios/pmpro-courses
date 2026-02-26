@@ -1,4 +1,9 @@
 <?php
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Register Custom Post Type for Courses
  * Hooks into init.
@@ -66,7 +71,7 @@ function pmpro_courses_course_cpt() {
 	    'pmpro_course_category',
 	    'pmpro_course',
 	    array(
-			'label' => esc_html__( 'Course Categories' ),
+			'label' => esc_html__( 'Course Categories', 'pmpro-courses' ),
 			'rewrite' => array( 'slug' => 'course-category' ),
 		    'hierarchical' => true,
 			'show_in_rest' => true,
@@ -82,89 +87,219 @@ function pmpro_courses_course_cpt_define_meta_boxes() {
 	if ( function_exists( 'pmpro_page_meta' ) ) {
 		add_meta_box( 'pmpro_page_meta', esc_html__( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'pmpro_course', 'side');
 	}
-	add_meta_box( 'pmpro_courses_lessons', esc_html__( 'Lessons', 'pmpro-courses'), 'pmpro_courses_course_cpt_lessons', 'pmpro_course', 'normal' );	
+	add_meta_box( 'pmpro_courses_lessons', esc_html__( 'Course Outline', 'pmpro-courses'), 'pmpro_courses_course_cpt_lessons', 'pmpro_course', 'normal' );	
 }
 add_action('admin_menu', 'pmpro_courses_course_cpt_define_meta_boxes', 20);
+
+/**
+ * Always show the "Course Outline" metabox on a page for PMPro Courses as it's required.
+ *
+ * @since TBD
+ */
+function pmpro_courses_unhide_course_outline_meta_box( $hidden, $screen ) {
+	if ( $screen->post_type == 'pmpro_course' ) {
+		$hidden = array_diff( $hidden, array( 'pmpro_courses_lessons' ) );
+	}
+	return $hidden;
+}
+add_filter('hidden_meta_boxes', 'pmpro_courses_unhide_course_outline_meta_box', 10, 2);
+
 
 /**
  * Callback for lessons meta box
  */
 function pmpro_courses_course_cpt_lessons() {
-		global $wpdb, $post;
-
 		// boot out people without permissions
 		if ( ! current_user_can( 'edit_posts' ) ) {
 			return false;
 		}
-		?>	
-		<table id="pmpro_courses_table" class="wp-list-table widefat striped pmpro-metabox-items">
-			<thead>
-				<th><?php esc_html_e( 'Order', 'pmpro-courses' ); ?></th>
-				<th width="50%"><?php esc_html_e( 'Title', 'pmpro-courses' ); ?></th>
-				<th width="20%"><?php esc_html_e( 'Actions', 'pmpro-courses' ); ?></th>
-			</thead>
-			<tbody>
-			<?php 				
-				echo pmpro_courses_get_lessons_table_html( pmpro_courses_get_lessons( $post->ID ) );
-			?>
-			</tbody>
-		</table>
 
-		<h3><?php esc_html_e( 'Add Lessons', 'pmpro-courses' ); ?></h3>
-		<table id="newmeta" class="wp-list-table pmpro-metabox-items">
-			<tbody>
-				<tr>
-					<td>
-						<label for="pmpro_courses_post"><?php esc_html_e( 'Lesson', 'pmpro-courses' ); ?></label>
-						<select id="pmpro_courses_post" name="pmpro_courses_post">
-							<option value=""></option>
-							<?php
-								$all_lessons = get_posts( array( 'post_type' => 'pmpro_lesson', 'posts_per_page' => -1, 'post_status' => 'publish', 'orderby' => 'menu_order', 'order' => 'ASC' ) );
-								foreach ( $all_lessons as $lesson ) {
-									?>
-									<option value="<?php echo intval( $lesson->ID ); ?>"><?php esc_html_e( $lesson->post_title ); ?>
-									(#<?php echo $lesson->ID;?>)
-									</option>
-									<?php
-								}
-							?>
-						</select>
-					</td>
-					<td width="20%">
-						<a class="button button-primary" id="pmpro_courses_save"><?php esc_html_e( 'Add to Course', 'pmpro-courses' ); ?></a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<?php
-	// }
-}
+		// Get the current settings for course outline/sections. If this is empty, let's create a blank array with dummy data.
+		$sections = get_post_meta( get_the_ID(), 'pmpro_course_sections', true ) ?: array( array( 'section_id' => 1, 'section_name' => '', 'lessons' => array() ) );
 
-function pmpro_courses_get_lessons_table_html( $lessons ){
+		// Let's also try to get lessons that may be missing from the 'lessons' for backwards compatibility and run on page load.
+		$all_lessons_for_course = array_map( 'intval', wp_list_pluck( pmpro_courses_get_lessons( get_the_ID() ), 'ID' ) );
 
-	$ret = "";
-
-	if( !empty( $lessons ) ){
-		
-		$count = 1;
-
-		foreach ( $lessons as $lesson ) {
-
-			$ret .= "<tr data-lesson_id='" . intval( $lesson->ID ) . "'>";
-			$ret .= "<td class='pmpro-lesson-order'>" . esc_html( $lesson->menu_order) . "</td>";
-			$ret .= "<td><a href='".admin_url( 'post.php?post=' . esc_attr( intval( $lesson->ID ) ) . '&action=edit' ) . "' title='" . esc_attr__('Edit', 'pmpro-courses') .' '. esc_attr( $lesson->post_title ). "' target='_BLANK'>". esc_html( $lesson->post_title ) ."</a></td>";
-			$ret .= "<td>";
-			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_edit_post(" . intval( $lesson->ID ) . "," . intval( $lesson->menu_order ) . "); void(0);'>". esc_html__( 'edit', 'pmpro-courses' )."</a>";
-			$ret .= " ";
-			$ret .= "<a class='button button-secondary' href='javascript:pmpro_courses_remove_post(". intval( $lesson->ID ) ."); void(0);'>". esc_html__( 'remove', 'pmpro-courses' )."</a>";
-			$ret .= "</td>";
-			$ret .= "</tr>";
-
-			$count++;
+		// Collect all lessons currently in ALL sections
+		$existing = array();
+		foreach ( $sections as $section ) {
+			if ( isset( $section['lessons'] ) && is_array( $section['lessons'] ) ) {
+				$existing = array_merge( $existing, array_map( 'intval', $section['lessons'] ) );
+			}
 		}
 
-	} 
+		$missing_lessons = array_values( array_diff( $all_lessons_for_course, $existing ) );
 
-	return $ret;
+		// Let's just insert missing lessons into the first section. There will always be one section.
+		if ( $missing_lessons ) {
+			if ( empty( $sections[0]['lessons'] ) || ! is_array( $sections[0]['lessons'] ) ) {
+				$sections[0]['lessons'] = array();
+			}
+			$sections[0]['lessons'] = array_values( array_unique( array_merge( $sections[0]['lessons'], $missing_lessons ) ) );
+		}
+		
+		// Build the full list of lesson IDs assigned across all sections of this course.
+		// This is passed to each section's dropdown so that lessons already used in any
+		// section are excluded from every section's "Add Lesson" select.
+		$all_assigned_lessons = array();
+		foreach ( $sections as $section ) {
+			if ( isset( $section['lessons'] ) && is_array( $section['lessons'] ) ) {
+				$all_assigned_lessons = array_merge( $all_assigned_lessons, array_map( 'intval', $section['lessons'] ) );
+			}
+		}
+		$all_assigned_lessons = array_values( array_unique( $all_assigned_lessons ) );
 
+		// Callback points to a DOM template for the Course Outline/Sections.
+		?>
+		<div class="pmpro_admin">
+			<?php
+				foreach( $sections as $section ) {
+					pmpro_courses_get_sections_html( $section, $all_assigned_lessons );
+				}
+			?>
+			<p class="text-center">
+				<button id="pmpro_courses_add_section" name="pmpro_courses_add_section" class="button button-primary button-hero">
+					<?php
+						echo '<span class="dashicons dashicons-plus"></span>' . ' ' . esc_html__( 'Add New Section', 'pmpro-courses' );
+					?>
+				</button>
+			</p>
+			<input type="hidden" name="pmpro_course_sections_nonce" value="<?php echo esc_attr( wp_create_nonce( 'pmpro_course_sections_save' ) ); ?>" />
+		</div> <!-- .pmpro_admin -->
+		<?php
 }
+
+// Get the course lesson table for a section.
+function pmpro_courses_get_lessons_table_html( $lessons, $section_id = 1 ){
+	ob_start();
+	foreach ( $lessons as $lesson ) {
+		$lesson_id  = intval( $lesson->ID );
+		$section_id = intval( $section_id );
+		?>
+		<tr data-lesson_id="<?php echo esc_attr( $lesson_id ); ?>">
+			<td class="pmpro-sort-handle"><span class="dashicons dashicons-menu" aria-hidden="true"></span></td>
+			<td>
+				<a href="<?php echo esc_url( add_query_arg( array( 'post' => $lesson_id, 'action' => 'edit' ), admin_url( 'post.php' ) ) ); ?>" title="<?php echo esc_attr__( 'Edit', 'pmpro-courses' ) . ' ' . esc_attr( $lesson->post_title ); ?>" target="_blank">
+					<?php echo esc_html( $lesson->post_title ) . " (#" . esc_html( $lesson_id ) . ")"; ?>
+				</a>
+				<?php
+					if ( $lesson->post_status === 'draft' ) {
+						echo ' &mdash; ' . esc_html__( 'Draft', 'pmpro-courses' );
+					}
+				?>
+				<input type="hidden" name="pmpro_courses_lessons[<?php echo esc_attr( $section_id ); ?>][]" value="<?php echo esc_attr( $lesson_id ); ?>" />
+			</td>
+			<td class="pmpro-courses-lesson-remove">
+				<a class="button button-secondary" href="javascript:pmpro_courses_remove_lesson(<?php echo esc_attr( $lesson_id ); ?>, <?php echo esc_attr( $section_id ); ?>); void(0);">
+					<?php esc_html_e( 'Remove', 'pmpro-courses' ); ?>
+				</a>
+			</td>
+		</tr>
+		<?php
+	}
+	$ret = ob_get_clean();
+	return $ret;
+}
+
+/**
+ * Save PMPro Course sections + lessons as a normalized array.
+ * Runs only when saving the pmpro_course post type.
+ * 
+ * @since TBD
+ */
+function pmpro_courses_save_course_sections( $post_id, $post, $update ) {
+
+	// Let's not save if the user cannot edit the current post.
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	// Let's not save during autosave, to save some resources.
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	// Bail if the nonce has failed.
+	if ( empty( $_POST['pmpro_course_sections_nonce'] ) || ! wp_verify_nonce( $_POST['pmpro_course_sections_nonce'], 'pmpro_course_sections_save' ) ) {
+		return;
+	}
+
+	// Get all the data.
+	$section_names         = isset( $_POST['pmpro_course_lessons_section_name'] ) ? (array) $_POST['pmpro_course_lessons_section_name'] : array();
+	$section_ids   = isset( $_POST['pmpro_course_lessons_section_id'] )   ? (array) $_POST['pmpro_course_lessons_section_id']   : array();
+	$lessons_by_id = isset( $_POST['pmpro_courses_lessons'] )             ? (array) $_POST['pmpro_courses_lessons']             : array();
+
+	$section_names = array_map( 'sanitize_text_field', $section_names );
+	$section_ids   = array_map( 'absint', $section_ids );
+
+	$sections         = array();
+	$all_lesson_ids   = array();   // union across all sections, helps order the lessons in post object for next/previous navigation.
+
+	// Loop through all sections to be processed.
+	foreach ( $section_ids as $key => $section_id ) {
+		if ( ! $section_id ) {
+			continue;
+		} 
+
+		$section_name = isset( $section_names[ $key ] ) ? sanitize_text_field( $section_names[ $key ] ) : '';
+		$raw_lessons  = isset( $lessons_by_id[ $section_id ] ) ? (array) $lessons_by_id[ $section_id ] : array();
+		$lesson_ids = array_values( array_unique( array_filter( array_map( 'absint', $raw_lessons ) ) ) );
+
+		// Skip totally empty unnamed sections.
+		if ( $section_name === '' && empty( $lesson_ids ) ) {
+			continue;
+		}
+
+		$sections[] = array(
+			'section_id'   => $section_id,
+			'section_name' => $section_name,
+			'lessons'      => $lesson_ids,
+		);
+
+		// Accumulate union (preserving per-section order first; course order computed later).
+		foreach ( $lesson_ids as $lid ) {
+			$all_lesson_ids[] = $lid;
+		}
+	}
+
+	// Nothing to save, empty sections.
+	if ( empty( $sections ) ) {
+		return;
+	}
+
+	// Get all lesson IDs that are passed through $_POST to see if any need to be removed from the post parent.
+	$all_lesson_ids = array_values( array_unique( array_filter( $all_lesson_ids, 'absint' ) ) );
+
+	// Get all pre-existing lessons for a this course.
+	$existing_lessons = get_children( array(
+		'post_parent' => $post_id,
+		'post_type'   => 'pmpro_lesson',
+		'post_status' => 'any',
+		'fields'      => 'ids',
+	) );
+
+	// Remove any lessons from the post parent if they're removed from the sections and missing from the $_POST.
+	$lessons_to_remove = array_diff( (array) $existing_lessons, $all_lesson_ids );
+	if ( ! empty( $lessons_to_remove ) ) {
+		foreach ( $lessons_to_remove as $lesson_remove_id ) {
+			wp_update_post( array(
+				'ID'          => $lesson_remove_id,
+				'post_parent' => 0,
+			) );
+		}
+	}
+
+	// Loop through all lessons for a course, and update their post parent and menu order.
+	$lesson_order   = 1;
+	foreach ( $all_lesson_ids as $lid ) {
+		wp_update_post( array(
+			'ID'          => $lid,
+			'post_parent' => $post_id,
+			'menu_order'  => $lesson_order++,
+		) );
+	}
+
+	// Save the post meta data, this is primarily used for the settings.
+	update_post_meta( $post_id, 'pmpro_course_sections', $sections );
+}
+add_action( 'save_post_pmpro_course', 'pmpro_courses_save_course_sections', 20, 3 ); // run a bit later

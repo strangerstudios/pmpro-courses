@@ -1,4 +1,8 @@
 <?php
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Register Custom Post Type for lessons
@@ -68,51 +72,84 @@ add_action( 'init', 'pmpro_courses_lesson_cpt' );
  * Add meta boxes for lessons.
  */
 function pmpro_courses_lessons_cpt_define_meta_boxes() {
-	add_meta_box( 'pmpro_courses_lesson_attributes', esc_html__( 'Course', 'pmpro-courses'), 'pmpro_courses_lesson_course_metabox', 'pmpro_lesson', 'side', 'high' );
+	add_meta_box( 'pmpro_courses_lesson_settings', esc_html__( 'Lesson Settings', 'pmpro-courses' ), 'pmpro_courses_lesson_course_metabox', 'pmpro_lesson', 'normal' );
 }
 add_action('admin_menu', 'pmpro_courses_lessons_cpt_define_meta_boxes', 20);
 
 /**
- * Lesson attributes meta box.
+ * Lesson settings meta box.
  */
 function pmpro_courses_lesson_course_metabox( $post ) {	
+	wp_nonce_field( 'pmpro_courses_metabox_nonce', 'pmpro_courses_metabox_nonce' );
 	?>
-	<label class="components-base-control__label" for="pmpro_courses_parent"><?php esc_html_e( 'Course', 'pmpro-courses' );?></label>
-	<?php	
-	wp_dropdown_pages( array(
-		'selected' => $post->post_parent,
-		'echo' => 1,
-		'show_option_none' => '--' . esc_html__( 'None', 'pmpro-courses' ) . '--',
-		'name' => 'pmpro_courses_parent',
-		'id' => 'pmpro_courses_parent',
-		'post_type' => 'pmpro_course',
-		'post_status' => 'publish',
-	) );
+	<table class="form-table">
+		<tbody>
+			<tr>
+				<th><label class="components-base-control__label" for="pmpro_courses_parent"><?php esc_html_e( 'Course', 'pmpro-courses' );?></label></th>
+				<td>
+					<?php
+						wp_dropdown_pages( array(
+							'selected' => esc_attr( $post->post_parent ),
+							'echo' => 1,
+							'show_option_none' => '-- ' . esc_html__( 'None', 'pmpro-courses' ) . ' --',
+							'name' => 'pmpro_courses_parent',
+							'id' => 'pmpro_courses_parent',
+							'post_type' => 'pmpro_course',
+							'post_status' => 'publish',
+						) );
+					?>
+				</td>
+			</tr>
+			<tr>
+				<th><label class="components-base-control__label" for="pmpro_courses_bypass_restriction"><?php esc_html_e( 'Free Lesson', 'pmpro-courses' );?></label></th>
+				<td>
+					<?php
+						$bypass_lesson = get_post_meta( $post->ID, 'pmpro_courses_bypass_restriction', true );
+					?>
+					<label>
+						<input type="checkbox" name="pmpro_courses_bypass_restriction" value="1" <?php checked( $bypass_lesson, '1' ); ?> />
+						<?php esc_html_e( 'Yes, bypass member restrictions and make this lesson public.', 'pmpro-courses' ); ?>
+					</label>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<?php
 }
 
 /**
  * Save meta data for lessons from the edit lesson page.
  */
-function pmpro_courses_save_lessons_meta( $post_id, $post ) {
-	// Only lessons.
-	if ( 'pmpro_lesson' !== get_post_type() ) {
+function pmpro_courses_save_lessons_meta( $post_id, $post, $update ) {
+
+	// Autosave, Bail
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 		return;
 	}
-	
-	// If the course parent is set.
-	if ( ! isset( $_REQUEST['pmpro_courses_parent'] ) ) {
+
+	// Permissions check that the person saving can actually save this post.
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
 		return;
 	}
-	
-	// Avoid infinite loops.
-	if ( intval( $_REQUEST['pmpro_courses_parent'] ) === $post->post_parent ) {
+
+	// Check the nonce and make sure it's valid.
+	if ( ! isset ( $_POST['pmpro_courses_metabox_nonce'] ) || ! wp_verify_nonce( $_POST['pmpro_courses_metabox_nonce'], 'pmpro_courses_metabox_nonce' ) ) {
 		return;
 	}
-	
-	wp_update_post(
-		array( 'ID' => $post_id,
-		'post_parent' => intval( $_REQUEST['pmpro_courses_parent'] )
-		)
-	);	
+
+	// Save the post parent custom metabox if it's set and not currently set to via page attributes.
+	if ( isset( $_REQUEST['pmpro_courses_parent'] ) && intval( $_REQUEST['pmpro_courses_parent'] ) !== $post->post_parent ) {
+		wp_update_post(
+			array( 
+				'ID' => $post_id,
+				'post_parent' => intval( $_REQUEST['pmpro_courses_parent'] )
+			)
+		);	
+	}
+
+	// Update the bypass member restriction logic when saving.
+	$bypass = isset( $_POST['pmpro_courses_bypass_restriction'] ) ? '1' : '';
+	update_post_meta( $post_id, 'pmpro_courses_bypass_restriction', $bypass );
+
 }
-add_action( 'save_post', 'pmpro_courses_save_lessons_meta', 10, 2 );
+add_action( 'save_post_pmpro_lesson', 'pmpro_courses_save_lessons_meta', 10, 3 );
