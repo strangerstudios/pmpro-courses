@@ -68,7 +68,12 @@ add_action( 'admin_init', 'pmpro_courses_settings_save' );
 
 function pmpro_courses_save_notice() {
 	if ( isset( $_REQUEST['pmpro_courses_save_settings'] ) ) {
-		echo sprintf( "<div class='updated'><p>%s</p></div>", esc_html__( 'Settings saved successfully.', 'pmpro-courses') );
+		printf(
+			"<div class='updated'><p>%s <a href='%s'>%s</a></p></div>",
+			esc_html__( 'Settings saved successfully.', 'pmpro-courses' ),
+			esc_url( admin_url( 'options-permalink.php' ) ),
+			esc_html__( 'Please resave your permalink settings to refresh the URLs.', 'pmpro-courses' )
+		);
 	}
 }
 add_action( 'admin_notices', 'pmpro_courses_save_notice', 10 );
