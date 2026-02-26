@@ -140,15 +140,15 @@ function pmpro_courses_admin_styles( $hook ) {
 	}
 
 	if ( $load_css ) {
-		wp_enqueue_style( 'pmpro-courses-admin', PMPRO_COURSES_URL . 'css/admin.css', '', PMPRO_COURSES_VERSION, 'screen' );
+		wp_enqueue_style( 'pmpro-courses-admin', PMPRO_COURSES_URL . 'css/admin.css', array(), PMPRO_COURSES_VERSION, 'screen' );
 	}
 
 	if ( $load_js ) {
 		if ( $editing_course ) {
-			wp_enqueue_style( 'pmpro-courses-select2', PMPRO_COURSES_URL . 'css/select2.css', '', PMPRO_COURSES_VERSION, 'screen' );
+			wp_enqueue_style( 'pmpro-courses-select2', PMPRO_COURSES_URL . 'css/select2.css', array(), PMPRO_COURSES_VERSION, 'screen' );
 			wp_enqueue_script( 'pmpro-courses-select2', PMPRO_COURSES_URL . 'js/select2.js', array( 'jquery' ), PMPRO_COURSES_VERSION );
 		}
-		wp_register_script( 'pmpro_courses', PMPRO_COURSES_URL . 'js/admin.js', array( 'jquery' ), null, true );
+		wp_register_script( 'pmpro_courses', PMPRO_COURSES_URL . 'js/admin.js', array( 'jquery' ), PMPRO_COURSES_VERSION, true );
 
 		if ( ! empty( $_GET['post'] ) ) {
 			$post_id = intval( $_GET['post'] );
