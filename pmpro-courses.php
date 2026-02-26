@@ -140,15 +140,15 @@ function pmpro_courses_admin_styles( $hook ) {
 	}
 
 	if ( $load_css ) {
-		wp_enqueue_style( 'pmpro-courses-admin', plugins_url( 'css/admin.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
+		wp_enqueue_style( 'pmpro-courses-admin', PMPRO_COURSES_URL . 'css/admin.css', array(), PMPRO_COURSES_VERSION, 'screen' );
 	}
 
 	if ( $load_js ) {
 		if ( $editing_course ) {
-			wp_enqueue_style( 'pmpro-courses-select2', plugins_url( 'css/select2.css', __FILE__ ), '', PMPRO_COURSES_VERSION, 'screen' );
-			wp_enqueue_script( 'pmpro-courses-select2', plugins_url( 'js/select2.js', __FILE__ ), array( 'jquery' ), PMPRO_COURSES_VERSION );
+			wp_enqueue_style( 'pmpro-courses-select2', PMPRO_COURSES_URL . 'css/select2.css', array(), PMPRO_COURSES_VERSION, 'screen' );
+			wp_enqueue_script( 'pmpro-courses-select2', PMPRO_COURSES_URL . 'js/select2.js', array( 'jquery' ), PMPRO_COURSES_VERSION );
 		}
-		wp_register_script( 'pmpro_courses', plugins_url( 'js/admin.js', __FILE__ ), array( 'jquery' ), null, true );
+		wp_register_script( 'pmpro_courses', PMPRO_COURSES_URL . 'js/admin.js', array( 'jquery' ), PMPRO_COURSES_VERSION, true );
 
 		if ( ! empty( $_GET['post'] ) ) {
 			$post_id = intval( $_GET['post'] );
@@ -200,9 +200,8 @@ function pmpro_courses_frontend_styles(){
 		has_block( 'pmpro-courses/all-courses' ) || 
 		has_block( 'pmpro-courses/my-courses' )
 	) {
-		wp_enqueue_script( 'jquery' );
-		wp_enqueue_style( 'pmpro-courses-styles', plugins_url( 'css/frontend.css', __FILE__ ) );
-		wp_enqueue_script( 'pmpro-courses-scripts', plugins_url( 'js/frontend.js', __FILE__ ), array( 'jquery' ) );
+		wp_enqueue_style( 'pmpro-courses-styles', PMPRO_COURSES_URL . 'css/frontend.css', array(), PMPRO_COURSES_VERSION );
+		wp_enqueue_script( 'pmpro-courses-scripts', PMPRO_COURSES_URL . 'js/frontend.js', array( 'jquery' ), PMPRO_COURSES_VERSION );
 		wp_localize_script( 'pmpro-courses-scripts', 'pmpro_courses', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 	}
 
