@@ -135,7 +135,7 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
-= 2.0 - 2026-02-26 =
+= 2.0 - 2026-02-27 =
 * ENHANCEMENT: Reworked the plugin to support sectioned content and rehauled the lesson management and progress for future development and improvements.
 * ENHANCEMENT: Added "Courses" to the Edit Member panel to see all courses a member is enrolled in (has access) and their progress.
 * ENHANCEMENT: Moved progress tracking to custom tables instead for better performance. This will help improve future development. Progress will retroactively update for learners as they view course content.

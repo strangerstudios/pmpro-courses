@@ -423,7 +423,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
  * Get the lessons dropdown HTML with all PMPro lessons that are "available"
  * This is used for the the lesson settings.
  * 
- * @since TBD
+ * @since 2.0
  *
  */
 function pmpro_courses_lessons_settings( $exclude_lessons = array(), $parent_id = 0 ) {
