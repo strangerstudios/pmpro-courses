@@ -216,6 +216,17 @@ class PMPro_Courses_User_Progress {
 	}
 } // End of class.
 
+
+/**
+ * Display a button that allows a user to mark a lesson as complete.
+ *
+ * @deprecated 2.0 Use pmpro_courses_complete_lesson_button() instead.
+ */
+function pmpro_courses_complete_button( $lid, $cid, $user_id = null ) {
+	_deprecated_function( __FUNCTION__, '2.0', 'pmpro_courses_complete_lesson_button' );
+	return pmpro_courses_complete_lesson_button( $lid, $user_id );
+}
+
 /**
  * Display a button that allows a user to mark a lesson as complete or show completed if the lesson is completed.
  */
