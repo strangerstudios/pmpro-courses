@@ -17,7 +17,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 function pmpro_courses_course_outline( $atts ) {
 	// Get all the course ID.
 	// Allow course_id, array or singular.
-	$course_id = ! empty( $atts['course_id'] ) ? $atts['course_id'] : get_the_ID();
+	if ( ! empty( $atts['course_id'] ) ) {
+		$course_id = $atts['course_id'];
+	} else {
+		$current_id = get_the_ID();
+		if ( get_post_type( $current_id ) === 'pmpro_lesson' ) {
+			$course_id = wp_get_post_parent_id( $current_id );
+		} else {
+			$course_id = $current_id;
+		}
+	}
 	$show_course_title = ! empty( $atts['show_course_title'] ) ? filter_var( $atts['show_course_title'], FILTER_VALIDATE_BOOLEAN ) : true;
 
 	// Nothing passed in or nothing found.
@@ -37,18 +46,18 @@ function pmpro_courses_course_outline( $atts ) {
 	$course_id = array_filter( $course_id );
 
 	ob_start();
-
-	foreach ( $course_id as $id ) {
+	?>
+	<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro pmpro_courses pmpro_courses-outline', 'pmpro_courses-outline' ) ); ?>">
+	<?php foreach ( $course_id as $id ) {
 		
 		if ( get_post_type( $id ) !== 'pmpro_course' ) {
 			continue;
 		}
 
 		if ( $show_course_title ) { ?>
-			<div class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro pmpro_courses', 'pmpro_courses' ) ); ?>">
-				<h2 class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_font-x-large' ) ); ?>">
-					<a href="<?php echo esc_url( get_permalink( $id ) ); ?>"><?php echo esc_html( get_post( $id )->post_title ); ?></a></h2>
-			</div>
+			<h2 class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_font-x-large' ) ); ?>">
+				<a href="<?php echo esc_url( get_permalink( $id ) ); ?>"><?php echo esc_html( get_post( $id )->post_title ); ?></a>
+			</h2>
 		<?php }
 
 		// Allow SVG in the course outline.
@@ -71,7 +80,9 @@ function pmpro_courses_course_outline( $atts ) {
 		);
 		echo wp_kses( pmpro_courses_get_lessons_html( $id ), $allowed_tags );
 	}
-
+	?>
+	</div> <!-- end pmpro_courses-outline -->
+	<?php
 	$course_outline = ob_get_clean();
 	return $course_outline;
 }
