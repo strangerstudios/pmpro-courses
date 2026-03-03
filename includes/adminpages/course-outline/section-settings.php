@@ -47,7 +47,7 @@ $lessons_options = pmpro_courses_lessons_settings( $exclude_assigned_lessons, $p
 				<span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>
 			</button>
 		</div>
-		<button class="pmpro_section-toggle-button" aria-expanded="false" aria-label="<?php echo esc_attr__( 'Toggle section content', 'pmpro-courses' ); ?>">
+		<button type="button" class="pmpro_section-toggle-button" aria-expanded="false" aria-label="<?php echo esc_attr__( 'Toggle section content', 'pmpro-courses' ); ?>">
 			<span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>
 			<label for="pmpro_course_lessons_section_name_<?php echo esc_attr( $section_id ); ?>">
 				<?php esc_html_e( 'Section Name', 'pmpro-courses' ); ?>
