@@ -94,7 +94,7 @@ add_action('admin_menu', 'pmpro_courses_course_cpt_define_meta_boxes', 20);
 /**
  * Always show the "Course Outline" metabox on a page for PMPro Courses as it's required.
  *
- * @since TBD
+ * @since 2.0
  */
 function pmpro_courses_unhide_course_outline_meta_box( $hidden, $screen ) {
 	if ( $screen->post_type == 'pmpro_course' ) {
@@ -205,7 +205,7 @@ function pmpro_courses_get_lessons_table_html( $lessons, $section_id = 1 ){
  * Save PMPro Course sections + lessons as a normalized array.
  * Runs only when saving the pmpro_course post type.
  * 
- * @since TBD
+ * @since 2.0
  */
 function pmpro_courses_save_course_sections( $post_id, $post, $update ) {
 

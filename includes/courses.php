@@ -134,7 +134,7 @@ add_action( 'wp_ajax_pmpro_courses_update_course', 'pmpro_courses_update_course_
 /**
  * Ajax function to allow creation and assignment of a draft lesson.
  *
- * @since TBD
+ * @since 2.0
  */
 function pmpro_courses_create_lesson_cb() {
 	

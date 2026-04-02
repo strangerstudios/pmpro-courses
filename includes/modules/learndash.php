@@ -30,7 +30,11 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 		add_filter( 'pmpro_has_membership_access_filter', array( 'PMPro_Courses_LearnDash', 'pmpro_has_membership_access_filter' ), 10, 4 );
 		add_action( 'template_redirect', array( 'PMPro_Courses_LearnDash', 'template_redirect' ) );
         add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_LearnDash', 'pmpro_membership_content_filter' ), 10, 2 );
-		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_LearnDash', 'pmpro_after_all_membership_level_changes' ) );		
+		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_LearnDash', 'pmpro_after_all_membership_level_changes' ) );
+
+		// Retroactive batch enrollment when a course is published with level associations.
+		add_action( 'save_post', array( 'PMPro_Courses_LearnDash', 'on_course_save' ), 20 );
+		add_action( 'pmpro_courses_learndash_retroactive_enroll_user', array( 'PMPro_Courses_LearnDash', 'retroactive_enroll_user' ), 10, 2 );
     }
 	
 	/**
@@ -207,6 +211,29 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 		}
 	}
 	
+	/**
+	 * Trigger retroactive enrollment when a LearnDash course is saved as published.
+	 *
+	 * Runs at save_post priority 20 so PMPro has already persisted level associations.
+	 *
+	 * @param int $post_id The saved post ID.
+	 */
+	public static function on_course_save( $post_id ) {
+		PMPro_Courses_Batch_Enrollment::maybe_schedule_for_course( $post_id, 'sfwd-courses', 'learndash' );
+	}
+
+	/**
+	 * Enroll a single user in a LearnDash course during retroactive batch processing.
+	 *
+	 * @param int $user_id   User to enroll.
+	 * @param int $course_id LearnDash course post ID.
+	 */
+	public static function retroactive_enroll_user( $user_id, $course_id ) {
+		if ( ! ld_course_check_user_access( $course_id, $user_id ) ) {
+			ld_update_course_access( $user_id, $course_id );
+		}
+	}
+
 	/**
 	 * Get courses associated with a level.
 	 */

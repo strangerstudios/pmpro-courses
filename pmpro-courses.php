@@ -23,6 +23,7 @@ require_once PMPRO_COURSES_DIR . '/includes/common.php';
 require_once PMPRO_COURSES_DIR . '/includes/admin.php';
 require_once PMPRO_COURSES_DIR . '/includes/settings.php';
 require_once PMPRO_COURSES_DIR . '/includes/blocks.php';
+require_once PMPRO_COURSES_DIR . '/includes/batch-enrollment.php';
 
 // Modules.
 function pmpro_courses_setup_modules() {
