@@ -40,6 +40,7 @@ class PMPro_Courses_Batch_Enrollment {
 	 */
 	public static function init() {
 		add_action( self::AS_HOOK, array( __CLASS__, 'process_batch_task' ) );
+		add_action( 'pmpro_schedule_daily', array( __CLASS__, 'schedule_daily_retroactive_enrollment' ) );
 	}
 
 	/**
@@ -90,8 +91,6 @@ class PMPro_Courses_Batch_Enrollment {
 	/**
 	 * Schedule the first batch task for a course.
 	 *
-	 * Falls back to synchronous processing if Action Scheduler is not available.
-	 *
 	 * @param int    $course_id   Course post ID.
 	 * @param array  $level_ids   Level IDs to enroll members from.
 	 * @param string $module_slug Module slug.
@@ -102,8 +101,7 @@ class PMPro_Courses_Batch_Enrollment {
 		}
 
 		if ( ! class_exists( 'PMPro_Action_Scheduler' ) || ! function_exists( 'as_enqueue_async_action' ) ) {
-			// Fallback: run synchronously (small sites, AS not available).
-			self::process_batch( $course_id, $level_ids, $module_slug, 0 );
+			// Action Scheduler is required for retroactive batch enrollment.
 			return;
 		}
 
@@ -191,6 +189,44 @@ class PMPro_Courses_Batch_Enrollment {
 	}
 
 	/**
+	 * Schedule retroactive enrollment for all published course posts daily.
+	 */
+	public static function schedule_daily_retroactive_enrollment() {
+		$module_post_types = get_option( 'pmpro_courses_modules', array() );
+
+		foreach ( $module_post_types as $module_slug => $post_type ) {
+			if ( ! pmpro_courses_is_module_active( $module_slug ) ) {
+				continue;
+			}
+
+			foreach ( self::get_published_course_ids_for_post_type( $post_type ) as $course_id ) {
+				self::maybe_schedule_for_course( $course_id, $post_type, $module_slug );
+			}
+		}
+	}
+
+	/**
+	 * Get published course post IDs for the given post type.
+	 *
+	 * @param string $post_type
+	 * @return array
+	 */
+	private static function get_published_course_ids_for_post_type( $post_type ) {
+		global $wpdb;
+
+		return $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT DISTINCT p.ID
+				 FROM {$wpdb->posts} p
+				 INNER JOIN {$wpdb->pmpro_memberships_pages} mp ON mp.page_id = p.ID
+				 WHERE p.post_type = %s
+				 AND p.post_status = 'publish'",
+				$post_type
+			)
+		);
+	}
+
+	/**
 	 * Get the PMPro membership level IDs associated with a post.
 	 *
 	 * @param int $post_id
@@ -239,4 +275,6 @@ class PMPro_Courses_Batch_Enrollment {
 	}
 }
 
-PMPro_Courses_Batch_Enrollment::init();
+if ( class_exists( 'PMPro_Action_Scheduler' ) && function_exists( 'as_enqueue_async_action' ) ) {
+	PMPro_Courses_Batch_Enrollment::init();
+}
