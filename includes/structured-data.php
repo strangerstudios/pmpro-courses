@@ -46,7 +46,7 @@ function pmpro_courses_structured_data_listing() {
 	$is_shortcode_page = false;
 	if ( is_page() ) {
 		$post = get_post();
-		if ( ! empty( $post ) && has_shortcode( $post->post_content, 'pmpro_all_courses' ) ) {
+		if ( ! empty( $post ) && ( has_shortcode( $post->post_content, 'pmpro_all_courses' ) || has_block( 'pmpro-courses/all-courses', $post ) ) ) {
 			$is_shortcode_page = true;
 		}
 	}
