@@ -77,7 +77,7 @@ class PMPro_Courses_Batch_Enrollment {
 		}
 
 		// Only act on newly associated levels.
-		$new_levels = array_values( array_diff( $current_levels, $processed_levels ) );
+		$new_levels = array_values( array_diff( array_map( 'intval', $current_levels ), array_map( 'intval', $processed_levels ) ) );
 		if ( empty( $new_levels ) ) {
 			return;
 		}
@@ -85,7 +85,7 @@ class PMPro_Courses_Batch_Enrollment {
 		self::schedule( $post_id, $new_levels, $module_slug );
 
 		// Mark all current levels as processed so future saves don't re-queue.
-		update_post_meta( $post_id, self::PROCESSED_LEVELS_META, $current_levels );
+		update_post_meta( $post_id, self::PROCESSED_LEVELS_META, array_map( 'intval', $current_levels ) );
 	}
 
 	/**
@@ -101,7 +101,7 @@ class PMPro_Courses_Batch_Enrollment {
 		}
 
 		if ( ! class_exists( 'PMPro_Action_Scheduler' ) || ! function_exists( 'as_enqueue_async_action' ) ) {
-			// Action Scheduler is required for retroactive batch enrollment.
+			error_log( 'PMPro Courses: Action Scheduler not available — retroactive enrollment disabled. Requires PMPro 3.5+.' );
 			return;
 		}
 
@@ -172,7 +172,7 @@ class PMPro_Courses_Batch_Enrollment {
 		}
 
 		// If the batch was full there may be more users — chain the next batch.
-		if ( count( $user_ids ) >= self::BATCH_SIZE && function_exists( 'as_enqueue_async_action' ) ) {
+		if ( count( $user_ids ) === self::BATCH_SIZE && function_exists( 'as_enqueue_async_action' ) ) {
 			as_enqueue_async_action(
 				self::AS_HOOK,
 				array(
@@ -220,8 +220,10 @@ class PMPro_Courses_Batch_Enrollment {
 				 FROM {$wpdb->posts} p
 				 INNER JOIN {$wpdb->pmpro_memberships_pages} mp ON mp.page_id = p.ID
 				 WHERE p.post_type = %s
-				 AND p.post_status = 'publish'",
-				$post_type
+				 AND p.post_status = 'publish'
+				 AND p.post_modified >= %s",
+				$post_type,
+				gmdate( 'Y-m-d H:i:s', strtotime( '-24 hours' ) )
 			)
 		);
 	}

@@ -230,7 +230,10 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	 */
 	public static function retroactive_enroll_user( $user_id, $course_id ) {
 		if ( ! ld_course_check_user_access( $course_id, $user_id ) ) {
-			ld_update_course_access( $user_id, $course_id );
+			$result = ld_update_course_access( $user_id, $course_id );
+			if ( ! $result ) {
+				error_log( sprintf( 'PMPro Courses (LearnDash): Failed to enroll user %d in course %d.', $user_id, $course_id ) );
+			}
 		}
 	}
 

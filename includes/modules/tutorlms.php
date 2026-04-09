@@ -249,7 +249,10 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	 */
 	public static function retroactive_enroll_user( $user_id, $course_id ) {
 		if ( ! tutor_utils()->is_enrolled( $course_id, $user_id ) ) {
-			tutor_utils()->do_enroll( $user_id, 0, $course_id );
+			$result = tutor_utils()->do_enroll( $user_id, 0, $course_id );
+			if ( ! $result ) {
+				error_log( sprintf( 'PMPro Courses (TutorLMS): Failed to enroll user %d in course %d.', $user_id, $course_id ) );
+			}
 		}
 	}
 

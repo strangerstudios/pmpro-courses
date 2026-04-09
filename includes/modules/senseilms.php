@@ -246,7 +246,10 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 	public static function retroactive_enroll_user( $user_id, $course_id ) {
 		if ( ! Sensei_Course::is_user_enrolled( $course_id, $user_id ) ) {
 			$manual_enrolment_provider = Sensei_Course_Enrolment_Manager::instance()->get_manual_enrolment_provider();
-			$manual_enrolment_provider->enrol_learner( $user_id, $course_id );
+			$result = $manual_enrolment_provider->enrol_learner( $user_id, $course_id );
+			if ( ! $result ) {
+				error_log( sprintf( 'PMPro Courses (Sensei): Failed to enroll user %d in course %d.', $user_id, $course_id ) );
+			}
 		}
 	}
 

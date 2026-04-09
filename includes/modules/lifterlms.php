@@ -109,7 +109,10 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
 	 */
 	public static function retroactive_enroll_user( $user_id, $course_id ) {
 		if ( ! llms_is_user_enrolled( $user_id, $course_id ) ) {
-			llms_enroll_student( $user_id, $course_id );
+			$result = llms_enroll_student( $user_id, $course_id );
+			if ( ! $result ) {
+				error_log( sprintf( 'PMPro Courses (LifterLMS): Failed to enroll user %d in course %d.', $user_id, $course_id ) );
+			}
 		}
 	}
 
