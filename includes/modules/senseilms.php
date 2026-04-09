@@ -35,6 +35,10 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 		add_action( 'template_redirect', array( 'PMPro_Courses_SenseiLMS', 'template_redirect' ) );
 
 		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_SenseiLMS', 'pmpro_after_all_membership_level_changes' ) );
+
+		// Retroactive batch enrollment when a course is published with level associations.
+		add_action( 'save_post', array( 'PMPro_Courses_SenseiLMS', 'on_course_save' ), 20 );
+		add_action( 'pmpro_courses_senseilms_retroactive_enroll_user', array( 'PMPro_Courses_SenseiLMS', 'retroactive_enroll_user' ), 10, 2 );
 	}
 
 	/**
@@ -223,6 +227,33 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 	}
 
 	/**
+	 * Trigger retroactive enrollment when a Sensei LMS course is saved as published.
+	 *
+	 * Runs at save_post priority 20 so PMPro has already persisted level associations.
+	 *
+	 * @param int $post_id The saved post ID.
+	 */
+	public static function on_course_save( $post_id ) {
+		PMPro_Courses_Batch_Enrollment::maybe_schedule_for_course( $post_id, 'course', 'senseilms' );
+	}
+
+	/**
+	 * Enroll a single user in a Sensei LMS course during retroactive batch processing.
+	 *
+	 * @param int $user_id   User to enroll.
+	 * @param int $course_id Sensei course post ID.
+	 */
+	public static function retroactive_enroll_user( $user_id, $course_id ) {
+		if ( ! Sensei_Course::is_user_enrolled( $course_id, $user_id ) ) {
+			$manual_enrolment_provider = Sensei_Course_Enrolment_Manager::instance()->get_manual_enrolment_provider();
+			$result = $manual_enrolment_provider->enrol_learner( $user_id, $course_id );
+			if ( ! $result ) {
+				error_log( sprintf( 'PMPro Courses (Sensei): Failed to enroll user %d in course %d.', $user_id, $course_id ) );
+			}
+		}
+	}
+
+	/**
 	 * Get courses associated with a level.
 	 */
 	public static function get_courses_for_levels( $level_ids ) {
@@ -243,12 +274,12 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 		}
 
 		$sql = "
-			SELECT mp.page_id 
-			FROM $wpdb->pmpro_memberships_pages mp 
-			LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID 
-			WHERE mp.membership_id IN(".implode(', ', array_fill(0, count($level_ids), '%s')).") 
-			AND p.post_type = 'course' 
-			AND p.post_status = 'publish' 
+			SELECT mp.page_id
+			FROM $wpdb->pmpro_memberships_pages mp
+			LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID
+			WHERE mp.membership_id IN(".implode(', ', array_fill(0, count($level_ids), '%s')).")
+			AND p.post_type = 'course'
+			AND p.post_status = 'publish'
 			GROUP BY mp.page_id
 		";
 		$course_ids = $wpdb->get_col( call_user_func_array( array( $wpdb, 'prepare' ), array_merge( array( $sql ), $level_ids ) ) );

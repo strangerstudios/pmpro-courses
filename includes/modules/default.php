@@ -113,7 +113,7 @@ class PMPro_Courses_Module {
 	/** 
 	 * Load the Member Edit Panel if the class exists.
 	 * 
-	 * @since TBD
+	 * @since 2.0
 	 */
 	static public function pmpro_courses_pmpro_member_edit_panels( $panels ) {
 		
