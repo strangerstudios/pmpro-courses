@@ -557,3 +557,43 @@ add_filter( 'get_previous_post_sort', 'pmpro_courses_adjacent_post_sort' );
 function pmpro_courses_get_sections_html( $section = null, $all_assigned_lessons = array() ) {
 	include( plugin_dir_path( __FILE__ ) . 'adminpages/course-outline/section-settings.php' );
 }
+
+/**
+ * Returns the post_type ID's that belong to the level ID's.
+ * This is used for getting the restricted courses,lessons,groups etc for each module.
+ *
+ * @param [type] $level_ids
+ * @param [type] $post_type
+ * @return void
+ */
+function pmpro_courses_get_post_ids_from_levels( $level_ids, $post_type ) {
+	global $wpdb;
+
+	// In case a level object was passed in.
+	if ( is_object( $level_ids ) ) {
+		$level_ids = $level_ids->ID;
+	}
+
+	// Make sure we have an array of ids.
+	if ( ! is_array( $level_ids ) ) {
+		$level_ids = array( $level_ids );
+	}
+
+	if ( empty( $level_ids ) ) {
+		return array();
+	}
+
+	$levels = implode( ', ', array_fill( 0, count( $level_ids ), '%d' ) );
+	$sql = $wpdb->prepare(
+		"SELECT mp.page_id
+		FROM {$wpdb->pmpro_memberships_pages} mp
+		LEFT JOIN {$wpdb->posts} p ON mp.page_id = p.ID
+		WHERE mp.membership_id IN ({$levels})
+		AND p.post_type = %s
+		AND p.post_status = 'publish'
+		GROUP BY mp.page_id",
+		$post_type
+	);
+
+	return $wpdb->get_col( $sql );
+}

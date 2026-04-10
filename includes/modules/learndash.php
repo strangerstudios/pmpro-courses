@@ -213,68 +213,14 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	 * Get courses associated with a level.
 	 */
 	public static function get_courses_for_levels( $level_ids ) {
-		global $wpdb;
-		
-		// In case a level object was passed in.
-		if ( is_object( $level_ids ) ) {
-			$level_ids = $level_ids->ID;
-		}
-		
-		// Make sure we have an array of ids.
-		if ( ! is_array( $level_ids ) ) {
-			$level_ids = array( $level_ids );
-		}
-		
-		if ( empty( $level_ids ) ) {
-			return array();
-		}
-
-		$sql = "
-			SELECT mp.page_id 
-			FROM $wpdb->pmpro_memberships_pages mp 
-			LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID 
-			WHERE mp.membership_id IN(".implode(', ', array_fill(0, count($level_ids), '%s')).") 
-			AND p.post_type = 'sfwd-courses' 
-			AND p.post_status = 'publish' 
-			GROUP BY mp.page_id
-		";
-		$course_ids = $wpdb->get_col( call_user_func_array( array( $wpdb, 'prepare' ), array_merge( array( $sql ), $level_ids ) ) );
-
-		return $course_ids;
+		return pmpro_courses_get_post_ids_from_levels( $level_ids, 'sfwd-courses' );
 	}
 	
 	/**
 	 * Get groups associated with a level.
 	 */
 	public static function get_groups_for_levels( $level_ids ) {
-		global $wpdb;
-
-		// In case a level object was passed in.
-		if ( is_object( $level_ids ) ) {
-			$level_ids = $level_ids->ID;
-		}
-
-		// Make sure we have an array of ids.
-		if ( ! is_array( $level_ids ) ) {
-			$level_ids = array( $level_ids );
-		}
-
-		if ( empty( $level_ids ) ) {
-			return array();
-		}
-
-		$sql = "
-			SELECT mp.page_id
-			FROM $wpdb->pmpro_memberships_pages mp
-			LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID
-			WHERE mp.membership_id IN(".implode(', ', array_fill(0, count($level_ids), '%s')).")
-			AND p.post_type = 'groups'
-			AND p.post_status = 'publish'
-			GROUP BY mp.page_id
-		";
-		$group_ids = $wpdb->get_col( call_user_func_array( array( $wpdb, 'prepare' ), array_merge( array( $sql ), $level_ids ) ) );
-
-		return $group_ids;
+		return pmpro_courses_get_post_ids_from_levels( $level_ids, 'groups' );
 	}
 
 	/**
