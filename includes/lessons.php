@@ -145,7 +145,7 @@ add_action( 'pre_get_posts', 'pmpro_courses_lessons_pre_get_posts_table_sorting'
 /**
  * Add a "Course" dropdown filter to the Lessons list table.
  *
- * @since TBD
+ * @since 2.0
  */
 function pmpro_courses_lessons_filter_dropdown() {
 	// Only show on the pmpro_lesson list screen.
@@ -184,7 +184,7 @@ add_action( 'restrict_manage_posts', 'pmpro_courses_lessons_filter_dropdown' );
 /**
  * Apply the Course filter to the Lessons query based on the dropdown.
  *
- * @since TBD
+ * @since 2.0
  */
 function pmpro_courses_lessons_filter_query( WP_Query $query ) {
 	if ( ! is_admin() || ! $query->is_main_query() ) {
@@ -207,7 +207,7 @@ add_action( 'pre_get_posts', 'pmpro_courses_lessons_filter_query' );
 /**
  * Bypass any level restrictions for a PMPro Lesson CPT and mark it as "Free/Public"
  *
- * @since TBD
+ * @since 2.0
  */
 function pmpro_lessons_bypass_check($hasaccess, $post, $user, $levels) {
 

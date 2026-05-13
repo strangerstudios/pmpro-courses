@@ -12,7 +12,7 @@ function pmpro_courses_upgrade_1_3() {
 /**
  * Create the table for progress tracking.
  *
- * @since TBD
+ * @since 2.0
  * @return void
  */
 function pmpro_courses_create_progress_table() {

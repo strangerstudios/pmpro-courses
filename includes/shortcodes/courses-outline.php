@@ -6,7 +6,7 @@
  * - course_id: The ID(s) of the course(s) to display. Can be a single ID, an array of IDs, or a comma-separated string of IDs.
  * - show_course_title: Whether to display the course title. Default is true.
  *
- * @since TBD
+ * @since 2.0
  */
 
 // Exit if accessed directly.

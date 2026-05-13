@@ -3,7 +3,7 @@ class PMPro_Courses_User_Progress {
 	/**
 	 * Toggle progress for lesson completion (complete or reset/clear)
 	 * 
-	 * @since TBD
+	 * @since 2.0
 	 *
 	 * @param int $lesson_id The lesson ID.
 	 * @param int $user_id The user ID. Optional.
@@ -82,7 +82,7 @@ class PMPro_Courses_User_Progress {
 	/**
 	 * Get the user's progress for a specific course.
 	 *
-	 * @since TBD
+	 * @since 2.0
 	 *
 	 * @param int $course_id The course ID.
 	 * @param int $user_id The user ID. Optional.
@@ -165,7 +165,7 @@ class PMPro_Courses_User_Progress {
 	/**
 	 * Get a list of courses for a user that have no progress at all.
 	 *
-	 * @since TBD
+	 * @since 2.0
 	 *
 	 * @param int|null $user_id
 	 * @return array|false Array of WP_Post objects (pmpro_course) or false if no user.
@@ -317,7 +317,7 @@ add_action( 'wp_ajax_pmpro_courses_toggle_lesson_progress', 'pmpro_courses_toggl
 /**
  * Retroactively migrate any user progress from user meta to the new progress table.
  * 
- * @since TBD
+ * @since 2.0
  */
 function pmpro_courses_migrate_course_progress() {
 	global $wpdb;

@@ -6,7 +6,7 @@
 /**
  * Remove a lesson from the lesson table for a course.
  *
- * @since TBD
+ * @since 2.0
  */
 function pmpro_courses_remove_lesson(lesson_id, section_id) {
 	let $row, $section, $table;
@@ -111,7 +111,7 @@ function pmpro_courses_remove_lesson(lesson_id, section_id) {
  *
  * AJAX is needed, because we need to get the WP_POST object for the lesson when building the table row.
  *
- * @since TBD
+ * @since 2.0
  */
 function pmpro_courses_update_post(button_element) {
 	var button = jQuery(button_element);
