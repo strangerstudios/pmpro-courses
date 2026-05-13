@@ -4,13 +4,13 @@
  * Outputs Course schema on single course pages and ItemList schema
  * on the CPT archive and pages using the [pmpro_all_courses] shortcode.
  *
- * @since TBD
+ * @since 2.1
  */
 
 /**
  * Output Course JSON-LD structured data on single course pages.
  *
- * @since TBD
+ * @since 2.1
  */
 function pmpro_courses_structured_data_single() {
 	if ( ! is_singular( 'pmpro_course' ) ) {
@@ -36,7 +36,7 @@ add_action( 'wp_head', 'pmpro_courses_structured_data_single' );
  * Output ItemList JSON-LD structured data on course listing pages.
  * Fires on the CPT archive and on pages containing the [pmpro_all_courses] shortcode.
  *
- * @since TBD
+ * @since 2.1
  */
 function pmpro_courses_structured_data_listing() {
 	// CPT archive.
@@ -90,7 +90,7 @@ add_action( 'wp_head', 'pmpro_courses_structured_data_listing' );
 /**
  * Build a Course schema array for a given course post.
  *
- * @since TBD
+ * @since 2.1
  * @param WP_Post $course The course post object.
  * @return array Course schema array.
  */
@@ -104,7 +104,7 @@ function pmpro_courses_build_course_schema( $course ) {
 	/**
 	 * Filter the provider organization data for Course structured data.
 	 *
-	 * @since TBD
+	 * @since 2.1
 	 * @param array   $provider {
 	 *     Provider organization schema.
 	 *     @type string $@type  Schema type. Default 'Organization'.
@@ -135,7 +135,7 @@ function pmpro_courses_build_course_schema( $course ) {
 	/**
 	 * Filter the full Course schema array.
 	 *
-	 * @since TBD
+	 * @since 2.1
 	 * @param array   $schema The Course schema array.
 	 * @param WP_Post $course The course post object.
 	 */

@@ -562,8 +562,8 @@ function pmpro_courses_get_sections_html( $section = null, $all_assigned_lessons
  * Returns the post_type ID's that belong to the level ID's.
  * This is used for getting the restricted courses,lessons,groups etc for each module.
  *
- * @since TBD
- * 
+ * @since 2.1
+ *
  * @param array|int $level_ids The membership level ID or array of membership level IDs to get post IDs for.
  * @param string $post_type The post type to check for (e.g. 'course', 'lesson', etc).
  * @return array An array of post IDs that belong to the given level ID(s) and post type.

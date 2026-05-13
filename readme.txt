@@ -3,7 +3,7 @@ Contributors: strangerstudios, paidmembershipspro, kimannwall, jarryd-long
 Tags: course, education, elearning, lms, membership, pmpro
 Requires at least: 5.4
 Tested up to: 6.9
-Stable tag: 2.0.1
+Stable tag: 2.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -135,6 +135,10 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 2.1 - 2026-05-13 =
+* FEATURE: Added Course structured data (JSON-LD) output for the default Courses module. Outputs `Course` schema on single course pages and `ItemList` schema on the CPT archive and on pages containing the `[pmpro_all_courses]` shortcode or the `pmpro-courses/all-courses` block. Adds two new filters: `pmpro_courses_structured_data_provider` and `pmpro_courses_structured_data_schema`. #109 (@flintfromthebasement)
+* FEATURE: Added support for LearnDash Group enrollment. Membership levels can now restrict access to LearnDash Groups, and members are automatically enrolled in or removed from associated Groups when their level changes. #111 (@andrewlimaza)
+
 = 2.0.1 - 2026-03-20 =
 * BUG FIX: Fixed an issue where course sections were not correctly working while using the Classic Editor. (@andrewlimaza)
 
