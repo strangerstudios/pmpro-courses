@@ -4,13 +4,13 @@
  * Outputs Course schema on single course pages and ItemList schema
  * on the CPT archive and pages using the [pmpro_all_courses] shortcode.
  *
- * @since 1.3
+ * @since TBD
  */
 
 /**
  * Output Course JSON-LD structured data on single course pages.
  *
- * @since 1.3
+ * @since TBD
  */
 function pmpro_courses_structured_data_single() {
 	if ( ! is_singular( 'pmpro_course' ) ) {
@@ -26,7 +26,7 @@ function pmpro_courses_structured_data_single() {
 
 	?>
 	<script type="application/ld+json">
-	<?php echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ); ?>
+	<?php echo wp_json_encode( $schema, JSON_PRETTY_PRINT ); ?>
 	</script>
 	<?php
 }
@@ -36,7 +36,7 @@ add_action( 'wp_head', 'pmpro_courses_structured_data_single' );
  * Output ItemList JSON-LD structured data on course listing pages.
  * Fires on the CPT archive and on pages containing the [pmpro_all_courses] shortcode.
  *
- * @since 1.3
+ * @since TBD
  */
 function pmpro_courses_structured_data_listing() {
 	// CPT archive.
@@ -81,7 +81,7 @@ function pmpro_courses_structured_data_listing() {
 
 	?>
 	<script type="application/ld+json">
-	<?php echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ); ?>
+	<?php echo wp_json_encode( $schema, JSON_PRETTY_PRINT ); ?>
 	</script>
 	<?php
 }
@@ -90,7 +90,7 @@ add_action( 'wp_head', 'pmpro_courses_structured_data_listing' );
 /**
  * Build a Course schema array for a given course post.
  *
- * @since 1.3
+ * @since TBD
  * @param WP_Post $course The course post object.
  * @return array Course schema array.
  */
@@ -104,7 +104,7 @@ function pmpro_courses_build_course_schema( $course ) {
 	/**
 	 * Filter the provider organization data for Course structured data.
 	 *
-	 * @since 1.3
+	 * @since TBD
 	 * @param array   $provider {
 	 *     Provider organization schema.
 	 *     @type string $@type  Schema type. Default 'Organization'.
@@ -135,7 +135,7 @@ function pmpro_courses_build_course_schema( $course ) {
 	/**
 	 * Filter the full Course schema array.
 	 *
-	 * @since 1.3
+	 * @since TBD
 	 * @param array   $schema The Course schema array.
 	 * @param WP_Post $course The course post object.
 	 */
