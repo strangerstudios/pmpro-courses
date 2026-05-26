@@ -581,6 +581,9 @@ function pmpro_courses_get_post_ids_from_levels( $level_ids, $post_type ) {
 		$level_ids = array( $level_ids );
 	}
 
+	// Filter out any non-positive integers before the empty check.
+	$level_ids = array_filter( array_map( 'intval', $level_ids ) );
+
 	if ( empty( $level_ids ) ) {
 		return array();
 	}
