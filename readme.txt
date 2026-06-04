@@ -135,6 +135,9 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 2.1.1 - 2026-06-04 =
+* BUG FIX: Fixed an issue where LearnDash enrollment wasn't working correctly on membership assignment or cancellation. #122 (@andrewlimaza)
+
 = 2.1 - 2026-05-13 =
 * FEATURE: Added Course structured data (JSON-LD) output for the default Courses module. Outputs `Course` schema on single course pages and `ItemList` schema on the CPT archive and on pages containing the `[pmpro_all_courses]` shortcode or the `pmpro-courses/all-courses` block. Adds two new filters: `pmpro_courses_structured_data_provider` and `pmpro_courses_structured_data_schema`. #109 (@flintfromthebasement)
 * FEATURE: Added support for LearnDash Group enrollment. Membership levels can now restrict access to LearnDash Groups, and members are automatically enrolled in or removed from associated Groups when their level changes. #111 (@andrewlimaza)
