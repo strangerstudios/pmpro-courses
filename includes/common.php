@@ -581,6 +581,9 @@ function pmpro_courses_get_post_ids_from_levels( $level_ids, $post_type ) {
 		$level_ids = array( $level_ids );
 	}
 
+	// Filter out any non-positive integers before the empty check.
+	$level_ids = array_filter( array_map( 'intval', $level_ids ) );
+
 	if ( empty( $level_ids ) ) {
 		return array();
 	}
@@ -589,13 +592,13 @@ function pmpro_courses_get_post_ids_from_levels( $level_ids, $post_type ) {
 	$sql = $wpdb->prepare(
 		"SELECT mp.page_id
 		FROM {$wpdb->pmpro_memberships_pages} mp
-		LEFT JOIN {$wpdb->posts} p ON mp.page_id = p.ID
+		INNER JOIN {$wpdb->posts} p ON mp.page_id = p.ID
 		WHERE mp.membership_id IN ({$levels})
 		AND p.post_type = %s
 		AND p.post_status = 'publish'
 		GROUP BY mp.page_id",
-		$post_type
+		array_merge( $level_ids, array( $post_type ) )
 	);
 
-	return $wpdb->get_col( $sql );
+	return $wpdb->get_col( $sql ) ?: array();
 }
