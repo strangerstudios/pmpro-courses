@@ -250,7 +250,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 
 	// Return if empty.
 	if ( empty( $course_id ) ) {
-		return;
+		return '';
 	}
 
 	ob_start();
@@ -273,7 +273,8 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 
 	// Return if no sections.
 	if ( empty( $sections ) ) {
-		return;
+		ob_end_clean();
+		return '';
 	}
 
 	// Check whether the current user has access to these lessons.
