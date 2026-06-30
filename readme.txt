@@ -2,8 +2,8 @@
 Contributors: strangerstudios, paidmembershipspro, kimannwall, jarryd-long
 Tags: course, education, elearning, lms, membership, pmpro
 Requires at least: 5.4
-Tested up to: 6.9
-Stable tag: 2.1
+Tested up to: 7.0
+Stable tag: 2.1.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -135,6 +135,9 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 2.1.2 - 2026-06-30 =
+* BUG FIX: Fixed a PHP 8.1+ deprecation notice that occurred when rendering a course outline for a course with no lessons. #127 (@kimcoleman)
+
 = 2.1.1 - 2026-06-04 =
 * BUG FIX: Fixed an issue where LearnDash enrollment wasn't working correctly on membership assignment or cancellation. #122 (@andrewlimaza)
 
