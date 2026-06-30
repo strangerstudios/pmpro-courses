@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 2.1.1\n"
+"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 2.1.2\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-04T06:59:56+00:00\n"
+"POT-Creation-Date: 2026-06-30T16:58:32+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pmpro-courses\n"
@@ -694,6 +694,7 @@ msgstr "Paid Memberships Pro - Cursos para complemento de membresía"
 #: includes/common.php:238
 #: includes/common.php:240
 #: includes/common.php:372
+#: includes/common.php:373
 msgid "Complete"
 msgstr ""
 
@@ -803,24 +804,29 @@ msgstr ""
 
 #: includes/common.php:300
 #: includes/post-types/courses.php:90
+#: includes/common.php:301
 msgid "Course Outline"
 msgstr ""
 
 #. translators: %d: section number (integer)
 #: includes/common.php:327
+#: includes/common.php:328
 #, php-format
 msgid "Section %d"
 msgstr ""
 
 #: includes/common.php:359
+#: includes/common.php:360
 msgid "Free"
 msgstr ""
 
 #: includes/common.php:381
+#: includes/common.php:382
 msgid "Incomplete"
 msgstr ""
 
 #: includes/common.php:445
+#: includes/common.php:446
 msgid "Select a lesson..."
 msgstr ""
 
