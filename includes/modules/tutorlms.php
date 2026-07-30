@@ -292,7 +292,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 			$courses_to_enroll = array_diff( $current_courses, $old_courses );
 			foreach( $courses_to_enroll as $course_id ) {
 				if ( ! tutor_utils()->is_enrolled( $course_id, $user_id ) ) {
-					tutor_utils()->do_enroll( $user_id, 0, $course_id );
+					tutor_utils()->do_enroll( $course_id, 0, $user_id );
 				}
 			}
 			
