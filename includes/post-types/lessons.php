@@ -81,6 +81,14 @@ add_action('admin_menu', 'pmpro_courses_lessons_cpt_define_meta_boxes', 20);
  */
 function pmpro_courses_lesson_course_metabox( $post ) {	
 	wp_nonce_field( 'pmpro_courses_metabox_nonce', 'pmpro_courses_metabox_nonce' );
+
+	$bypass_lesson = get_post_meta( $post->ID, 'pmpro_courses_bypass_restriction', true );
+	$drip_method = pmpro_courses_get_lesson_drip_method( $post->ID );
+	$drip_date   = pmpro_courses_get_lesson_drip_date( $post->ID );
+
+	// Render rows in the state the meta box script keeps them in, so nothing flashes on load.
+	$hide_drip      = ( '1' === $bypass_lesson );
+	$hide_drip_date = $hide_drip || 'date' !== $drip_method;
 	?>
 	<table class="form-table">
 		<tbody>
@@ -103,13 +111,35 @@ function pmpro_courses_lesson_course_metabox( $post ) {
 			<tr>
 				<th><label class="components-base-control__label" for="pmpro_courses_bypass_restriction"><?php esc_html_e( 'Free Lesson', 'pmpro-courses' );?></label></th>
 				<td>
-					<?php
-						$bypass_lesson = get_post_meta( $post->ID, 'pmpro_courses_bypass_restriction', true );
-					?>
 					<label>
-						<input type="checkbox" name="pmpro_courses_bypass_restriction" value="1" <?php checked( $bypass_lesson, '1' ); ?> />
+						<input type="checkbox" name="pmpro_courses_bypass_restriction" id="pmpro_courses_bypass_restriction" value="1" <?php checked( $bypass_lesson, '1' ); ?> />
 						<?php esc_html_e( 'Yes, bypass member restrictions and make this lesson public.', 'pmpro-courses' ); ?>
 					</label>
+					<p class="description">
+						<?php esc_html_e( 'Free lessons are always available and cannot be dripped.', 'pmpro-courses' ); ?>
+					</p>
+				</td>
+			</tr>
+			<tr class="pmpro_courses_lesson_drip"<?php echo $hide_drip ? ' style="display: none;"' : ''; ?>>
+				<th><label class="components-base-control__label" for="pmpro_courses_drip_method"><?php esc_html_e( 'Drip Method', 'pmpro-courses' );?></label></th>
+				<td>
+					<select name="pmpro_courses_drip_method" id="pmpro_courses_drip_method">
+						<option value="none" <?php selected( $drip_method, 'none' ); ?>><?php esc_html_e( 'None, the lesson is available immediately', 'pmpro-courses' ); ?></option>
+						<option value="date" <?php selected( $drip_method, 'date' ); ?>><?php esc_html_e( 'Access is granted on a specific date', 'pmpro-courses' ); ?></option>
+					</select>
+				</td>
+			</tr>
+			<tr class="pmpro_courses_lesson_drip pmpro_courses_lesson_drip_date"<?php echo $hide_drip_date ? ' style="display: none;"' : ''; ?>>
+				<th><label class="components-base-control__label" for="pmpro_courses_drip_date"><?php esc_html_e( 'Release Date', 'pmpro-courses' );?></label></th>
+				<td>
+					<?php $drip_date_value = empty( $drip_date ) ? '' : wp_date( 'Y-m-d\TH:i', $drip_date ); ?>
+					<input type="datetime-local" name="pmpro_courses_drip_date" id="pmpro_courses_drip_date" value="<?php echo esc_attr( $drip_date_value ); ?>" />
+					<p class="description">
+						<?php
+							/* translators: %s: the site's timezone, e.g. America/New_York. */
+							printf( esc_html__( 'Uses the site timezone: %s.', 'pmpro-courses' ), esc_html( wp_timezone_string() ) );
+						?>
+					</p>
 				</td>
 			</tr>
 		</tbody>
@@ -150,6 +180,26 @@ function pmpro_courses_save_lessons_meta( $post_id, $post, $update ) {
 	// Update the bypass member restriction logic when saving.
 	$bypass = isset( $_POST['pmpro_courses_bypass_restriction'] ) ? '1' : '';
 	update_post_meta( $post_id, 'pmpro_courses_bypass_restriction', $bypass );
+
+	// Update the drip settings. The date is stored even when the drip method is none so that
+	// switching back to a specific date does not lose the date the admin already picked.
+	if ( isset( $_POST['pmpro_courses_drip_method'] ) ) {
+		$drip_method = sanitize_text_field( wp_unslash( $_POST['pmpro_courses_drip_method'] ) );
+		$drip_date   = isset( $_POST['pmpro_courses_drip_date'] ) ? pmpro_courses_get_timestamp_from_local_datetime( sanitize_text_field( wp_unslash( $_POST['pmpro_courses_drip_date'] ) ) ) : 0;
+
+		// A date drip with no usable date is the same as no drip.
+		if ( 'date' !== $drip_method || empty( $drip_date ) ) {
+			$drip_method = 'none';
+		}
+
+		update_post_meta( $post_id, 'pmpro_courses_drip_method', $drip_method );
+
+		if ( empty( $drip_date ) ) {
+			delete_post_meta( $post_id, 'pmpro_courses_drip_date_gmt' );
+		} else {
+			update_post_meta( $post_id, 'pmpro_courses_drip_date_gmt', $drip_date );
+		}
+	}
 
 }
 add_action( 'save_post_pmpro_lesson', 'pmpro_courses_save_lessons_meta', 10, 3 );

@@ -343,25 +343,59 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 							<ol class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list' ) ); ?>">
 								<?php foreach ( $published_lessons as $lesson ) {
 									$lesson_access = get_post_meta( $lesson->ID, 'pmpro_courses_bypass_restriction', true );
+									$lesson_released = pmpro_courses_is_lesson_released( $lesson->ID );
+									$lesson_has_access = ! empty( $hasaccess ) || ! empty( $lesson_access );
+
+									// Whether the visitor can open this lesson at all. An unreleased lesson is locked the
+									// same way a lesson the visitor has no access to is: no link, lock icon, no progress.
+									$lesson_can_link = $lesson_has_access && $lesson_released;
+
+									$lesson_item_class = 'pmpro_courses-list-item';
+									if ( ! $lesson_can_link ) {
+										$lesson_item_class .= ' pmpro_courses-lesson--locked';
+									}
 									?>
-									<li id="pmpro_courses-lesson-<?php echo intval( $lesson->ID ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item' ) ); ?>">
+									<li id="pmpro_courses-lesson-<?php echo intval( $lesson->ID ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( $lesson_item_class ) ); ?>">
 										<?php
-											// Only add link to single section page if current user has access.
-											if ( ! empty( $hasaccess ) || ! empty( $lesson_access ) ) { ?>
+											// Only add link to single section page if current user has access. Either way the
+											// row needs a single wrapper so the title and status stay on one line.
+											if ( $lesson_can_link ) { ?>
 												<a class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item-link' ) ); ?>" href="<?php echo esc_url( get_permalink( $lesson->ID ) ); ?>">
-												<?php
-											}
-										?>
-										<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item-title' ) ); ?>">
-											<?php echo esc_html( $lesson->post_title ); ?>
-										</span>
-										<?php if ( $lesson_access ) { ?>
-											<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_tag pmpro_tag-success' ) ); ?>">
-												<?php esc_html_e( 'Free', 'pmpro-courses' ); ?>
+											<?php } else { ?>
+												<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item-row' ) ); ?>">
+											<?php } ?>
+										<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item-content' ) ); ?>">
+											<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item-title' ) ); ?>">
+												<?php echo esc_html( $lesson->post_title ); ?>
 											</span>
-										<?php } ?>
-										<?php
-											if ( is_user_logged_in() && ! empty( $hasaccess ) ) {
+											<?php if ( $lesson_access && $lesson_released ) { ?>
+												<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_tag pmpro_tag-success' ) ); ?>">
+													<?php esc_html_e( 'Free', 'pmpro-courses' ); ?>
+												</span>
+											<?php } ?>
+											<?php
+												// Only show the release date to visitors who could otherwise open the lesson.
+												if ( ! $lesson_released && $lesson_has_access ) { ?>
+												<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-lesson-release-date' ) ); ?>">
+													<?php
+														/* translators: %s: the date and time the lesson becomes available. */
+														printf( esc_html__( 'Available %s', 'pmpro-courses' ), esc_html( pmpro_courses_get_lesson_release_label( $lesson->ID ) ) );
+													?>
+												</span>
+												<?php
+												}
+											?>
+										</span>
+										<?php if ( ! $lesson_can_link ) { ?>
+											<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-lesson-status pmpro_courses-lesson-status-locked' ) ); ?>">
+												<svg class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-feather-icon pmpro_courses-feather-icon-locked' ) ); ?>" aria-hidden="true">
+													<use href="<?php echo esc_url( PMPRO_COURSES_URL . 'images/feather-sprite.svg#lock' ); ?>"></use>
+												</svg>
+												<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-lesson-status-label' ) ); ?>">
+													<?php esc_html_e( 'Locked', 'pmpro-courses' ); ?>
+												</span>
+											</span>
+										<?php } elseif ( is_user_logged_in() && ! empty( $hasaccess ) ) {
 												// Get the status of this lesson.
 												$lesson_completed = PMPro_Courses_User_Progress::get_user_lesson_status( $lesson->ID, get_current_user_id() );
 												if ( $lesson_completed ) { ?>
@@ -384,15 +418,12 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 													</span>
 													<?php
 												}
-											}
-										?>
-										<?php 
-											// Only add link to single lesson page if current user has access.
-											if ( ! empty( $hasaccess ) || ! empty( $lesson_access ) ) { ?>
+											} ?>
+										<?php if ( $lesson_can_link ) { ?>
 												</a>
-											<?php
-											}
-										?>
+											<?php } else { ?>
+												</span>
+											<?php } ?>
 									</li>
 									<?php
 								}
