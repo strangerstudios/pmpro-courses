@@ -368,11 +368,6 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 											<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list-item-title' ) ); ?>">
 												<?php echo esc_html( $lesson->post_title ); ?>
 											</span>
-											<?php if ( $lesson_access && $lesson_released ) { ?>
-												<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_tag pmpro_tag-success' ) ); ?>">
-													<?php esc_html_e( 'Free', 'pmpro-courses' ); ?>
-												</span>
-											<?php } ?>
 											<?php
 												// Only show the release date to visitors who could otherwise open the lesson.
 												if ( ! $lesson_released && $lesson_has_access ) { ?>
@@ -386,6 +381,11 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 												}
 											?>
 										</span>
+										<?php if ( $lesson_access && $lesson_released ) { ?>
+											<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_tag pmpro_tag-success' ) ); ?>">
+												<?php esc_html_e( 'Free', 'pmpro-courses' ); ?>
+											</span>
+										<?php } ?>
 										<?php if ( ! $lesson_can_link ) { ?>
 											<span class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-lesson-status pmpro_courses-lesson-status-locked' ) ); ?>">
 												<svg class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-feather-icon pmpro_courses-feather-icon-locked' ) ); ?>" aria-hidden="true">
