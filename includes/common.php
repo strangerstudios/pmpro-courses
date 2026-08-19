@@ -124,6 +124,19 @@ function pmpro_courses_get_lesson_count( $course_id, $post_status = array( 'publ
 }
 
 /**
+ * Check whether a lesson is marked as a "Free Lesson".
+ * The value is cast so an integration that saves an int or bool agrees with the admin checkbox's string.
+ *
+ * @since TBD
+ *
+ * @param int $lesson_id The lesson ID.
+ * @return bool
+ */
+function pmpro_courses_lesson_is_free( $lesson_id ) {
+	return '1' === (string) get_post_meta( $lesson_id, 'pmpro_courses_bypass_restriction', true );
+}
+
+/**
  * Get course data for all courses or for a specific user ID's membership levels.
  *
  */
@@ -342,7 +355,7 @@ function pmpro_courses_get_lessons_html( $course_id ) {
 						<div id="pmpro_courses-section-lessons-<?php echo intval( $section['section_id'] ); ?>" class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_card_content pmpro_courses-lessons', 'pmpro_courses-lessons' ) ); ?>" role="region" aria-labelledby="pmpro_courses-section-toggle-<?php echo intval( $section['section_id'] ); ?>">
 							<ol class="<?php echo esc_attr( pmpro_get_element_class( 'pmpro_courses-list' ) ); ?>">
 								<?php foreach ( $published_lessons as $lesson ) {
-									$lesson_access = get_post_meta( $lesson->ID, 'pmpro_courses_bypass_restriction', true );
+									$lesson_access = pmpro_courses_lesson_is_free( $lesson->ID );
 									$lesson_released = pmpro_courses_is_lesson_released( $lesson->ID );
 									$lesson_has_access = ! empty( $hasaccess ) || ! empty( $lesson_access );
 

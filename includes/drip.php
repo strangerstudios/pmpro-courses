@@ -47,7 +47,7 @@ function pmpro_courses_get_lesson_drip_date( $lesson_id ) {
  */
 function pmpro_courses_is_lesson_released( $lesson_id, $timestamp = null ) {
 	// A free lesson is public, so a drip method never applies to it.
-	if ( '1' === get_post_meta( $lesson_id, 'pmpro_courses_bypass_restriction', true ) ) {
+	if ( pmpro_courses_lesson_is_free( $lesson_id ) ) {
 		return true;
 	}
 

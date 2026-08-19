@@ -179,7 +179,8 @@
 }
 
 /* Lesson status positioning */
-.pmpro_courses-lessons .pmpro_courses-list .pmpro_courses-list-item > .pmpro_courses-list-item-link .pmpro_courses-lesson-status {
+.pmpro_courses-lessons .pmpro_courses-list .pmpro_courses-list-item > .pmpro_courses-list-item-link .pmpro_courses-lesson-status,
+.pmpro_courses-lessons .pmpro_courses-list .pmpro_courses-list-item > .pmpro_courses-list-item-row .pmpro_courses-lesson-status {
 	margin-left: auto;
 	white-space: nowrap;
 }

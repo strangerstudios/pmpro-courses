@@ -216,7 +216,7 @@ function pmpro_lessons_bypass_check($hasaccess, $post, $user, $levels) {
 		return $hasaccess;
 	}
 
-    if ( get_post_meta( $post->ID, 'pmpro_courses_bypass_restriction', true ) == '1' ) {
+    if ( pmpro_courses_lesson_is_free( $post->ID ) ) {
         return true;
     }
     return $hasaccess;
