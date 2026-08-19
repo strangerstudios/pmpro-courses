@@ -271,13 +271,13 @@ function pmpro_courses_redirect_unreleased_lesson() {
 		return;
 	}
 
-	// With no parent course there is nowhere to send them, so fall back to PMPro's no access message.
+	// Send lessons to their parent unless filtered. With nowhere to send them, PMPro's no access message shows instead.
 	$course_id = wp_get_post_parent_id( $post->ID );
-	if ( empty( $course_id ) ) {
-		return;
-	}
+	$redirect_to = apply_filters( 'pmpro_courses_lesson_redirect_to', empty( $course_id ) ? false : get_permalink( $course_id ) );
 
-	wp_safe_redirect( get_permalink( $course_id ) );
-	exit;
+	if ( $redirect_to ) {
+		wp_redirect( $redirect_to );
+		exit;
+	}
 }
 add_action( 'template_redirect', 'pmpro_courses_redirect_unreleased_lesson' );
