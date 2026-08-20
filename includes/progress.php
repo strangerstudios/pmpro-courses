@@ -270,11 +270,22 @@ function pmpro_courses_complete_lesson_button( $lid, $user_id = null ) {
 /**
  * AJAX callback to toggle completion for a lesson.
  */
-function pmpro_courses_toggle_lesson_progress_ajax(){		
+function pmpro_courses_toggle_lesson_progress_ajax(){
+	check_ajax_referer( 'pmpro_courses_toggle_lesson_progress', 'nonce' );
+
 	$user_id = get_current_user_id();
-			
-	$lesson_id = intval( $_REQUEST['lid'] );
+
+	$lesson_id = isset( $_REQUEST['lid'] ) ? absint( $_REQUEST['lid'] ) : 0;
 	$complete  = isset($_REQUEST['complete']) ? (bool) intval($_REQUEST['complete']) : null;
+
+	if ( empty( $lesson_id ) || 'pmpro_lesson' !== get_post_type( $lesson_id ) ) {
+		wp_die( '', '', array( 'response' => 400 ) );
+	}
+
+	// Progress can only be tracked on a lesson the visitor is allowed to open.
+	if ( ! pmpro_has_membership_access( $lesson_id ) ) {
+		wp_die( '', '', array( 'response' => 403 ) );
+	}
 
 	if ( ! empty( $user_id ) ) {
 		PMPro_Courses_User_Progress::toggle_lesson_progress( $lesson_id, $user_id, $complete );
