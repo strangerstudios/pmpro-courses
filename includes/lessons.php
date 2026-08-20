@@ -250,6 +250,39 @@ function pmpro_courses_unreleased_lesson_access( $hasaccess, $post, $user, $leve
 add_filter( 'pmpro_has_membership_access_filter_pmpro_lesson', 'pmpro_courses_unreleased_lesson_access', 20, 4 );
 
 /**
+ * Withhold the body of a lesson that has not been released yet.
+ * A release date is stronger than a membership restriction, so no excerpt is shown before it passes
+ * even when "Show Excerpts to Non-Members" is enabled. This covers the REST API, feeds and archives,
+ * where the template_redirect below never runs.
+ *
+ * @since TBD
+ *
+ * @param string|false $content_filter The replacement content, or false to let PMPro carry on.
+ * @param string       $content        The lesson content.
+ * @param bool         $hasaccess      Whether the visitor has access to the lesson.
+ * @return string|false
+ */
+function pmpro_courses_hide_unreleased_lesson_content( $content_filter, $content, $hasaccess ) {
+	global $post;
+
+	if ( false !== $content_filter || empty( $post ) || 'pmpro_lesson' !== $post->post_type ) {
+		return $content_filter;
+	}
+
+	if ( pmpro_courses_is_lesson_released( $post->ID ) ) {
+		return $content_filter;
+	}
+
+	// Users who can edit the lesson skip the drip date so they can preview it.
+	if ( pmpro_courses_user_can_bypass_release( $post->ID ) ) {
+		return $content_filter;
+	}
+
+	return '';
+}
+add_filter( 'pmpro_membership_content_filter', 'pmpro_courses_hide_unreleased_lesson_content', 10, 3 );
+
+/**
  * Send visitors back to the course when they open a lesson that has not been released yet.
  * An unreleased lesson is treated the same as one the visitor has no access to.
  *
