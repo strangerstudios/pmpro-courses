@@ -135,6 +135,10 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= TBD =
+* ENHANCEMENT: When a course's membership level restrictions change, existing members are now enrolled (and members who no longer qualify unenrolled) in the background via Action Scheduler. Requires Paid Memberships Pro 3.6+. (@andrewlimaza)
+* BUG FIX: Fixed the argument order passed to Tutor LMS `do_enroll()`, which prevented members from being enrolled in Tutor LMS courses on level change. (@andrewlimaza)
+
 = 2.0.1 - 2026-03-20 =
 * BUG FIX: Fixed an issue where course sections were not correctly working while using the Classic Editor. (@andrewlimaza)
 

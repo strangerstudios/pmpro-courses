@@ -32,9 +32,9 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
         add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_LearnDash', 'pmpro_membership_content_filter' ), 10, 2 );
 		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_LearnDash', 'pmpro_after_all_membership_level_changes' ) );
 
-		// Retroactive batch enrollment when a course is published with level associations.
-		add_action( 'save_post', array( 'PMPro_Courses_LearnDash', 'on_course_save' ), 20 );
-		add_action( 'pmpro_courses_learndash_retroactive_enroll_user', array( 'PMPro_Courses_LearnDash', 'retroactive_enroll_user' ), 10, 2 );
+		// Background repair of course enrollments when a course's level restrictions change.
+		add_filter( 'pmpro_courses_enrollment_course_post_types', array( 'PMPro_Courses_LearnDash', 'enrollment_course_post_types' ) );
+		add_action( PMPro_Courses_Batch_Enrollment::AS_HOOK_USER, array( 'PMPro_Courses_LearnDash', 'repair_user_enrollments' ) );
     }
 	
 	/**
@@ -212,29 +212,61 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	}
 	
 	/**
-	 * Trigger retroactive enrollment when a LearnDash course is saved as published.
+	 * Register the LearnDash course post type for background enrollment repair.
 	 *
-	 * Runs at save_post priority 20 so PMPro has already persisted level associations.
-	 *
-	 * @param int $post_id The saved post ID.
+	 * @param array $post_types Post type slugs.
+	 * @return array
 	 */
-	public static function on_course_save( $post_id ) {
-		PMPro_Courses_Batch_Enrollment::maybe_schedule_for_course( $post_id, 'sfwd-courses', 'learndash' );
+	public static function enrollment_course_post_types( $post_types ) {
+		$post_types[] = 'sfwd-courses';
+		return $post_types;
 	}
 
 	/**
-	 * Enroll a single user in a LearnDash course during retroactive batch processing.
+	 * Reconcile a user's LearnDash course enrollments with their current membership levels.
 	 *
-	 * @param int $user_id   User to enroll.
-	 * @param int $course_id LearnDash course post ID.
+	 * Idempotent: enrolls the user in courses for their current levels they are not yet
+	 * in, and unenrolls them from level-restricted courses their levels no longer grant.
+	 * Courses not tied to any level are never touched.
+	 *
+	 * @param int $user_id User ID.
 	 */
-	public static function retroactive_enroll_user( $user_id, $course_id ) {
-		if ( ! ld_course_check_user_access( $course_id, $user_id ) ) {
-			$result = ld_update_course_access( $user_id, $course_id );
-			if ( ! $result ) {
-				error_log( sprintf( 'PMPro Courses (LearnDash): Failed to enroll user %d in course %d.', $user_id, $course_id ) );
+	public static function repair_user_enrollments( $user_id ) {
+		$user_id = (int) $user_id;
+		if ( empty( $user_id ) ) {
+			return;
+		}
+
+		// Courses tied to any level.
+		$all_level_courses = array_map( 'intval', self::get_courses_for_levels( self::get_all_level_ids() ) );
+
+		// Courses tied to the user's current levels.
+		$current_levels        = wp_list_pluck( (array) pmpro_getMembershipLevelsForUser( $user_id ), 'ID' );
+		$current_level_courses = array_map( 'intval', self::get_courses_for_levels( $current_levels ) );
+
+		// Unenroll from level-restricted courses the user's levels no longer grant.
+		foreach ( array_diff( $all_level_courses, $current_level_courses ) as $course_id ) {
+			if ( ld_course_check_user_access( $course_id, $user_id ) ) {
+				// True param here at the end tells it to remove.
+				ld_update_course_access( $user_id, $course_id, true );
 			}
 		}
+
+		// Enroll in courses for the user's current levels.
+		foreach ( $current_level_courses as $course_id ) {
+			if ( ! ld_course_check_user_access( $course_id, $user_id ) ) {
+				ld_update_course_access( $user_id, $course_id );
+			}
+		}
+	}
+
+	/**
+	 * Get all membership level IDs.
+	 *
+	 * @return array
+	 */
+	private static function get_all_level_ids() {
+		return array_map( 'intval', wp_list_pluck( (array) pmpro_getAllLevels( true ), 'id' ) );
 	}
 
 	/**
@@ -276,36 +308,8 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	 * any associated private courses.
 	 */
 	public static function pmpro_after_all_membership_level_changes( $pmpro_old_user_levels ) {
-		foreach ( $pmpro_old_user_levels as $user_id => $old_levels ) {
-			// Get current courses.
-			$current_levels = pmpro_getMembershipLevelsForUser( $user_id );
-			if ( ! empty( $current_levels ) ) {
-				$current_levels = wp_list_pluck( $current_levels, 'ID' );
-			} else {
-				$current_levels = array();
-			}
-			$current_courses = PMPro_Courses_LearnDash::get_courses_for_levels( $current_levels );
-			
-			// Get old courses.
-			$old_levels = wp_list_pluck( $old_levels, 'ID' );
-			$old_courses = PMPro_Courses_LearnDash::get_courses_for_levels( $old_levels );
-			
-			// Unenroll the user in any courses they used to have, but lost.
-			$courses_to_unenroll = array_diff( $old_courses, $current_courses );
-			foreach( $courses_to_unenroll as $course_id ) {
-				if ( ld_course_check_user_access( $course_id, $user_id ) ) {
-					// True param here at the end tells it to remove.
-					ld_update_course_access( $user_id, $course_id, true );
-				}
-			}
-			
-			// Enroll the user in any courses for their current levels.
-			$courses_to_enroll = array_diff( $current_courses, $old_courses );
-			foreach( $courses_to_enroll as $course_id ) {
-				if ( ! ld_course_check_user_access( $course_id, $user_id ) ) {
-					ld_update_course_access( $user_id, $course_id );
-				}
-			}
+		foreach ( array_keys( $pmpro_old_user_levels ) as $user_id ) {
+			self::repair_user_enrollments( $user_id );
 		}
 	}
 }

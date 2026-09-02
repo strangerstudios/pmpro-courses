@@ -1,11 +1,14 @@
 <?php
 /**
- * Batch enrollment for retroactive course enrollment.
+ * Background repair of LMS course enrollments.
  *
- * When a course is published with PMPro level associations, this queues
- * background tasks via Action Scheduler to enroll all existing active
- * members into the course. Only newly added level associations trigger
- * enrollment; already-processed levels are tracked per-course.
+ * When the level restrictions for a course change, we queue one Action Scheduler
+ * task per affected member. Each task asks the active LMS module to reconcile
+ * that member's enrollments against the current level -> course map, so the
+ * work is idempotent and self-healing (no state is kept between runs).
+ *
+ * This mirrors the pattern used in PMPro core for LifterLMS streamline mode.
+ * Requires PMPro 3.6+ for the `pmpro_after_updating_post_level_restrictions` hook.
  *
  * This is NOT used by the default module (no enrollment concept there).
  */
@@ -15,268 +18,156 @@ defined( 'ABSPATH' ) || exit;
 class PMPro_Courses_Batch_Enrollment {
 
 	/**
-	 * Number of users to process per batch.
-	 */
-	const BATCH_SIZE = 50;
-
-	/**
 	 * Action Scheduler group name.
 	 */
 	const AS_GROUP = 'pmpro_courses_enrollment';
 
 	/**
-	 * Action Scheduler hook name for batch tasks.
+	 * Action Scheduler hook that fans out one task per user.
 	 */
-	const AS_HOOK = 'pmpro_courses_retroactive_enroll_batch';
+	const AS_HOOK_QUEUE = 'pmpro_courses_repair_all_enrollments_callback';
 
 	/**
-	 * Post meta key used to track which level IDs have already had
-	 * retroactive enrollment queued for a given course.
+	 * Action Scheduler hook that repairs a single user's enrollments.
+	 * LMS modules hook their own repair method onto this action.
 	 */
-	const PROCESSED_LEVELS_META = '_pmpro_courses_batch_enrollment_levels';
+	const AS_HOOK_USER = 'pmpro_courses_repair_user_enrollments';
 
 	/**
-	 * Register the Action Scheduler callback.
+	 * Number of user IDs to fetch per query while building the queue.
+	 */
+	const QUEUE_CHUNK_SIZE = 250;
+
+	/**
+	 * Register hooks. Runs on plugins_loaded so PMPro core is guaranteed to be loaded.
 	 */
 	public static function init() {
-		add_action( self::AS_HOOK, array( __CLASS__, 'process_batch_task' ) );
-		add_action( 'pmpro_schedule_daily', array( __CLASS__, 'schedule_daily_retroactive_enrollment' ) );
+		if ( ! self::is_available() ) {
+			return;
+		}
+
+		add_action( 'pmpro_after_updating_post_level_restrictions', array( __CLASS__, 'after_updating_post_level_restrictions' ) );
+		add_action( self::AS_HOOK_QUEUE, array( __CLASS__, 'repair_all_enrollments_callback' ) );
 	}
 
 	/**
-	 * Called from each LMS module's save_post handler.
+	 * Whether the PMPro Action Scheduler wrapper is available (PMPro 3.6+).
 	 *
-	 * Detects newly added PMPro level associations for a published course
-	 * and schedules batch enrollment for existing members.
-	 *
-	 * @param int    $post_id     Course post ID.
-	 * @param string $post_type   Expected course post type for the active module.
-	 * @param string $module_slug Module slug (e.g. 'learndash', 'lifterlms').
+	 * @return bool
 	 */
-	public static function maybe_schedule_for_course( $post_id, $post_type, $module_slug ) {
-		// Skip autosaves and revisions.
-		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
-			return;
-		}
-
-		$post = get_post( $post_id );
-		if ( ! $post || $post->post_type !== $post_type || $post->post_status !== 'publish' ) {
-			return;
-		}
-
-		// Get the level IDs currently associated with this course.
-		$current_levels = self::get_level_ids_for_post( $post_id );
-		if ( empty( $current_levels ) ) {
-			return;
-		}
-
-		// Get level IDs we have already processed for retroactive enrollment.
-		$processed_levels = get_post_meta( $post_id, self::PROCESSED_LEVELS_META, true );
-		if ( ! is_array( $processed_levels ) ) {
-			$processed_levels = array();
-		}
-
-		// Only act on newly associated levels.
-		$new_levels = array_values( array_diff( array_map( 'intval', $current_levels ), array_map( 'intval', $processed_levels ) ) );
-		if ( empty( $new_levels ) ) {
-			return;
-		}
-
-		self::schedule( $post_id, $new_levels, $module_slug );
-
-		// Mark all current levels as processed so future saves don't re-queue.
-		update_post_meta( $post_id, self::PROCESSED_LEVELS_META, array_map( 'intval', $current_levels ) );
+	public static function is_available() {
+		return class_exists( 'PMPro_Action_Scheduler' ) && function_exists( 'as_enqueue_async_action' );
 	}
 
 	/**
-	 * Schedule the first batch task for a course.
+	 * Course post types for the active LMS modules.
 	 *
-	 * @param int    $course_id   Course post ID.
-	 * @param array  $level_ids   Level IDs to enroll members from.
-	 * @param string $module_slug Module slug.
+	 * @return array Post type slugs.
 	 */
-	public static function schedule( $course_id, $level_ids, $module_slug ) {
-		if ( empty( $level_ids ) || empty( $course_id ) ) {
+	public static function get_course_post_types() {
+		/**
+		 * Filter the post types that should trigger an enrollment repair when
+		 * their level restrictions change. LMS modules add their course post type here.
+		 *
+		 * @param array $post_types Post type slugs.
+		 */
+		return array_unique( (array) apply_filters( 'pmpro_courses_enrollment_course_post_types', array() ) );
+	}
+
+	/**
+	 * When the level restrictions for a course change, queue a repair for its members.
+	 *
+	 * @param int $post_id The post whose level restrictions were updated.
+	 */
+	public static function after_updating_post_level_restrictions( $post_id ) {
+		if ( ! in_array( get_post_type( $post_id ), self::get_course_post_types(), true ) ) {
 			return;
 		}
 
-		if ( ! class_exists( 'PMPro_Action_Scheduler' ) || ! function_exists( 'as_enqueue_async_action' ) ) {
-			error_log( 'PMPro Courses: Action Scheduler not available — retroactive enrollment disabled. Requires PMPro 3.5+.' );
+		// No module is listening, nothing to do.
+		if ( ! has_action( self::AS_HOOK_USER ) ) {
+			return;
+		}
+
+		self::schedule_repair_for_course( $post_id );
+	}
+
+	/**
+	 * Queue the fan-out task for a course.
+	 *
+	 * @param int $course_id Course post ID.
+	 */
+	public static function schedule_repair_for_course( $course_id ) {
+		if ( ! self::is_available() ) {
 			return;
 		}
 
 		PMPro_Action_Scheduler::instance()->maybe_add_task(
-			self::AS_HOOK,
-			array(
-				array(
-					'course_id'   => $course_id,
-					'level_ids'   => $level_ids,
-					'module_slug' => $module_slug,
-					'offset'      => 0,
-				),
-			),
+			self::AS_HOOK_QUEUE,
+			array( 'course_id' => (int) $course_id ),
 			self::AS_GROUP,
 			null,
-			true // run_asap — enqueue for immediate async execution.
+			true
 		);
 	}
 
 	/**
-	 * Action Scheduler callback — unwraps task data and runs one batch.
+	 * Action Scheduler callback: queue one repair task per member.
 	 *
-	 * @param array $data Task data array with keys: course_id, level_ids, module_slug, offset.
+	 * We queue everyone who has ever held a level (not just members of the course's
+	 * current levels) because the hook fires after the change, so a level that was
+	 * just removed from the course is no longer visible here and its members would
+	 * otherwise never be unenrolled.
+	 *
+	 * @param int $course_id Course post ID.
 	 */
-	public static function process_batch_task( $data ) {
-		if ( empty( $data['course_id'] ) || empty( $data['level_ids'] ) || empty( $data['module_slug'] ) ) {
-			return;
-		}
+	public static function repair_all_enrollments_callback( $course_id ) {
+		global $wpdb;
 
-		self::process_batch(
-			(int) $data['course_id'],
-			(array) $data['level_ids'],
-			(string) $data['module_slug'],
-			(int) $data['offset']
-		);
-	}
+		// Halt Action Scheduler processing until we finish adding tasks.
+		PMPro_Action_Scheduler::instance()->halt();
 
-	/**
-	 * Process one batch of enrollments.
-	 *
-	 * Fires `pmpro_courses_{module_slug}_retroactive_enroll_user` for each
-	 * user in the batch. If the batch is full, chains the next batch as a
-	 * new async task.
-	 *
-	 * @param int    $course_id
-	 * @param array  $level_ids
-	 * @param string $module_slug
-	 * @param int    $offset
-	 */
-	public static function process_batch( $course_id, $level_ids, $module_slug, $offset ) {
-		$user_ids = self::get_active_members( $level_ids, self::BATCH_SIZE, $offset );
-
-		if ( empty( $user_ids ) ) {
-			return;
-		}
-
-		foreach ( $user_ids as $user_id ) {
-			/**
-			 * Fires to enroll a single user in a course retroactively.
-			 *
-			 * Each LMS module hooks into this to perform its own enrollment call.
-			 * The hook name is: pmpro_courses_{module_slug}_retroactive_enroll_user
-			 *
-			 * @param int $user_id   The user to enroll.
-			 * @param int $course_id The course to enroll them in.
-			 */
-			do_action( "pmpro_courses_{$module_slug}_retroactive_enroll_user", (int) $user_id, (int) $course_id );
-		}
-
-		// If the batch was full there may be more users — chain the next batch.
-		if ( count( $user_ids ) === self::BATCH_SIZE && function_exists( 'as_enqueue_async_action' ) ) {
-			as_enqueue_async_action(
-				self::AS_HOOK,
-				array(
-					array(
-						'course_id'   => $course_id,
-						'level_ids'   => $level_ids,
-						'module_slug' => $module_slug,
-						'offset'      => $offset + self::BATCH_SIZE,
-					),
-				),
-				self::AS_GROUP
+		$last_user_id = 0;
+		do {
+			// Keyset pagination on user_id so churn during the loop can't skip or repeat rows.
+			$user_ids = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT DISTINCT user_id
+					 FROM {$wpdb->pmpro_memberships_users}
+					 WHERE user_id > %d
+					 ORDER BY user_id
+					 LIMIT %d",
+					$last_user_id,
+					self::QUEUE_CHUNK_SIZE
+				)
 			);
-		}
+
+			foreach ( $user_ids as $user_id ) {
+				self::schedule_repair_for_user( $user_id );
+				$last_user_id = (int) $user_id;
+			}
+		} while ( count( $user_ids ) === self::QUEUE_CHUNK_SIZE );
+
+		// Resume Action Scheduler processing.
+		PMPro_Action_Scheduler::instance()->resume();
 	}
 
 	/**
-	 * Schedule retroactive enrollment for all published course posts daily.
-	 */
-	public static function schedule_daily_retroactive_enrollment() {
-		$module_post_types = get_option( 'pmpro_courses_modules', array() );
-
-		foreach ( $module_post_types as $module_slug => $post_type ) {
-			if ( ! pmpro_courses_is_module_active( $module_slug ) ) {
-				continue;
-			}
-
-			foreach ( self::get_published_course_ids_for_post_type( $post_type ) as $course_id ) {
-				self::maybe_schedule_for_course( $course_id, $post_type, $module_slug );
-			}
-		}
-	}
-
-	/**
-	 * Get published course post IDs for the given post type.
+	 * Queue a repair task for a single user.
 	 *
-	 * @param string $post_type
-	 * @return array
+	 * @param int $user_id User ID.
 	 */
-	private static function get_published_course_ids_for_post_type( $post_type ) {
-		global $wpdb;
+	public static function schedule_repair_for_user( $user_id ) {
+		if ( ! self::is_available() ) {
+			return;
+		}
 
-		return $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT DISTINCT p.ID
-				 FROM {$wpdb->posts} p
-				 INNER JOIN {$wpdb->pmpro_memberships_pages} mp ON mp.page_id = p.ID
-				 WHERE p.post_type = %s
-				 AND p.post_status = 'publish'
-				 AND p.post_modified >= %s",
-				$post_type,
-				gmdate( 'Y-m-d H:i:s', strtotime( '-24 hours' ) )
-			)
+		PMPro_Action_Scheduler::instance()->maybe_add_task(
+			self::AS_HOOK_USER,
+			array( 'user_id' => (int) $user_id ),
+			self::AS_GROUP
 		);
 	}
-
-	/**
-	 * Get the PMPro membership level IDs associated with a post.
-	 *
-	 * @param int $post_id
-	 * @return array Level IDs (integers as strings from DB).
-	 */
-	public static function get_level_ids_for_post( $post_id ) {
-		global $wpdb;
-
-		return $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT membership_id FROM {$wpdb->pmpro_memberships_pages} WHERE page_id = %d",
-				$post_id
-			)
-		);
-	}
-
-	/**
-	 * Get active member user IDs for a set of level IDs, paginated.
-	 *
-	 * @param array $level_ids
-	 * @param int   $limit
-	 * @param int   $offset
-	 * @return array User IDs.
-	 */
-	private static function get_active_members( $level_ids, $limit, $offset ) {
-		global $wpdb;
-
-		if ( empty( $level_ids ) ) {
-			return array();
-		}
-
-		$level_ids    = array_map( 'intval', $level_ids );
-		sort( $level_ids );
-		$placeholders = implode( ', ', array_fill( 0, count( $level_ids ), '%d' ) );
-		$args         = array_merge( $level_ids, array( $limit, $offset ) );
-
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$sql = "SELECT DISTINCT user_id
-		        FROM {$wpdb->pmpro_memberships_users}
-		        WHERE membership_id IN ($placeholders)
-		        AND status = 'active'
-		        ORDER BY user_id
-		        LIMIT %d OFFSET %d";
-
-		return $wpdb->get_col( $wpdb->prepare( $sql, $args ) );
-	}
 }
-
-if ( class_exists( 'PMPro_Action_Scheduler' ) && function_exists( 'as_enqueue_async_action' ) ) {
-	PMPro_Courses_Batch_Enrollment::init();
-}
+// Priority 20 so this runs after pmpro_courses_setup_modules() has registered the modules.
+add_action( 'plugins_loaded', array( 'PMPro_Courses_Batch_Enrollment', 'init' ), 20 );
