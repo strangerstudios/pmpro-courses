@@ -283,7 +283,14 @@ function pmpro_courses_toggle_lesson_progress_ajax(){
 	}
 
 	// Progress can only be tracked on a lesson the visitor is allowed to open.
-	if ( ! pmpro_has_membership_access( $lesson_id ) ) {
+	// Restrictions are set on the parent course, so check that first, then fall
+	// back to the lesson itself to catch the Free Lesson bypass.
+	$course_id = (int) get_post_field( 'post_parent', $lesson_id );
+	$access    = ! empty( $course_id ) && pmpro_has_membership_access( $course_id );
+	if ( ! $access ) {
+		$access = pmpro_has_membership_access( $lesson_id );
+	}
+	if ( ! $access ) {
 		wp_die( '', '', array( 'response' => 403 ) );
 	}
 
