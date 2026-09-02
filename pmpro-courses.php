@@ -202,7 +202,10 @@ function pmpro_courses_frontend_styles(){
 	) {
 		wp_enqueue_style( 'pmpro-courses-styles', PMPRO_COURSES_URL . 'css/frontend.css', array(), PMPRO_COURSES_VERSION );
 		wp_enqueue_script( 'pmpro-courses-scripts', PMPRO_COURSES_URL . 'js/frontend.js', array( 'jquery' ), PMPRO_COURSES_VERSION );
-		wp_localize_script( 'pmpro-courses-scripts', 'pmpro_courses', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+		wp_localize_script( 'pmpro-courses-scripts', 'pmpro_courses', array(
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			'nonce'   => wp_create_nonce( 'pmpro_courses_toggle_lesson_progress' ),
+		) );
 	}
 
 }

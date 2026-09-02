@@ -10,7 +10,8 @@ jQuery(document).ready(function(){
 		var data = {
 			action: 'pmpro_courses_toggle_lesson_progress',
 			lid: lid,
-			complete: complete
+			complete: complete,
+			nonce: pmpro_courses.nonce
 		}
 
 		jQuery.get( pmpro_courses.ajaxurl, data, function( response ){
