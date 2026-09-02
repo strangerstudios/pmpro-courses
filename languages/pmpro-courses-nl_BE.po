@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 2.1.3\n"
+"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 2.2\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-30T17:59:34+00:00\n"
+"POT-Creation-Date: 2026-09-02T14:13:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pmpro-courses\n"
@@ -33,6 +33,7 @@ msgstr "Archiefpagina inschakelen voor de standaard Cursussen CPT?"
 
 #: pmpro-courses.php:119
 #: pmpro-courses.php:173
+#: pmpro-courses.php:177
 msgid "Adding..."
 msgstr "Aan het toevoegen..."
 
@@ -125,31 +126,37 @@ msgstr "Sensei LMS"
 
 #: pmpro-courses.php:123
 #: pmpro-courses.php:177
+#: pmpro-courses.php:181
 msgid "Error removing lesson [2]"
 msgstr "Fout bij verwijderen van les [2]"
 
 #: pmpro-courses.php:122
 #: pmpro-courses.php:176
+#: pmpro-courses.php:180
 msgid "Error removing lesson [1]"
 msgstr "Fout bij verwijderen van les [1]"
 
 #: pmpro-courses.php:121
 #: pmpro-courses.php:175
+#: pmpro-courses.php:179
 msgid "Error saving lesson [2]"
 msgstr "Fout bij opslaan van les [2]"
 
 #: pmpro-courses.php:120
 #: pmpro-courses.php:174
+#: pmpro-courses.php:178
 msgid "Error saving lesson [1]"
 msgstr "Fout bij opslaan van les [1]"
 
 #: pmpro-courses.php:118
 #: pmpro-courses.php:172
+#: pmpro-courses.php:176
 msgid "Saving..."
 msgstr "Aan het opslaan..."
 
 #: pmpro-courses.php:117
 #: pmpro-courses.php:171
+#: pmpro-courses.php:175
 msgid "Save"
 msgstr "Opslaan"
 
@@ -181,6 +188,7 @@ msgstr "Afgerond"
 
 #: includes/post-types/lessons.php:85
 #: includes/post-types/lessons.php:94
+#: includes/post-types/lessons.php:102
 msgid "None"
 msgstr "Geen"
 
@@ -545,6 +553,7 @@ msgstr "&#8212;"
 #: includes/post-types/courses.php:16
 #: includes/post-types/courses.php:47
 #: includes/post-types/lessons.php:88
+#: includes/post-types/lessons.php:96
 msgid "Course"
 msgstr "Cursus"
 
@@ -578,6 +587,7 @@ msgstr "Lessen"
 #: includes/courses.php:149
 #: includes/common.php:213
 #: includes/courses.php:209
+#: includes/common.php:226
 #, php-format
 msgid "%s Lesson"
 msgid_plural "%s Lessons"
@@ -589,6 +599,7 @@ msgstr[1] ""
 #: includes/adminpages/class-pmpro-courses-member-edit.php:11
 #: includes/common.php:169
 #: includes/post-types/courses.php:15
+#: includes/common.php:182
 msgid "Courses"
 msgstr "Cursussen"
 
@@ -695,6 +706,7 @@ msgstr "Paid Memberships Pro - Courses for Membership Add On"
 #: includes/common.php:240
 #: includes/common.php:372
 #: includes/common.php:373
+#: includes/common.php:420
 msgid "Complete"
 msgstr ""
 
@@ -798,6 +810,7 @@ msgstr ""
 
 #. translators: %s is the course name.
 #: includes/common.php:185
+#: includes/common.php:198
 #, php-format
 msgid "Progress for course %s"
 msgstr ""
@@ -805,28 +818,33 @@ msgstr ""
 #: includes/common.php:300
 #: includes/post-types/courses.php:90
 #: includes/common.php:301
+#: includes/common.php:314
 msgid "Course Outline"
 msgstr ""
 
 #. translators: %d: section number (integer)
 #: includes/common.php:327
 #: includes/common.php:328
+#: includes/common.php:341
 #, php-format
 msgid "Section %d"
 msgstr ""
 
 #: includes/common.php:359
 #: includes/common.php:360
+#: includes/common.php:399
 msgid "Free"
 msgstr ""
 
 #: includes/common.php:381
 #: includes/common.php:382
+#: includes/common.php:429
 msgid "Incomplete"
 msgstr ""
 
 #: includes/common.php:445
 #: includes/common.php:446
+#: includes/common.php:490
 msgid "Select a lesson..."
 msgstr ""
 
@@ -871,10 +889,12 @@ msgid "Lesson Settings"
 msgstr ""
 
 #: includes/post-types/lessons.php:104
+#: includes/post-types/lessons.php:112
 msgid "Free Lesson"
 msgstr ""
 
 #: includes/post-types/lessons.php:111
+#: includes/post-types/lessons.php:116
 msgid "Yes, bypass member restrictions and make this lesson public."
 msgstr ""
 
@@ -894,4 +914,40 @@ msgstr ""
 
 #: includes/shortcodes/my-courses.php:25
 msgid "Log in to view your courses"
+msgstr ""
+
+#. translators: %s: the date and time the lesson becomes available.
+#: includes/common.php:390
+#, php-format
+msgid "Available %s"
+msgstr ""
+
+#: includes/common.php:408
+msgid "Locked"
+msgstr ""
+
+#: includes/post-types/lessons.php:119
+msgid "Free lessons are always available and cannot be dripped."
+msgstr ""
+
+#: includes/post-types/lessons.php:124
+msgid "Drip Method"
+msgstr ""
+
+#: includes/post-types/lessons.php:127
+msgid "None, the lesson is available immediately"
+msgstr ""
+
+#: includes/post-types/lessons.php:128
+msgid "Access is granted on a specific date"
+msgstr ""
+
+#: includes/post-types/lessons.php:133
+msgid "Release Date"
+msgstr ""
+
+#. translators: %s: the site's timezone, e.g. America/New_York.
+#: includes/post-types/lessons.php:140
+#, php-format
+msgid "Uses the site timezone: %s."
 msgstr ""
