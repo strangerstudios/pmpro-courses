@@ -19,6 +19,7 @@ define( 'PMPRO_COURSES_BASENAME', plugin_basename( __FILE__ ) );
 define( 'PMPRO_COURSES_URL', plugin_dir_url( __FILE__ ) );
 
 // Includes.
+require_once PMPRO_COURSES_DIR . '/includes/drip.php';
 require_once PMPRO_COURSES_DIR . '/includes/common.php';
 require_once PMPRO_COURSES_DIR . '/includes/admin.php';
 require_once PMPRO_COURSES_DIR . '/includes/settings.php';
@@ -130,6 +131,9 @@ function pmpro_courses_admin_styles( $hook ) {
 	// Are we editing a lesson?
 	if ( in_array( $hook, array( 'post.php', 'post-new.php' ) ) && 'pmpro_lesson' === get_post_type() ) {
 		$load_css = true;
+
+		// Not admin.js, which expects the course editor and its select2 dependency.
+		wp_enqueue_script( 'pmpro-courses-lesson-settings', PMPRO_COURSES_URL . 'js/lesson-settings.js', array( 'jquery' ), PMPRO_COURSES_VERSION, true );
 	}
 
 	// Are we on the settings or Edit Member page?

@@ -216,9 +216,101 @@ function pmpro_lessons_bypass_check($hasaccess, $post, $user, $levels) {
 		return $hasaccess;
 	}
 
-    if ( get_post_meta( $post->ID, 'pmpro_courses_bypass_restriction', true ) == '1' ) {
+    if ( pmpro_courses_lesson_is_free( $post->ID ) ) {
         return true;
     }
     return $hasaccess;
 }
 add_filter('pmpro_has_membership_access_filter_pmpro_lesson', 'pmpro_lessons_bypass_check', 10, 4);
+
+/**
+ * Deny access to a lesson until its drip date has passed.
+ * Runs after the "Free Lesson" bypass, which a drip method defers to.
+ *
+ * @since TBD
+ */
+function pmpro_courses_unreleased_lesson_access( $hasaccess, $post, $user, $levels ) {
+
+	// A drip method can only take access away, never grant it.
+	if ( ! $hasaccess ) {
+		return $hasaccess;
+	}
+
+	if ( pmpro_courses_is_lesson_released( $post->ID ) ) {
+		return $hasaccess;
+	}
+
+	// Users who can edit the lesson skip the drip date, not membership restrictions.
+	if ( pmpro_courses_user_can_bypass_release( $post->ID, ! empty( $user->ID ) ? (int) $user->ID : 0 ) ) {
+		return $hasaccess;
+	}
+
+	return false;
+}
+add_filter( 'pmpro_has_membership_access_filter_pmpro_lesson', 'pmpro_courses_unreleased_lesson_access', 20, 4 );
+
+/**
+ * Withhold the body of a lesson that has not been released yet.
+ * A release date is stronger than a membership restriction, so no excerpt is shown before it passes
+ * even when "Show Excerpts to Non-Members" is enabled. This covers the REST API, feeds and archives,
+ * where the template_redirect below never runs.
+ *
+ * @since TBD
+ *
+ * @param string|false $content_filter The replacement content, or false to let PMPro carry on.
+ * @param string       $content        The lesson content.
+ * @param bool         $hasaccess      Whether the visitor has access to the lesson.
+ * @return string|false
+ */
+function pmpro_courses_hide_unreleased_lesson_content( $content_filter, $content, $hasaccess ) {
+	global $post;
+
+	if ( false !== $content_filter || empty( $post ) || 'pmpro_lesson' !== $post->post_type ) {
+		return $content_filter;
+	}
+
+	if ( pmpro_courses_is_lesson_released( $post->ID ) ) {
+		return $content_filter;
+	}
+
+	// Users who can edit the lesson skip the drip date so they can preview it.
+	if ( pmpro_courses_user_can_bypass_release( $post->ID ) ) {
+		return $content_filter;
+	}
+
+	return '';
+}
+add_filter( 'pmpro_membership_content_filter', 'pmpro_courses_hide_unreleased_lesson_content', 10, 3 );
+
+/**
+ * Send visitors back to the course when they open a lesson that has not been released yet.
+ * An unreleased lesson is treated the same as one the visitor has no access to.
+ *
+ * @since TBD
+ */
+function pmpro_courses_redirect_unreleased_lesson() {
+	global $post;
+
+	if ( ! is_singular( 'pmpro_lesson' ) || empty( $post ) ) {
+		return;
+	}
+
+	if ( pmpro_courses_is_lesson_released( $post->ID ) ) {
+		return;
+	}
+
+	// Users who can edit the lesson skip the drip date so they can preview it.
+	if ( pmpro_courses_user_can_bypass_release( $post->ID ) ) {
+		return;
+	}
+
+	// Send lessons to their parent unless filtered. With nowhere to send them, PMPro's no access message shows instead.
+	$course_id = wp_get_post_parent_id( $post->ID );
+	$redirect_to = apply_filters( 'pmpro_courses_lesson_redirect_to', empty( $course_id ) ? false : get_permalink( $course_id ) );
+
+	if ( $redirect_to ) {
+		wp_redirect( $redirect_to );
+		exit;
+	}
+}
+add_action( 'template_redirect', 'pmpro_courses_redirect_unreleased_lesson' );
