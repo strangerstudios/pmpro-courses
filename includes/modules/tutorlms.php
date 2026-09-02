@@ -75,15 +75,13 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 		// Only check if a TutorLMS CPT.
 		if ( ! empty( $post ) && is_singular( array( 'courses', 'topics', 'lesson', 'tutor_quiz' ) ) ) {
 
-			// If lesson check grandparent (course) access
+			// Lessons: check the lesson itself so has_access_to_post() can defer to Tutor
+			// enrollment for non-public courses (same as topics/quizzes).
 			if ( is_singular( 'lesson' ) ) {
-				$topic = get_post( $post->post_parent );
-				$post_grand_parent = ! empty( $topic ) ? (int) $topic->post_parent : (int) $post->post_parent;
-
-				$access = get_post_meta( $post->ID, '_is_preview', true ) || self::has_access_to_post( $post_grand_parent );
+				$access = get_post_meta( $post->ID, '_is_preview', true ) || self::has_access_to_post( $post->ID );
 			} else {
 				$access = self::has_access_to_post( $post->ID );
-			}			
+			}
 
 			// They have access. Let them in.
 			if ( $access ) {

@@ -2,8 +2,8 @@
 Contributors: strangerstudios, paidmembershipspro, kimannwall, jarryd-long
 Tags: course, education, elearning, lms, membership, pmpro
 Requires at least: 5.4
-Tested up to: 6.9
-Stable tag: 2.0.1
+Tested up to: 7.0
+Stable tag: 2.1.3
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -136,8 +136,20 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 
 == Changelog ==
 = TBD =
-* ENHANCEMENT: When a course's membership level restrictions change, existing members are now enrolled (and members who no longer qualify unenrolled) in the background via Action Scheduler. Requires Paid Memberships Pro 3.6+. (@andrewlimaza)
-* BUG FIX: Fixed the argument order passed to Tutor LMS `do_enroll()`, which prevented members from being enrolled in Tutor LMS courses on level change. (@andrewlimaza)
+* ENHANCEMENT: When a course's membership level restrictions change, existing members are now enrolled (and members who no longer qualify unenrolled) in the background via Action Scheduler. Requires Paid Memberships Pro 3.6+. #108 (@andrewlimaza)
+
+= 2.1.3 - 2026-07-30 =
+* BUG FIX: Fixed members not being enrolled in Tutor LMS courses when their membership level changed. The arguments passed to Tutor's `do_enroll()` were transposed, so enrollment silently failed. #135 (@dparker1005)
+
+= 2.1.2 - 2026-06-30 =
+* BUG FIX: Fixed a PHP 8.1+ deprecation notice that occurred when rendering a course outline for a course with no lessons. #127 (@kimcoleman)
+
+= 2.1.1 - 2026-06-04 =
+* BUG FIX: Fixed an issue where LearnDash enrollment wasn't working correctly on membership assignment or cancellation. #122 (@andrewlimaza)
+
+= 2.1 - 2026-05-13 =
+* FEATURE: Added Course structured data (JSON-LD) output for the default Courses module. Outputs `Course` schema on single course pages and `ItemList` schema on the CPT archive and on pages containing the `[pmpro_all_courses]` shortcode or the `pmpro-courses/all-courses` block. Adds two new filters: `pmpro_courses_structured_data_provider` and `pmpro_courses_structured_data_schema`. #109 (@flintfromthebasement)
+* FEATURE: Added support for LearnDash Group enrollment. Membership levels can now restrict access to LearnDash Groups, and members are automatically enrolled in or removed from associated Groups when their level changes. #111 (@andrewlimaza)
 
 = 2.0.1 - 2026-03-20 =
 * BUG FIX: Fixed an issue where course sections were not correctly working while using the Classic Editor. (@andrewlimaza)

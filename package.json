@@ -1,6 +1,6 @@
 {
     "name": "pmpro-courses",
-    "version": "1.2.7",
+    "version": "2.1.3",
     "description": "Courses for Memberships Add On",
     "author": "Stranger Studios",
     "license": "GPL-2.0-or-later",
@@ -15,6 +15,6 @@
         "start": "wp-scripts start"
     },
     "devDependencies": {
-        "@wordpress/scripts": "^31.5.0"
+        "@wordpress/scripts": "^34.2.0"
     }
 }

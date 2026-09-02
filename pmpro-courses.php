@@ -3,7 +3,7 @@
  * Plugin Name: Paid Memberships Pro - Courses for Membership Add On
  * Plugin URI: https://www.paidmembershipspro.com/add-ons/pmpro-courses-lms-integration/
  * Description: Create courses and lessons for members. Integrates LMS plugins with Paid Memberships Pro.
- * Version: 2.0.1
+ * Version: 2.1.3
  * Author: Paid Memberships Pro
  * Author URI: https://www.paidmembershipspro.com
  * Text Domain: pmpro-courses
@@ -13,7 +13,7 @@
 
 defined( 'ABSPATH' ) || die( 'File cannot be accessed directly' );
 
-define( 'PMPRO_COURSES_VERSION', '2.0.1' );
+define( 'PMPRO_COURSES_VERSION', '2.1.3' );
 define( 'PMPRO_COURSES_DIR', dirname( __FILE__ ) );
 define( 'PMPRO_COURSES_BASENAME', plugin_basename( __FILE__ ) );
 define( 'PMPRO_COURSES_URL', plugin_dir_url( __FILE__ ) );
@@ -203,7 +203,10 @@ function pmpro_courses_frontend_styles(){
 	) {
 		wp_enqueue_style( 'pmpro-courses-styles', PMPRO_COURSES_URL . 'css/frontend.css', array(), PMPRO_COURSES_VERSION );
 		wp_enqueue_script( 'pmpro-courses-scripts', PMPRO_COURSES_URL . 'js/frontend.js', array( 'jquery' ), PMPRO_COURSES_VERSION );
-		wp_localize_script( 'pmpro-courses-scripts', 'pmpro_courses', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+		wp_localize_script( 'pmpro-courses-scripts', 'pmpro_courses', array(
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			'nonce'   => wp_create_nonce( 'pmpro_courses_toggle_lesson_progress' ),
+		) );
 	}
 
 }

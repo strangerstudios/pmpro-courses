@@ -58,6 +58,8 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	public static function admin_menu() {
 		if( function_exists( 'pmpro_page_meta' ) ){
 			add_meta_box( 'pmpro_page_meta', esc_html__( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'sfwd-courses', 'side');
+			add_meta_box( 'pmpro_page_meta', esc_html__( 'Require Membership', 'pmpro-courses' ), 'pmpro_page_meta', 'groups', 'side' );
+
 		}
 	}
 
@@ -97,7 +99,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 			return true;
 		}
 		
-		$ld_non_course_cpts = array( 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz', 'sfwd-question', 'sfwd-certificates', 'groups', 'sfwd-assignment' );				
+		$ld_non_course_cpts = array( 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz', 'sfwd-question', 'sfwd-certificates', 'sfwd-assignment' );
 		
 		// Check if this is a course or other non-LD CPT.
 		if ( ! in_array( get_post_type( $post_id ), $ld_non_course_cpts ) ) {
@@ -212,22 +214,23 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	}
 	
 	/**
-	 * Register the LearnDash course post type for background enrollment repair.
+	 * Register the LearnDash course and group post types for background enrollment repair.
 	 *
 	 * @param array $post_types Post type slugs.
 	 * @return array
 	 */
 	public static function enrollment_course_post_types( $post_types ) {
 		$post_types[] = 'sfwd-courses';
+		$post_types[] = 'groups';
 		return $post_types;
 	}
 
 	/**
-	 * Reconcile a user's LearnDash course enrollments with their current membership levels.
+	 * Reconcile a user's LearnDash course and group enrollments with their current membership levels.
 	 *
-	 * Idempotent: enrolls the user in courses for their current levels they are not yet
-	 * in, and unenrolls them from level-restricted courses their levels no longer grant.
-	 * Courses not tied to any level are never touched.
+	 * Idempotent: enrolls the user in courses/groups for their current levels they are not yet
+	 * in, and unenrolls them from level-restricted courses/groups their levels no longer grant.
+	 * Courses and groups not tied to any level are never touched.
 	 *
 	 * @param int $user_id User ID.
 	 */
@@ -237,11 +240,11 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 			return;
 		}
 
-		// Courses tied to any level.
-		$all_level_courses = array_map( 'intval', self::get_courses_for_levels( self::get_all_level_ids() ) );
+		$all_levels     = self::get_all_level_ids();
+		$current_levels = wp_list_pluck( (array) pmpro_getMembershipLevelsForUser( $user_id ), 'ID' );
 
-		// Courses tied to the user's current levels.
-		$current_levels        = wp_list_pluck( (array) pmpro_getMembershipLevelsForUser( $user_id ), 'ID' );
+		// Courses tied to any level, and to the user's current levels.
+		$all_level_courses     = array_map( 'intval', self::get_courses_for_levels( $all_levels ) );
 		$current_level_courses = array_map( 'intval', self::get_courses_for_levels( $current_levels ) );
 
 		// Unenroll from level-restricted courses the user's levels no longer grant.
@@ -256,6 +259,24 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 		foreach ( $current_level_courses as $course_id ) {
 			if ( ! ld_course_check_user_access( $course_id, $user_id ) ) {
 				ld_update_course_access( $user_id, $course_id );
+			}
+		}
+
+		// Groups tied to any level, and to the user's current levels.
+		$all_level_groups     = array_map( 'intval', self::get_groups_for_levels( $all_levels ) );
+		$current_level_groups = array_map( 'intval', self::get_groups_for_levels( $current_levels ) );
+
+		// Unenroll from level-restricted groups the user's levels no longer grant.
+		foreach ( array_diff( $all_level_groups, $current_level_groups ) as $group_id ) {
+			if ( learndash_is_user_in_group( $user_id, $group_id ) ) {
+				ld_update_group_access( $user_id, $group_id, true );
+			}
+		}
+
+		// Enroll in groups for the user's current levels.
+		foreach ( $current_level_groups as $group_id ) {
+			if ( ! learndash_is_user_in_group( $user_id, $group_id ) ) {
+				ld_update_group_access( $user_id, $group_id );
 			}
 		}
 	}
@@ -273,36 +294,16 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 	 * Get courses associated with a level.
 	 */
 	public static function get_courses_for_levels( $level_ids ) {
-		global $wpdb;
-		
-		// In case a level object was passed in.
-		if ( is_object( $level_ids ) ) {
-			$level_ids = $level_ids->ID;
-		}
-		
-		// Make sure we have an array of ids.
-		if ( ! is_array( $level_ids ) ) {
-			$level_ids = array( $level_ids );
-		}
-		
-		if ( empty( $level_ids ) ) {
-			return array();
-		}
-
-		$sql = "
-			SELECT mp.page_id 
-			FROM $wpdb->pmpro_memberships_pages mp 
-			LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID 
-			WHERE mp.membership_id IN(".implode(', ', array_fill(0, count($level_ids), '%s')).") 
-			AND p.post_type = 'sfwd-courses' 
-			AND p.post_status = 'publish' 
-			GROUP BY mp.page_id
-		";
-		$course_ids = $wpdb->get_col( call_user_func_array( array( $wpdb, 'prepare' ), array_merge( array( $sql ), $level_ids ) ) );
-
-		return $course_ids;
+		return pmpro_courses_get_post_ids_from_levels( $level_ids, 'sfwd-courses' );
 	}
 	
+	/**
+	 * Get groups associated with a level.
+	 */
+	public static function get_groups_for_levels( $level_ids ) {
+		return pmpro_courses_get_post_ids_from_levels( $level_ids, 'groups' );
+	}
+
 	/**
 	 * When users change levels, enroll/unenroll them from
 	 * any associated private courses.
