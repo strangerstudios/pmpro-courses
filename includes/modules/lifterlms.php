@@ -29,6 +29,10 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
 		
 		add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_LifterLMS', 'pmpro_membership_content_filter' ), 10, 2 );
         add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_LifterLMS', 'pmpro_after_all_membership_level_changes' ) );
+
+		// Background repair of course enrollments when a course's level restrictions change.
+		add_filter( 'pmpro_courses_enrollment_course_post_types', array( 'PMPro_Courses_LifterLMS', 'enrollment_course_post_types' ) );
+		add_action( PMPro_Courses_Batch_Enrollment::AS_HOOK_USER, array( 'PMPro_Courses_LifterLMS', 'repair_user_enrollments' ) );
     }
 	
 	/**
@@ -87,36 +91,93 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
 	}
 
 	/**
+	 * Register the LifterLMS course post type for background enrollment repair.
+	 *
+	 * @param array $post_types Post type slugs.
+	 * @return array
+	 */
+	public static function enrollment_course_post_types( $post_types ) {
+		$post_types[] = 'course';
+		return $post_types;
+	}
+
+	/**
+	 * Reconcile a user's LifterLMS course enrollments with their current membership levels.
+	 *
+	 * Idempotent: enrolls the user in courses for their current levels they are not yet
+	 * in, and unenrolls them from level-restricted courses their levels no longer grant.
+	 * Courses not tied to any level are never touched.
+	 *
+	 * @param int $user_id User ID.
+	 */
+	public static function repair_user_enrollments( $user_id ) {
+		$user_id = (int) $user_id;
+		if ( empty( $user_id ) ) {
+			return;
+		}
+
+		// Courses tied to any level.
+		$all_level_courses = array_map( 'intval', self::get_courses_for_levels( self::get_all_level_ids() ) );
+
+		// Courses tied to the user's current levels.
+		$current_levels        = wp_list_pluck( (array) pmpro_getMembershipLevelsForUser( $user_id ), 'ID' );
+		$current_level_courses = array_map( 'intval', self::get_courses_for_levels( $current_levels ) );
+
+		// Unenroll from level-restricted courses the user's levels no longer grant.
+		foreach ( array_diff( $all_level_courses, $current_level_courses ) as $course_id ) {
+			if ( llms_is_user_enrolled( $user_id, $course_id ) ) {
+				llms_unenroll_student( $user_id, $course_id );
+			}
+		}
+
+		// Enroll in courses for the user's current levels.
+		foreach ( $current_level_courses as $course_id ) {
+			if ( ! llms_is_user_enrolled( $user_id, $course_id ) ) {
+				llms_enroll_student( $user_id, $course_id );
+			}
+		}
+	}
+
+	/**
+	 * Get all membership level IDs.
+	 *
+	 * @return array
+	 */
+	private static function get_all_level_ids() {
+		return array_map( 'intval', wp_list_pluck( (array) pmpro_getAllLevels( true ), 'id' ) );
+	}
+
+	/**
 	 * Get courses associated with a level.
 	 */
 	public static function get_courses_for_levels( $level_ids ) {
 		global $wpdb;
-		
+
 		// In case a level object was passed in.
 		if ( is_object( $level_ids ) ) {
 			$level_ids = $level_ids->ID;
 		}
-		
+
 		// Make sure we have an array of ids.
 		if ( ! is_array( $level_ids ) ) {
 			$level_ids = array( $level_ids );
 		}
-		
+
 		if ( empty( $level_ids ) ) {
 			return array();
 		}
-		
+
 		$sql = "
-			SELECT mp.page_id 
-			FROM $wpdb->pmpro_memberships_pages mp 
-			LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID 
-			WHERE mp.membership_id IN(".implode(', ', array_fill(0, count($level_ids), '%s')).") 
-			AND p.post_type = 'course' 
-			AND p.post_status = 'publish' 
+			SELECT mp.page_id
+			FROM $wpdb->pmpro_memberships_pages mp
+			LEFT JOIN $wpdb->posts p ON mp.page_id = p.ID
+			WHERE mp.membership_id IN(".implode(', ', array_fill(0, count($level_ids), '%s')).")
+			AND p.post_type = 'course'
+			AND p.post_status = 'publish'
 			GROUP BY mp.page_id
 		";
 		$course_ids = $wpdb->get_col( call_user_func_array( array( $wpdb, 'prepare' ), array_merge( array( $sql ), $level_ids ) ) );
-		
+
 		return $course_ids;
 	}
 	
@@ -124,37 +185,9 @@ class PMPro_Courses_LifterLMS extends PMPro_Courses_Module {
 	 * When users change levels, enroll/unenroll them from
 	 * any associated private courses.
 	 */
-	public static function pmpro_after_all_membership_level_changes( $pmpro_old_user_levels ) {		
-		foreach ( $pmpro_old_user_levels as $user_id => $old_levels ) {
-			// Get current courses.
-			$current_levels = pmpro_getMembershipLevelsForUser( $user_id );
-			if ( ! empty( $current_levels ) ) {
-				$current_levels = wp_list_pluck( $current_levels, 'ID' );
-			} else {
-				$current_levels = array();
-			}
-			$current_courses = PMPro_Courses_LifterLMS::get_courses_for_levels( $current_levels );
-			
-			// Get old courses.
-			$old_levels = wp_list_pluck( $old_levels, 'ID' );
-			$old_courses = PMPro_Courses_LifterLMS::get_courses_for_levels( $old_levels );
-			
-			// Unenroll the user in any courses they used to have, but lost.
-			$courses_to_unenroll = array_diff( $old_courses, $current_courses );
-			foreach( $courses_to_unenroll as $course_id ) {
-				if ( llms_is_user_enrolled( $user_id, $course_id ) ) {
-					// Unenroll student
-					llms_unenroll_student( $user_id, $course_id );					
-				}
-			}
-			
-			// Enroll the user in any courses for their current levels.
-			$courses_to_enroll = array_diff( $current_courses, $old_courses );
-			foreach( $courses_to_enroll as $course_id ) {
-				if ( ! llms_is_user_enrolled( $user_id, $course_id ) ) {
-					llms_enroll_student( $user_id, $course_id );
-				}
-			}
+	public static function pmpro_after_all_membership_level_changes( $pmpro_old_user_levels ) {
+		foreach ( array_keys( $pmpro_old_user_levels ) as $user_id ) {
+			self::repair_user_enrollments( $user_id );
 		}
 	}
 }
