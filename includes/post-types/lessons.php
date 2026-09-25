@@ -163,7 +163,7 @@ function pmpro_courses_save_lessons_meta( $post_id, $post, $update ) {
 	}
 
 	// Check the nonce and make sure it's valid.
-	if ( ! isset ( $_POST['pmpro_courses_metabox_nonce'] ) || ! wp_verify_nonce( $_POST['pmpro_courses_metabox_nonce'], 'pmpro_courses_metabox_nonce' ) ) {
+	if ( ! isset ( $_POST['pmpro_courses_metabox_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pmpro_courses_metabox_nonce'] ) ), 'pmpro_courses_metabox_nonce' ) ) {
 		return;
 	}
 

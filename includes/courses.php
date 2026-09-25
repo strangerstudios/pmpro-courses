@@ -1,4 +1,9 @@
 <?php 
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Content filter to show additional course information on the single course page.
  * Hooked into `pmpro_membership_content_filter` in modules/default.php.
@@ -84,14 +89,14 @@ function pmpro_courses_update_course_callback() {
 		wp_die( esc_html__( 'You do not have permission to edit posts.', 'pmpro-courses' ) );
 	}
 
-	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'pmpro_courses_admin_nonce' ) ) {
+	if ( empty( $_REQUEST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'pmpro_courses_admin_nonce' ) ) {
 		wp_die( esc_html__( 'Nonce is invalid', 'pmpro-courses' ) );
 	}
 
 	// Got to get the value 
-	$course_id = intval( $_REQUEST['course_id'] );
-	$lesson_id = intval( $_REQUEST['lesson_id'] );
-	$section_id = intval( $_REQUEST['section_id'] );
+	$course_id = isset( $_REQUEST['course_id'] ) ? intval( $_REQUEST['course_id'] ) : 0;
+	$lesson_id = isset( $_REQUEST['lesson_id'] ) ? intval( $_REQUEST['lesson_id'] ) : 0;
+	$section_id = isset( $_REQUEST['section_id'] ) ? intval( $_REQUEST['section_id'] ) : 0;
 
 	// Bail if lesson_id is empty or invalid.
 	if ( empty( $lesson_id ) || $lesson_id < 1 ) {
@@ -126,7 +131,7 @@ function pmpro_courses_update_course_callback() {
 	$table_row .= '</td>';
 	$table_row .= '</tr>';
 
-	echo $table_row;
+	echo $table_row; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Every dynamic value in $table_row is escaped above.
 
 }
 add_action( 'wp_ajax_pmpro_courses_update_course', 'pmpro_courses_update_course_callback' );
@@ -142,7 +147,7 @@ function pmpro_courses_create_lesson_cb() {
 		return;
 	}
 
-	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'pmpro_courses_admin_nonce' ) ) {
+	if ( empty( $_REQUEST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'pmpro_courses_admin_nonce' ) ) {
 		wp_die( esc_html__( 'Nonce is invalid', 'pmpro-courses' ) );
 	}
 
@@ -181,7 +186,7 @@ function pmpro_courses_create_lesson_cb() {
 	$table_row .= '</td>';
 	$table_row .= '</tr>';
 
-	echo $table_row;
+	echo $table_row; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Every dynamic value in $table_row is escaped above.
 }
 add_action( 'wp_ajax_pmpro_courses_create_lesson', 'pmpro_courses_create_lesson_cb' );
 
@@ -213,7 +218,7 @@ function pmpro_courses_columns_content( $column, $course_id ) {
 				break;
 			}
 			$membership_levels = pmpro_getAllLevels( true, true );
-			$course_levels = $wpdb->get_col( "SELECT membership_id FROM {$wpdb->pmpro_memberships_pages} WHERE page_id = '" . intval( $course_id ) . "'" );
+			$course_levels = $wpdb->get_col( "SELECT membership_id FROM {$wpdb->pmpro_memberships_pages} WHERE page_id = '" . intval( $course_id ) . "'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- PMPro custom table; course ID is intval'd.
 			$level_names = array();
 			foreach ( $course_levels as $id ) {
 				$level = pmpro_getLevel( $id );
@@ -222,7 +227,7 @@ function pmpro_courses_columns_content( $column, $course_id ) {
 				}
 			}
 			if ( ! empty( $level_names ) ) {
-				echo implode( ', ', $level_names );
+				echo esc_html( implode( ', ', $level_names ) );
 			} else {
 				echo '&#8212;';
 			}
@@ -301,7 +306,7 @@ function pmpro_courses_template_redirect() {
 		}
 		
 		if ( $redirect_to ) {
-			wp_redirect( $redirect_to );
+			wp_redirect( $redirect_to ); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect -- Destination is filterable (pmpro_courses_*_redirect_to) and may legitimately be offsite.
 			exit;
 		}	
 	}

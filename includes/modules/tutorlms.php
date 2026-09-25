@@ -104,7 +104,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 			}
 
 			if ( $redirect_to ) {
-				wp_redirect( $redirect_to );
+				wp_redirect( $redirect_to ); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect -- Destination is filterable (pmpro_courses_*_redirect_to) and may legitimately be offsite.
 				exit;
 			}
 		}
@@ -253,7 +253,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 			AND p.post_status = 'publish' 
 			GROUP BY mp.page_id
 		";
-		$course_ids = $wpdb->get_col( call_user_func_array( array( $wpdb, 'prepare' ), array_merge( array( $sql ), $level_ids ) ) );
+		$course_ids = $wpdb->get_col( call_user_func_array( array( $wpdb, 'prepare' ), array_merge( array( $sql ), $level_ids ) ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Prepared via $wpdb->prepare() with one placeholder per level ID; PMPro custom table.
 		
 		return $course_ids;
 	}

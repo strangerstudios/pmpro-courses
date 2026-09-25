@@ -1,4 +1,9 @@
 <?php 
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class PMPro_Courses_User_Progress {
 	/**
 	 * Toggle progress for lesson completion (complete or reset/clear)
@@ -32,6 +37,7 @@ class PMPro_Courses_User_Progress {
 	
 		// Mark the lesson as either completed or remove it.
 		$table_name = $wpdb->prefix . 'pmpro_courses_user_lesson_progress';
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery -- Custom lesson progress table; writes are not cached.
 		if ( $complete ) {
 			// Mark lesson as complete
 			$wpdb->insert( $table_name, array(
@@ -46,6 +52,7 @@ class PMPro_Courses_User_Progress {
 				'lesson_id' => $lesson_id
 			), array( '%d', '%d' ) );
 		}
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery
 
 		return true;
 	}
@@ -71,10 +78,12 @@ class PMPro_Courses_User_Progress {
 		}
 
 		$table_name = $wpdb->prefix . 'pmpro_courses_user_lesson_progress';
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name is $wpdb->prefix plus a constant string; values are prepared.
 		$completed = $wpdb->get_var( $wpdb->prepare( "
 			SELECT COUNT(*) FROM {$table_name}
 			WHERE user_id = %d AND lesson_id = %d
 		", $user_id, $lesson_id ) );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		return (bool) $completed;
 	}
@@ -117,10 +126,12 @@ class PMPro_Courses_User_Progress {
 		$lesson_ids = implode( ',', array_map( 'intval', $lessons ) );
 
 		$table_name = $wpdb->prefix . 'pmpro_courses_user_lesson_progress';
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name is $wpdb->prefix plus a constant string; $lesson_ids is an intval'd list; user ID is prepared.
 		$completed_count = $wpdb->get_var( $wpdb->prepare( "
 			SELECT COUNT(*) FROM {$table_name}
 			WHERE user_id = %d AND lesson_id IN ({$lesson_ids})
 		", $user_id ) );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		if ( $completed_count === null ) {
 			return 0;
@@ -150,6 +161,7 @@ class PMPro_Courses_User_Progress {
 		}
 
 		$table_name = $wpdb->prefix . 'pmpro_courses_user_lesson_progress';
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name is $wpdb->prefix plus a constant string; values are prepared.
 		$completed_lessons = $wpdb->get_results( $wpdb->prepare( "
 			SELECT * FROM {$table_name}
 			WHERE user_id = %d AND lesson_id IN (
@@ -158,6 +170,7 @@ class PMPro_Courses_User_Progress {
 			)
 			ORDER BY completed_at ASC
 		", $user_id, $course_id ) );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		return $completed_lessons;
 	}
@@ -183,6 +196,7 @@ class PMPro_Courses_User_Progress {
 		$table = $wpdb->prefix . 'pmpro_courses_user_lesson_progress';
 
 		// Find courses that (a) have lessons, and (b) have NO progress rows for this user.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name is $wpdb->prefix plus a constant string; $sql is built with $wpdb->prepare() above.
 		$sql = $wpdb->prepare(
 			"
 			SELECT c.*
@@ -212,6 +226,7 @@ class PMPro_Courses_User_Progress {
 		);
 
 		$courses = $wpdb->get_results( $sql );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		return $courses;
 	}
 } // End of class.
@@ -246,7 +261,7 @@ function pmpro_courses_complete_lesson_button( $lid, $user_id = null ) {
 	}
 
 	// Has the lesson been completed, return true or false.
-	$is_completed = isset( $_REQUEST['complete'] ) ? (int) $_REQUEST['complete'] : PMPro_Courses_User_Progress::get_user_lesson_status( $lid, $user_id );
+	$is_completed = isset( $_REQUEST['complete'] ) ? (int) $_REQUEST['complete'] : PMPro_Courses_User_Progress::get_user_lesson_status( $lid, $user_id ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display state after a toggle; no data is changed.
 
 	// Build the feather sprite URL.
 	$sprite_url =  PMPRO_COURSES_URL . 'images/feather-sprite.svg' . ( $is_completed ? '#check-circle' : '#circle' );

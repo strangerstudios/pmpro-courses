@@ -175,7 +175,7 @@ class PMPro_Courses_LearnDash extends PMPro_Courses_Module {
 			}
 			
 			if ( $redirect_to ) {
-				wp_redirect( $redirect_to );
+				wp_redirect( $redirect_to ); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect -- Destination is filterable (pmpro_courses_*_redirect_to) and may legitimately be offsite.
 				exit;
 			}	
 		}

@@ -112,6 +112,7 @@ function pmpro_courses_get_lesson_count( $course_id, $post_status = array( 'publ
 	$post_status = array_map( 'esc_sql', $post_status );
 	$status_list = "'" . implode( "','", $post_status ) . "'";
 
+	// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $status_list is a quoted list of esc_sql()'d values; other values are prepared.
 	$count = $wpdb->get_var(
 		$wpdb->prepare(
 			"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_parent = %d AND post_type = %s AND post_status IN ($status_list)",
@@ -119,6 +120,7 @@ function pmpro_courses_get_lesson_count( $course_id, $post_status = array( 'publ
 			'pmpro_lesson'
 		)
 	);
+	// phpcs:enable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 	return intval( $count );
 }
@@ -634,6 +636,7 @@ function pmpro_courses_get_post_ids_from_levels( $level_ids, $post_type ) {
 	}
 
 	$levels = implode( ', ', array_fill( 0, count( $level_ids ), '%d' ) );
+	// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL -- $levels is a list of %d placeholders; $sql is built with $wpdb->prepare().
 	$sql = $wpdb->prepare(
 		"SELECT mp.page_id
 		FROM {$wpdb->pmpro_memberships_pages} mp
@@ -646,4 +649,5 @@ function pmpro_courses_get_post_ids_from_levels( $level_ids, $post_type ) {
 	);
 
 	return $wpdb->get_col( $sql ) ?: array();
+	// phpcs:enable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
 }
