@@ -21,6 +21,7 @@ if ( defined( 'PMPRO_DIR' ) ) {
 </p>
 
 <form action="" method="post">
+	<?php wp_nonce_field( 'pmpro_courses_save_settings', 'pmpro_courses_settings_nonce' ); ?>
 	<div id="pmpro-courses-module-settings" class="pmpro_section" data-visibility="shown" data-activated="true">
 		<div class="pmpro_section_toggle">
 			<button class="pmpro_section-toggle-button" type="button" aria-expanded="true">

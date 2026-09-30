@@ -37,6 +37,9 @@ function pmpro_courses_settings_save() {
 	if ( ! isset( $_REQUEST['pmpro_courses_save_settings'] ) ) {
 		return;
 	}
+
+	// Check the nonce.
+	check_admin_referer( 'pmpro_courses_save_settings', 'pmpro_courses_settings_nonce' );
 	
 	// Save settings.
 	if ( ! empty( $_REQUEST['pmpro_courses_modules'] ) ) {
