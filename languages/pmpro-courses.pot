@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 2.2.1\n"
+"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 2.2.2\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-09T11:52:50+00:00\n"
+"POT-Creation-Date: 2026-09-30T16:18:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pmpro-courses\n"
@@ -48,7 +48,7 @@ msgid "Click here to add your first course."
 msgstr ""
 
 #: includes/admin.php:76
-#: includes/settings.php:20
+#: includes/settings.php:24
 msgid "Settings"
 msgstr ""
 
@@ -69,7 +69,7 @@ msgid "Support"
 msgstr ""
 
 #: includes/adminpages/class-pmpro-courses-member-edit.php:11
-#: includes/common.php:182
+#: includes/common.php:184
 #: includes/post-types/courses.php:15
 msgid "Courses"
 msgstr ""
@@ -188,11 +188,11 @@ msgstr ""
 msgid "Learn more about the Courses Add On for Paid Memberships Pro"
 msgstr ""
 
-#: includes/adminpages/settings.php:28
+#: includes/adminpages/settings.php:29
 msgid "Courses Module Settings"
 msgstr ""
 
-#: includes/adminpages/settings.php:69
+#: includes/adminpages/settings.php:70
 msgid "Save Settings"
 msgstr ""
 
@@ -209,102 +209,102 @@ msgid "Read the Default Course and Lesson documentation &raquo;"
 msgstr ""
 
 #. translators: %s is the course name.
-#: includes/common.php:198
+#: includes/common.php:200
 #, php-format
 msgid "Progress for course %s"
 msgstr ""
 
 #. translators: %s is the number of lessons.
 #. translators: %s: number of lessons in the course.
-#: includes/common.php:226
-#: includes/courses.php:209
+#: includes/common.php:228
+#: includes/courses.php:218
 #, php-format
 msgid "%s Lesson"
 msgid_plural "%s Lessons"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/common.php:314
+#: includes/common.php:316
 #: includes/post-types/courses.php:90
 msgid "Course Outline"
 msgstr ""
 
 #. translators: %d: section number (integer)
-#: includes/common.php:341
+#: includes/common.php:343
 #, php-format
 msgid "Section %d"
 msgstr ""
 
 #. translators: %s: the date and time the lesson becomes available.
-#: includes/common.php:390
+#: includes/common.php:392
 #, php-format
 msgid "Available %s"
 msgstr ""
 
-#: includes/common.php:399
+#: includes/common.php:401
 msgid "Free"
 msgstr ""
 
-#: includes/common.php:408
+#: includes/common.php:410
 msgid "Locked"
 msgstr ""
 
-#: includes/common.php:420
+#: includes/common.php:422
 msgid "Complete"
 msgstr ""
 
-#: includes/common.php:429
+#: includes/common.php:431
 msgid "Incomplete"
 msgstr ""
 
-#: includes/common.php:490
+#: includes/common.php:492
 msgid "Select a lesson..."
 msgstr ""
 
-#: includes/courses.php:84
+#: includes/courses.php:91
 msgid "You do not have permission to edit posts."
 msgstr ""
 
-#: includes/courses.php:88
-#: includes/courses.php:146
+#: includes/courses.php:95
+#: includes/courses.php:155
 msgid "Nonce is invalid"
 msgstr ""
 
-#: includes/courses.php:98
+#: includes/courses.php:105
 msgid "Invalid lesson ID."
 msgstr ""
 
-#: includes/courses.php:106
+#: includes/courses.php:113
 msgid "Invalid lesson."
 msgstr ""
 
-#: includes/courses.php:113
-#: includes/courses.php:170
+#: includes/courses.php:120
+#: includes/courses.php:179
 #: includes/post-types/courses.php:182
 msgid "Edit"
 msgstr ""
 
-#: includes/courses.php:118
-#: includes/courses.php:174
+#: includes/courses.php:125
+#: includes/courses.php:183
 #: includes/post-types/courses.php:187
 msgid "Draft"
 msgstr ""
 
-#: includes/courses.php:124
-#: includes/courses.php:179
+#: includes/courses.php:131
+#: includes/courses.php:188
 #: includes/post-types/courses.php:194
 msgid "Remove"
 msgstr ""
 
-#: includes/courses.php:154
+#: includes/courses.php:163
 msgid "Untitled Lesson"
 msgstr ""
 
-#: includes/courses.php:192
+#: includes/courses.php:201
 msgid "Lesson Count"
 msgstr ""
 
-#: includes/courses.php:194
+#: includes/courses.php:203
 msgid "Level"
 msgstr ""
 
@@ -528,7 +528,7 @@ msgstr ""
 
 #: includes/post-types/lessons.php:21
 #: includes/post-types/lessons.php:22
-#: includes/settings.php:16
+#: includes/settings.php:20
 msgid "Add New Lesson"
 msgstr ""
 
@@ -638,32 +638,32 @@ msgstr ""
 msgid "Uses the site timezone: %s."
 msgstr ""
 
-#: includes/progress.php:261
+#: includes/progress.php:276
 msgid "Lesson Completed"
 msgstr ""
 
-#: includes/progress.php:261
+#: includes/progress.php:276
 msgid "Mark Lesson Complete"
 msgstr ""
 
-#: includes/settings.php:12
-#: includes/settings.php:20
+#: includes/settings.php:16
+#: includes/settings.php:24
 msgid "Paid Memberships Pro Courses - Settings"
 msgstr ""
 
-#: includes/settings.php:12
+#: includes/settings.php:16
 msgid "Course Settings"
 msgstr ""
 
-#: includes/settings.php:16
+#: includes/settings.php:20
 msgid "Paid Memberships Pro Courses - Add New Lesson"
 msgstr ""
 
-#: includes/settings.php:73
+#: includes/settings.php:80
 msgid "Settings saved successfully."
 msgstr ""
 
-#: includes/settings.php:75
+#: includes/settings.php:82
 msgid "Please resave your permalink settings to refresh the URLs."
 msgstr ""
 
@@ -671,31 +671,31 @@ msgstr ""
 msgid "Log in to view your courses"
 msgstr ""
 
-#: pmpro-courses.php:175
+#: pmpro-courses.php:177
 msgid "Save"
 msgstr ""
 
-#: pmpro-courses.php:176
+#: pmpro-courses.php:178
 msgid "Saving..."
 msgstr ""
 
-#: pmpro-courses.php:177
+#: pmpro-courses.php:179
 msgid "Adding..."
 msgstr ""
 
-#: pmpro-courses.php:178
+#: pmpro-courses.php:180
 msgid "Error saving lesson [1]"
 msgstr ""
 
-#: pmpro-courses.php:179
+#: pmpro-courses.php:181
 msgid "Error saving lesson [2]"
 msgstr ""
 
-#: pmpro-courses.php:180
+#: pmpro-courses.php:182
 msgid "Error removing lesson [1]"
 msgstr ""
 
-#: pmpro-courses.php:181
+#: pmpro-courses.php:183
 msgid "Error removing lesson [2]"
 msgstr ""
 

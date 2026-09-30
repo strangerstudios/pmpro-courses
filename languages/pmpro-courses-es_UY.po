@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 2.2.1\n"
+"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 2.2.2\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-09T11:52:55+00:00\n"
+"POT-Creation-Date: 2026-09-30T16:18:38+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pmpro-courses\n"
@@ -18,10 +18,13 @@ msgstr ""
 #: includes/courses.php:112
 #: includes/courses.php:88
 #: includes/courses.php:146
+#: includes/courses.php:95
+#: includes/courses.php:155
 msgid "Nonce is invalid"
 msgstr "Nonce no válido"
 
 #: includes/settings.php:12
+#: includes/settings.php:16
 msgid "Course Settings"
 msgstr "Ajustes del curso"
 
@@ -34,6 +37,7 @@ msgstr "¿Activar la página de archivo para el CPT de cursos por defecto?"
 #: pmpro-courses.php:119
 #: pmpro-courses.php:173
 #: pmpro-courses.php:177
+#: pmpro-courses.php:179
 msgid "Adding..."
 msgstr "Añadiendo..."
 
@@ -127,36 +131,42 @@ msgstr "Sensei LMS"
 #: pmpro-courses.php:123
 #: pmpro-courses.php:177
 #: pmpro-courses.php:181
+#: pmpro-courses.php:183
 msgid "Error removing lesson [2]"
 msgstr "Error al eliminar la lección [2]"
 
 #: pmpro-courses.php:122
 #: pmpro-courses.php:176
 #: pmpro-courses.php:180
+#: pmpro-courses.php:182
 msgid "Error removing lesson [1]"
 msgstr "Error al quitar la lección [1]"
 
 #: pmpro-courses.php:121
 #: pmpro-courses.php:175
 #: pmpro-courses.php:179
+#: pmpro-courses.php:181
 msgid "Error saving lesson [2]"
 msgstr "Error al guardar la lección [2]"
 
 #: pmpro-courses.php:120
 #: pmpro-courses.php:174
 #: pmpro-courses.php:178
+#: pmpro-courses.php:180
 msgid "Error saving lesson [1]"
 msgstr "Error al guardar la lección [1]"
 
 #: pmpro-courses.php:118
 #: pmpro-courses.php:172
 #: pmpro-courses.php:176
+#: pmpro-courses.php:178
 msgid "Saving..."
 msgstr "Guardando…"
 
 #: pmpro-courses.php:117
 #: pmpro-courses.php:171
 #: pmpro-courses.php:175
+#: pmpro-courses.php:177
 msgid "Save"
 msgstr "Guardar"
 
@@ -166,15 +176,19 @@ msgstr "Acceder para ver tus cursos »"
 
 #: includes/settings.php:71
 #: includes/settings.php:73
+#: includes/settings.php:80
 msgid "Settings saved successfully."
 msgstr "Ajustes guardados correctamente."
 
 #: includes/settings.php:16
+#: includes/settings.php:20
 msgid "Paid Memberships Pro Courses - Add New Lesson"
 msgstr "Cursos de Paid Memberships Pro - Añadir Nueva Lección"
 
 #: includes/settings.php:12
 #: includes/settings.php:20
+#: includes/settings.php:16
+#: includes/settings.php:24
 msgid "Paid Memberships Pro Courses - Settings"
 msgstr "Cursos de Paid Memberships Pro - Ajustes"
 
@@ -277,6 +291,7 @@ msgstr "Nueva lección"
 #: includes/settings.php:16
 #: includes/post-types/lessons.php:21
 #: includes/post-types/lessons.php:22
+#: includes/settings.php:20
 msgid "Add New Lesson"
 msgstr "Añadir nueva lección"
 
@@ -319,6 +334,8 @@ msgstr "editar"
 #: includes/courses.php:113
 #: includes/courses.php:170
 #: includes/post-types/courses.php:182
+#: includes/courses.php:120
+#: includes/courses.php:179
 msgid "Edit"
 msgstr "Editar"
 
@@ -566,11 +583,13 @@ msgstr "Curso: %s"
 
 #: includes/courses.php:135
 #: includes/courses.php:194
+#: includes/courses.php:203
 msgid "Level"
 msgstr "Nivel"
 
 #: includes/courses.php:133
 #: includes/courses.php:192
+#: includes/courses.php:201
 msgid "Lesson Count"
 msgstr "Número de lecciones"
 
@@ -588,6 +607,8 @@ msgstr "Lecciones"
 #: includes/common.php:213
 #: includes/courses.php:209
 #: includes/common.php:226
+#: includes/common.php:228
+#: includes/courses.php:218
 #, php-format
 msgid "%s Lesson"
 msgid_plural "%s Lessons"
@@ -600,6 +621,7 @@ msgstr[1] ""
 #: includes/common.php:169
 #: includes/post-types/courses.php:15
 #: includes/common.php:182
+#: includes/common.php:184
 msgid "Courses"
 msgstr "Cursos"
 
@@ -624,6 +646,7 @@ msgstr "Documentación"
 
 #: includes/adminpages/settings.php:48
 #: includes/adminpages/settings.php:69
+#: includes/adminpages/settings.php:70
 msgid "Save Settings"
 msgstr "Guardar los ajustes"
 
@@ -664,6 +687,7 @@ msgstr "Ver la documentación"
 #: includes/admin.php:71
 #: includes/settings.php:20
 #: includes/admin.php:76
+#: includes/settings.php:24
 msgid "Settings"
 msgstr "Ajustes"
 
@@ -707,6 +731,7 @@ msgstr "Paid Memberships Pro - Cursos para complemento de membresía"
 #: includes/common.php:372
 #: includes/common.php:373
 #: includes/common.php:420
+#: includes/common.php:422
 msgid "Complete"
 msgstr ""
 
@@ -805,12 +830,14 @@ msgid "Learn more about the Courses Add On for Paid Memberships Pro"
 msgstr ""
 
 #: includes/adminpages/settings.php:28
+#: includes/adminpages/settings.php:29
 msgid "Courses Module Settings"
 msgstr ""
 
 #. translators: %s is the course name.
 #: includes/common.php:185
 #: includes/common.php:198
+#: includes/common.php:200
 #, php-format
 msgid "Progress for course %s"
 msgstr ""
@@ -819,6 +846,7 @@ msgstr ""
 #: includes/post-types/courses.php:90
 #: includes/common.php:301
 #: includes/common.php:314
+#: includes/common.php:316
 msgid "Course Outline"
 msgstr ""
 
@@ -826,6 +854,7 @@ msgstr ""
 #: includes/common.php:327
 #: includes/common.php:328
 #: includes/common.php:341
+#: includes/common.php:343
 #, php-format
 msgid "Section %d"
 msgstr ""
@@ -833,46 +862,57 @@ msgstr ""
 #: includes/common.php:359
 #: includes/common.php:360
 #: includes/common.php:399
+#: includes/common.php:401
 msgid "Free"
 msgstr ""
 
 #: includes/common.php:381
 #: includes/common.php:382
 #: includes/common.php:429
+#: includes/common.php:431
 msgid "Incomplete"
 msgstr ""
 
 #: includes/common.php:445
 #: includes/common.php:446
 #: includes/common.php:490
+#: includes/common.php:492
 msgid "Select a lesson..."
 msgstr ""
 
 #: includes/courses.php:84
+#: includes/courses.php:91
 msgid "You do not have permission to edit posts."
 msgstr ""
 
 #: includes/courses.php:98
+#: includes/courses.php:105
 msgid "Invalid lesson ID."
 msgstr ""
 
 #: includes/courses.php:106
+#: includes/courses.php:113
 msgid "Invalid lesson."
 msgstr ""
 
 #: includes/courses.php:118
 #: includes/courses.php:174
 #: includes/post-types/courses.php:187
+#: includes/courses.php:125
+#: includes/courses.php:183
 msgid "Draft"
 msgstr ""
 
 #: includes/courses.php:124
 #: includes/courses.php:179
 #: includes/post-types/courses.php:194
+#: includes/courses.php:131
+#: includes/courses.php:188
 msgid "Remove"
 msgstr ""
 
 #: includes/courses.php:154
+#: includes/courses.php:163
 msgid "Untitled Lesson"
 msgstr ""
 
@@ -900,15 +940,18 @@ msgstr ""
 
 #: includes/progress.php:246
 #: includes/progress.php:261
+#: includes/progress.php:276
 msgid "Lesson Completed"
 msgstr ""
 
 #: includes/progress.php:246
 #: includes/progress.php:261
+#: includes/progress.php:276
 msgid "Mark Lesson Complete"
 msgstr ""
 
 #: includes/settings.php:75
+#: includes/settings.php:82
 msgid "Please resave your permalink settings to refresh the URLs."
 msgstr ""
 
@@ -918,11 +961,13 @@ msgstr ""
 
 #. translators: %s: the date and time the lesson becomes available.
 #: includes/common.php:390
+#: includes/common.php:392
 #, php-format
 msgid "Available %s"
 msgstr ""
 
 #: includes/common.php:408
+#: includes/common.php:410
 msgid "Locked"
 msgstr ""
 
