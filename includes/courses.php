@@ -85,7 +85,9 @@ function pmpro_courses_show_course_content_to_nonmembers() {
  */
 function pmpro_courses_update_course_callback() {
 
-	if ( ! current_user_can( 'edit_posts' ) ) {
+	// Only users who can edit courses.
+	$course_post_type = get_post_type_object( 'pmpro_course' );
+	if ( empty( $course_post_type ) || ! current_user_can( $course_post_type->cap->edit_posts ) ) {
 		wp_die( esc_html__( 'You do not have permission to edit posts.', 'pmpro-courses' ) );
 	}
 
@@ -143,7 +145,9 @@ add_action( 'wp_ajax_pmpro_courses_update_course', 'pmpro_courses_update_course_
  */
 function pmpro_courses_create_lesson_cb() {
 	
-	if ( ! current_user_can( 'edit_posts' ) ) {
+	// Only users who can edit courses.
+	$course_post_type = get_post_type_object( 'pmpro_course' );
+	if ( empty( $course_post_type ) || ! current_user_can( $course_post_type->cap->edit_posts ) ) {
 		return;
 	}
 
