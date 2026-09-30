@@ -7,6 +7,10 @@
  * @since 2.1
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Output Course JSON-LD structured data on single course pages.
  *

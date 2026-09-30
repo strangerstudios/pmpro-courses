@@ -137,7 +137,7 @@ function pmpro_courses_admin_styles( $hook ) {
 	}
 
 	// Are we on the settings or Edit Member page?
-	if ( ! empty( $_REQUEST['page'] ) && in_array( $_REQUEST['page'], array( 'pmpro-courses-settings', 'pmpro-member' ) ) ) {
+	if ( ! empty( $_REQUEST['page'] ) && in_array( $_REQUEST['page'], array( 'pmpro-courses-settings', 'pmpro-member' ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check of the admin page slug to decide which assets to load.
 		$load_css = true;
 		$load_js = true;
 		$on_settings_page = true;
@@ -154,11 +154,13 @@ function pmpro_courses_admin_styles( $hook ) {
 		}
 		wp_register_script( 'pmpro_courses', PMPRO_COURSES_URL . 'js/admin.js', array( 'jquery' ), PMPRO_COURSES_VERSION, true );
 
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only post ID from the edit screen URL, used to localize script data.
 		if ( ! empty( $_GET['post'] ) ) {
 			$post_id = intval( $_GET['post'] );
 		} else {
 			$post_id = '';
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		// Get the HTML template to localize.
 		$section_template = '';

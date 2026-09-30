@@ -4,6 +4,10 @@
  *
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Add a Course page for settings under the Memberships menu.
  */
@@ -49,7 +53,7 @@ function pmpro_courses_settings_save() {
 
 		$active_modules = [];
 
-		foreach( $_REQUEST['pmpro_courses_modules'] as $active_module ) {
+		foreach( $_REQUEST['pmpro_courses_modules'] as $active_module ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each value is checked against the registered module slugs below.
 			if ( in_array( $active_module, $all_module_slugs, true ) ) {
 				$active_modules[] = sanitize_text_field( $active_module );
 			}
@@ -70,7 +74,7 @@ function pmpro_courses_settings_save() {
 add_action( 'admin_init', 'pmpro_courses_settings_save' );
 
 function pmpro_courses_save_notice() {
-	if ( isset( $_REQUEST['pmpro_courses_save_settings'] ) ) {
+	if ( isset( $_REQUEST['pmpro_courses_save_settings'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check to display a notice.
 		printf(
 			"<div class='updated'><p>%s <a href='%s'>%s</a></p></div>",
 			esc_html__( 'Settings saved successfully.', 'pmpro-courses' ),

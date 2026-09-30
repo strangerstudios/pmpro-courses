@@ -66,7 +66,7 @@ $lessons_options = pmpro_courses_lessons_settings( $exclude_assigned_lessons, $p
 				</tr>
 			</thead>
 			<tbody>
-				<?php echo isset( $lesson_table_html ) ? $lesson_table_html : '<tr class="pmpro-courses-no-lessons"><td colspan="3"><p>' . esc_html__( 'No Lessons Added', 'pmpro-courses' ) . '</p></td></tr>'; ?>
+				<?php echo isset( $lesson_table_html ) ? $lesson_table_html : '<tr class="pmpro-courses-no-lessons"><td colspan="3"><p>' . esc_html__( 'No Lessons Added', 'pmpro-courses' ) . '</p></td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built with escaped values in pmpro_courses_get_lessons_table_html(). ?>
 			</tbody>
 		</table>
 		<table class="wp-list-table widefat striped pmpro_courses_add_lesson_table">
@@ -85,7 +85,7 @@ $lessons_options = pmpro_courses_lessons_settings( $exclude_assigned_lessons, $p
 							<?php esc_html_e( 'No existing lessons are available to add to this course.', 'pmpro-courses' ); ?>
 						<?php } else { ?>
 						<select class="pmpro_courses_lessons_select" name="pmpro_courses_post" id="pmpro_courses_post_<?php echo esc_attr( $section_id ); ?>">
-							<?php echo $lessons_options; ?>
+							<?php echo $lessons_options; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Option HTML built with escaped values in pmpro_courses_lessons_settings(). ?>
 						</select>
 						<?php } ?>
 					</td>

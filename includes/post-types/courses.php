@@ -220,14 +220,16 @@ function pmpro_courses_save_course_sections( $post_id, $post, $update ) {
 	}
 
 	// Bail if the nonce has failed.
-	if ( empty( $_POST['pmpro_course_sections_nonce'] ) || ! wp_verify_nonce( $_POST['pmpro_course_sections_nonce'], 'pmpro_course_sections_save' ) ) {
+	if ( empty( $_POST['pmpro_course_sections_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pmpro_course_sections_nonce'] ) ), 'pmpro_course_sections_save' ) ) {
 		return;
 	}
 
-	// Get all the data.
+	// Get all the data. Sanitized below; left slashed because $sections is saved with update_post_meta(), which unslashes.
+	// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	$section_names         = isset( $_POST['pmpro_course_lessons_section_name'] ) ? (array) $_POST['pmpro_course_lessons_section_name'] : array();
 	$section_ids   = isset( $_POST['pmpro_course_lessons_section_id'] )   ? (array) $_POST['pmpro_course_lessons_section_id']   : array();
 	$lessons_by_id = isset( $_POST['pmpro_courses_lessons'] )             ? (array) $_POST['pmpro_courses_lessons']             : array();
+	// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 	$section_names = array_map( 'sanitize_text_field', $section_names );
 	$section_ids   = array_map( 'absint', $section_ids );

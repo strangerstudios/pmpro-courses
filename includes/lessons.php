@@ -155,7 +155,7 @@ function pmpro_courses_lessons_filter_dropdown() {
 	}
 
 	// Build a dropdown of Courses ordered by title.
-	$selected = isset( $_GET['pmpro_courses_filter_course_parent'] ) ? absint( $_GET['pmpro_courses_filter_course_parent'] ) : 0;
+	$selected = isset( $_GET['pmpro_courses_filter_course_parent'] ) ? absint( $_GET['pmpro_courses_filter_course_parent'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only list table filter.
 
 	$courses = get_posts( array(
 		'post_type'      => 'pmpro_course',
@@ -195,12 +195,14 @@ function pmpro_courses_lessons_filter_query( WP_Query $query ) {
 	}
 
 	// Exact-match filter by selected Course ID (parent).
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only list table filter.
 	if ( isset( $_GET['pmpro_courses_filter_course_parent'] ) && '' !== $_GET['pmpro_courses_filter_course_parent'] ) {
 		$course_id = absint( $_GET['pmpro_courses_filter_course_parent'] );
 		if ( $course_id > 0 ) {
 			$query->set( 'post_parent', $course_id );
 		}
 	}
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
 }
 add_action( 'pre_get_posts', 'pmpro_courses_lessons_filter_query' );
 
@@ -309,7 +311,7 @@ function pmpro_courses_redirect_unreleased_lesson() {
 	$redirect_to = apply_filters( 'pmpro_courses_lesson_redirect_to', empty( $course_id ) ? false : get_permalink( $course_id ) );
 
 	if ( $redirect_to ) {
-		wp_redirect( $redirect_to );
+		wp_redirect( $redirect_to ); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect -- Destination is filterable (pmpro_courses_lesson_redirect_to) and may legitimately be offsite.
 		exit;
 	}
 }
