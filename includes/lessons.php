@@ -229,7 +229,7 @@ add_filter('pmpro_has_membership_access_filter_pmpro_lesson', 'pmpro_lessons_byp
  * Deny access to a lesson until its drip date has passed.
  * Runs after the "Free Lesson" bypass, which a drip method defers to.
  *
- * @since TBD
+ * @since 2.2
  */
 function pmpro_courses_unreleased_lesson_access( $hasaccess, $post, $user, $levels ) {
 
@@ -257,7 +257,7 @@ add_filter( 'pmpro_has_membership_access_filter_pmpro_lesson', 'pmpro_courses_un
  * even when "Show Excerpts to Non-Members" is enabled. This covers the REST API, feeds and archives,
  * where the template_redirect below never runs.
  *
- * @since TBD
+ * @since 2.2
  *
  * @param string|false $content_filter The replacement content, or false to let PMPro carry on.
  * @param string       $content        The lesson content.
@@ -288,7 +288,7 @@ add_filter( 'pmpro_membership_content_filter', 'pmpro_courses_hide_unreleased_le
  * Send visitors back to the course when they open a lesson that has not been released yet.
  * An unreleased lesson is treated the same as one the visitor has no access to.
  *
- * @since TBD
+ * @since 2.2
  */
 function pmpro_courses_redirect_unreleased_lesson() {
 	global $post;

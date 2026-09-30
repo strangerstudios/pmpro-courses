@@ -129,7 +129,7 @@ function pmpro_courses_get_lesson_count( $course_id, $post_status = array( 'publ
  * Check whether a lesson is marked as a "Free Lesson".
  * The value is cast so an integration that saves an int or bool agrees with the admin checkbox's string.
  *
- * @since TBD
+ * @since 2.2
  *
  * @param int $lesson_id The lesson ID.
  * @return bool
