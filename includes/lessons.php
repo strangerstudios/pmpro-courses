@@ -212,7 +212,7 @@ add_action( 'pre_get_posts', 'pmpro_courses_lessons_filter_query' );
  * would otherwise be open to everyone in the REST API, feeds and the single lesson page.
  * Runs before the "Free Lesson" bypass and the drip check so both still apply on top.
  *
- * @since TBD
+ * @since 2.2.3
  *
  * @param bool    $hasaccess Whether the user has access to the lesson.
  * @param WP_Post $post      The lesson.

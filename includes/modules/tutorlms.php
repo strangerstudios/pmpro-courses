@@ -209,7 +209,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	 * Tutor LMS opens a public course to everyone, so the course's membership restriction applies.
 	 * Other courses are left to Tutor LMS enrollment, the same as has_access_to_post().
 	 *
-	 * @since TBD
+	 * @since 2.2.3
 	 *
 	 * @param int $course_id The course ID.
 	 * @return bool
@@ -229,7 +229,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	/**
 	 * Don't load a lesson's content over AJAX for users who can't open the lesson page.
 	 *
-	 * @since TBD
+	 * @since 2.2.3
 	 */
 	public static function render_lesson_content_access() {
 		$lesson_id = isset( $_POST['lesson_id'] ) ? absint( $_POST['lesson_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Tutor LMS checks the nonce in its own handler; this only denies access.
@@ -249,7 +249,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	 * Deny Tutor LMS REST API requests for the topics, lessons, quizzes and announcements
 	 * of a public course that the user can't access.
 	 *
-	 * @since TBD
+	 * @since 2.2.3
 	 *
 	 * @param WP_REST_Response|WP_Error|mixed $response The response so far.
 	 * @param array                           $handler  The route handler.
@@ -287,7 +287,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	/**
 	 * Check whether the current user can enroll themselves in a course.
 	 *
-	 * @since TBD
+	 * @since 2.2.3
 	 *
 	 * @param int $course_id The course ID.
 	 * @return bool
@@ -304,7 +304,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	 * Stop the "Enroll Now" form from enrolling a non-member in a restricted course.
 	 * Runs before Tutor LMS handles the form on template_redirect.
 	 *
-	 * @since TBD
+	 * @since 2.2.3
 	 */
 	public static function enroll_now_access() {
 		// Tutor LMS asks logged-out visitors to log in first.
@@ -330,7 +330,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	/**
 	 * Stop the course enrollment AJAX request from enrolling a non-member in a restricted course.
 	 *
-	 * @since TBD
+	 * @since 2.2.3
 	 */
 	public static function course_enrollment_access() {
 		$course_id = isset( $_POST['course_id'] ) ? absint( $_POST['course_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Tutor LMS checks the nonce in its own handler; this only denies access.
@@ -346,7 +346,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	 * Don't enroll a non-member in a restricted course after they log in or register
 	 * from the course's "Enroll Now" button.
 	 *
-	 * @since TBD
+	 * @since 2.2.3
 	 *
 	 * @param bool $allowed   Whether to enroll the user.
 	 * @param int  $course_id The course ID.

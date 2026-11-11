@@ -189,7 +189,7 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 	 * Non-members can't enroll themselves in a restricted course.
 	 * Members are enrolled when they get the level.
 	 *
-	 * @since TBD
+	 * @since 2.2.3
 	 *
 	 * @param bool $can_enroll Whether the current user can enroll themselves.
 	 * @param int  $course_id  The course ID.

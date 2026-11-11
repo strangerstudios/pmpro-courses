@@ -3,7 +3,7 @@ Contributors: strangerstudios, paidmembershipspro, kimannwall, jarryd-long
 Tags: course, education, elearning, lms, membership, pmpro
 Requires at least: 5.4
 Tested up to: 7.1
-Stable tag: 2.2.2
+Stable tag: 2.2.3
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -135,6 +135,12 @@ Please visit [our support site at https://www.paidmembershipspro.com](http://www
 4. A course page on the site frontend showing overview content, a registration box with required levels, and a list of lessons.
 
 == Changelog ==
+= 2.2.3 - 2026-11-11 =
+* SECURITY: Lessons now follow their course's membership restriction, so non-members can no longer view lessons in restricted courses on the single lesson page, through the REST API or in RSS feeds, or mark them complete. Admins without the course's level now see the no-access message on these lessons, as for any restricted post. #167 (@dparker1005)
+* SECURITY: Restricted Tutor LMS lessons, topics and quizzes in public courses are no longer shown to non-members through Tutor LMS's lesson content AJAX request or REST API. #168 (@dparker1005)
+* SECURITY: Restricted Sensei LMS lessons are no longer shown to non-members through the REST API or RSS feeds. #168 (@dparker1005)
+* SECURITY: Non-members can no longer enroll themselves in restricted Tutor LMS or Sensei LMS courses. #168 (@dparker1005)
+
 = 2.2.2 - 2026-09-30 =
 * SECURITY: Saving Course Settings now requires a valid nonce. #154 (@dparker1005)
 * SECURITY: Improved sanitization and escaping throughout the plugin to resolve Plugin Check security findings. #152 (@dparker1005)
