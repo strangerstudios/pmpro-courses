@@ -207,6 +207,40 @@ function pmpro_courses_lessons_filter_query( WP_Query $query ) {
 add_action( 'pre_get_posts', 'pmpro_courses_lessons_filter_query' );
 
 /**
+ * Give a lesson the same access as its course.
+ * Lessons are restricted through their course, so a lesson with no levels of its own
+ * would otherwise be open to everyone in the REST API, feeds and the single lesson page.
+ * Runs before the "Free Lesson" bypass and the drip check so both still apply on top.
+ *
+ * @since TBD
+ *
+ * @param bool    $hasaccess Whether the user has access to the lesson.
+ * @param WP_Post $post      The lesson.
+ * @param WP_User $user      The user being checked.
+ * @param array   $levels    The levels that restrict the lesson itself.
+ * @return bool
+ */
+function pmpro_courses_lesson_course_access( $hasaccess, $post, $user, $levels ) {
+	// Keep a denial from another filter, and a restriction set on the lesson itself.
+	if ( ! $hasaccess || ! empty( $levels ) ) {
+		return $hasaccess;
+	}
+
+	$course_id = wp_get_post_parent_id( $post->ID );
+	if ( empty( $course_id ) || 'pmpro_course' !== get_post_type( $course_id ) ) {
+		return $hasaccess;
+	}
+
+	// A user that doesn't exist has no membership. Don't fall back to the current user.
+	if ( ! ( $user instanceof WP_User ) ) {
+		return false;
+	}
+
+	return pmpro_has_membership_access( $course_id, $user->ID );
+}
+add_filter( 'pmpro_has_membership_access_filter_pmpro_lesson', 'pmpro_courses_lesson_course_access', 5, 4 );
+
+/**
  * Bypass any level restrictions for a PMPro Lesson CPT and mark it as "Free/Public"
  *
  * @since 2.0
