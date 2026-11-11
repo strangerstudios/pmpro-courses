@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 2.2.2\n"
+"Project-Id-Version: Paid Memberships Pro - Courses for Membership Add On 2.2.3\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-30T16:18:40+00:00\n"
+"POT-Creation-Date: 2026-11-11T18:39:15+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pmpro-courses\n"
@@ -100,31 +100,37 @@ msgstr "Лимит"
 
 #: includes/modules/tutorlms.php:44
 #: includes/modules/tutorlms.php:49
+#: includes/modules/tutorlms.php:60
 msgid "Read the Tutor LMS Integration documentation &raquo;"
 msgstr "Прочтите документацию по интеграции Tutor LMS &raquo;"
 
 #: includes/modules/tutorlms.php:43
 #: includes/modules/tutorlms.php:48
+#: includes/modules/tutorlms.php:59
 msgid "Integrate with the Tutor LMS plugin for WordPress."
 msgstr "Интеграция с плагином Tutor LMS для WordPress."
 
 #: includes/modules/tutorlms.php:41
 #: includes/modules/tutorlms.php:46
+#: includes/modules/tutorlms.php:57
 msgid "Tutor LMS"
 msgstr "Tutor LMS"
 
 #: includes/modules/senseilms.php:44
 #: includes/modules/senseilms.php:49
+#: includes/modules/senseilms.php:51
 msgid "Read the Sensei LMS Integration documentation &raquo;"
 msgstr "Прочитайте документацию по интеграции Sensei LMS &raquo;"
 
 #: includes/modules/senseilms.php:43
 #: includes/modules/senseilms.php:48
+#: includes/modules/senseilms.php:50
 msgid "Integrate with the Sensei LMS plugin for WordPress."
 msgstr "Интеграция с плагином Sensei LMS для WordPress."
 
 #: includes/modules/senseilms.php:41
 #: includes/modules/senseilms.php:46
+#: includes/modules/senseilms.php:48
 msgid "Sensei LMS"
 msgstr "Sensei LMS"
 
@@ -533,6 +539,8 @@ msgstr "LifterLMS"
 #: includes/modules/tutorlms.php:60
 #: includes/post-types/courses.php:88
 #: includes/modules/learndash.php:57
+#: includes/modules/senseilms.php:62
+#: includes/modules/tutorlms.php:71
 msgid "Require Membership"
 msgstr "Требуется членство"
 
@@ -995,4 +1003,17 @@ msgstr ""
 #: includes/post-types/lessons.php:140
 #, php-format
 msgid "Uses the site timezone: %s."
+msgstr ""
+
+#: includes/modules/tutorlms.php:245
+msgid "You do not have access to this lesson."
+msgstr ""
+
+#: includes/modules/tutorlms.php:284
+msgid "You do not have access to this course."
+msgstr ""
+
+#: includes/modules/tutorlms.php:327
+#: includes/modules/tutorlms.php:342
+msgid "You must be a member to enroll in this course."
 msgstr ""
