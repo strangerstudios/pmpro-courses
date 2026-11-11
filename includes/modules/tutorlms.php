@@ -261,16 +261,17 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 			return $response;
 		}
 
+		// WordPress matches REST routes case-insensitively, so these patterns must too.
 		$route     = $request->get_route();
 		$topic_id  = absint( $request->get_param( 'topic_id' ) );
 		$object_id = absint( $request->get_param( 'id' ) );
-		if ( preg_match( '#^/tutor/v1/(lessons|quizzes)/?$#', $route ) && ! empty( $topic_id ) ) {
+		if ( preg_match( '#^/tutor/v1/(lessons|quizzes)/?$#i', $route ) && ! empty( $topic_id ) ) {
 			$course_id = tutor_utils()->get_course_id_by( 'topic', $topic_id );
-		} elseif ( preg_match( '#^/tutor/v1/topics/?$#', $route ) ) {
+		} elseif ( preg_match( '#^/tutor/v1/topics/?$#i', $route ) ) {
 			$course_id = absint( $request->get_param( 'course_id' ) );
-		} elseif ( preg_match( '#^/tutor/v1/(quizzes|quiz-question-answer)/\d+$#', $route ) && ! empty( $object_id ) ) {
+		} elseif ( preg_match( '#^/tutor/v1/(quizzes|quiz-question-answer)/\d+/?$#i', $route ) && ! empty( $object_id ) ) {
 			$course_id = tutor_utils()->get_course_id_by( 'quiz', $object_id );
-		} elseif ( preg_match( '#^/tutor/v1/(course-contents|course-announcement)/\d+$#', $route ) ) {
+		} elseif ( preg_match( '#^/tutor/v1/(course-contents|course-announcement)/\d+/?$#i', $route ) ) {
 			$course_id = $object_id;
 		} else {
 			return $response;
