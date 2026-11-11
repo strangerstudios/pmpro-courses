@@ -227,11 +227,16 @@ function pmpro_courses_lesson_course_access( $hasaccess, $post, $user, $levels )
 	}
 
 	$course_id = wp_get_post_parent_id( $post->ID );
-	if ( empty( $course_id ) ) {
+	if ( empty( $course_id ) || 'pmpro_course' !== get_post_type( $course_id ) ) {
 		return $hasaccess;
 	}
 
-	return pmpro_has_membership_access( $course_id, ! empty( $user->ID ) ? $user->ID : null );
+	// A user that doesn't exist has no membership. Don't fall back to the current user.
+	if ( ! ( $user instanceof WP_User ) ) {
+		return false;
+	}
+
+	return pmpro_has_membership_access( $course_id, $user->ID );
 }
 add_filter( 'pmpro_has_membership_access_filter_pmpro_lesson', 'pmpro_courses_lesson_course_access', 5, 4 );
 
