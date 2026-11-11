@@ -43,6 +43,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 		// Non-members can't enroll themselves in a restricted course.
 		add_action( 'template_redirect', array( 'PMPro_Courses_TutorLMS', 'enroll_now_access' ), 5 );
 		add_action( 'wp_ajax_tutor_course_enrollment', array( 'PMPro_Courses_TutorLMS', 'course_enrollment_access' ), 5 );
+		add_filter( 'tutor_allow_guest_attempt_enrollment', array( 'PMPro_Courses_TutorLMS', 'allow_guest_attempt_enrollment' ), 10, 3 );
 
 		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_TutorLMS', 'pmpro_after_all_membership_level_changes' ) );		
 	}
@@ -148,7 +149,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 
 		// Let's assume they have access, in case Tutor LMS has enrollment settings etc.
 		$access = true;
-		$tutor_non_course_cpts = array( 'lesson', 'topic', 'tutor_quiz' );
+		$tutor_non_course_cpts = array( 'lesson', 'topics', 'tutor_quiz' );
 
 		// Check if this is other TutorLMS CPT's.
 		if ( ! in_array( get_post_type( $post_id ), $tutor_non_course_cpts ) ) {
@@ -160,7 +161,8 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 				return true;
 			}
 
-			$course_id = intval( tutor_utils()->get_course_id_by( 'lesson', $post_id ) );
+			// Topics belong to the course directly. Lessons and quizzes belong to a topic.
+			$course_id = intval( tutor_utils()->get_course_id_by( 'topics' === get_post_type( $post_id ) ? 'topic' : 'lesson', $post_id ) );
 
 			// Check course.
 			$public_course = get_post_meta( $course_id, '_tutor_is_public_course', true );
@@ -244,7 +246,7 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	}
 
 	/**
-	 * Deny Tutor LMS REST API requests for lessons, quizzes and announcements
+	 * Deny Tutor LMS REST API requests for the topics, lessons, quizzes and announcements
 	 * of a public course that the user can't access.
 	 *
 	 * @since TBD
@@ -264,9 +266,11 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 		$object_id = absint( $request->get_param( 'id' ) );
 		if ( preg_match( '#^/tutor/v1/(lessons|quizzes)/?$#', $route ) && ! empty( $topic_id ) ) {
 			$course_id = tutor_utils()->get_course_id_by( 'topic', $topic_id );
+		} elseif ( preg_match( '#^/tutor/v1/topics/?$#', $route ) ) {
+			$course_id = absint( $request->get_param( 'course_id' ) );
 		} elseif ( preg_match( '#^/tutor/v1/(quizzes|quiz-question-answer)/\d+$#', $route ) && ! empty( $object_id ) ) {
 			$course_id = tutor_utils()->get_course_id_by( 'quiz', $object_id );
-		} elseif ( preg_match( '#^/tutor/v1/course-announcement/\d+$#', $route ) ) {
+		} elseif ( preg_match( '#^/tutor/v1/(course-contents|course-announcement)/\d+$#', $route ) ) {
 			$course_id = $object_id;
 		} else {
 			return $response;
@@ -302,6 +306,11 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 	 * @since TBD
 	 */
 	public static function enroll_now_access() {
+		// Tutor LMS asks logged-out visitors to log in first.
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Tutor LMS checks the nonce in its own handler; this only denies access.
 		if ( empty( $_POST['tutor_course_action'] ) || '_tutor_course_enroll_now' !== sanitize_text_field( wp_unslash( $_POST['tutor_course_action'] ) ) || empty( $_POST['tutor_course_id'] ) ) {
 			return;
@@ -330,6 +339,25 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 		}
 
 		wp_send_json_error( esc_html__( 'You must be a member to enroll in this course.', 'pmpro-courses' ), 403 );
+	}
+
+	/**
+	 * Don't enroll a non-member in a restricted course after they log in or register
+	 * from the course's "Enroll Now" button.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $allowed   Whether to enroll the user.
+	 * @param int  $course_id The course ID.
+	 * @param int  $user_id   The user who just logged in or registered.
+	 * @return bool
+	 */
+	public static function allow_guest_attempt_enrollment( $allowed, $course_id, $user_id ) {
+		if ( ! $allowed || user_can( $user_id, 'manage_options' ) ) {
+			return $allowed;
+		}
+
+		return self::pmpro_has_membership_access( (int) $course_id, (int) $user_id );
 	}
 
 	/**
