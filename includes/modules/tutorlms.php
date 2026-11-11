@@ -31,8 +31,18 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 			return;
 		}
 
+		add_filter( 'pmpro_has_membership_access_filter', array( 'PMPro_Courses_TutorLMS', 'pmpro_has_membership_access_filter' ), 10, 4 );
 		add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_TutorLMS', 'pmpro_membership_content_filter' ), 10, 2 );
 		add_action( 'template_redirect', array( 'PMPro_Courses_TutorLMS', 'template_redirect' ) );
+
+		// Tutor LMS channels that serve lessons and quizzes without loading the lesson page.
+		add_action( 'wp_ajax_tutor_render_lesson_content', array( 'PMPro_Courses_TutorLMS', 'render_lesson_content_access' ), 5 );
+		add_action( 'wp_ajax_nopriv_tutor_render_lesson_content', array( 'PMPro_Courses_TutorLMS', 'render_lesson_content_access' ), 5 );
+		add_filter( 'rest_request_before_callbacks', array( 'PMPro_Courses_TutorLMS', 'rest_request_before_callbacks' ), 10, 3 );
+
+		// Non-members can't enroll themselves in a restricted course.
+		add_action( 'template_redirect', array( 'PMPro_Courses_TutorLMS', 'enroll_now_access' ), 5 );
+		add_action( 'wp_ajax_tutor_course_enrollment', array( 'PMPro_Courses_TutorLMS', 'course_enrollment_access' ), 5 );
 
 		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_TutorLMS', 'pmpro_after_all_membership_level_changes' ) );		
 	}
@@ -190,6 +200,136 @@ class PMPro_Courses_TutorLMS extends PMPro_Courses_Module {
 		}
 
 		return self::has_access_to_post( $mypost->ID, $myuser->ID );
+	}
+
+	/**
+	 * Check whether the current user can open the content of a public course.
+	 * Tutor LMS opens a public course to everyone, so the course's membership restriction applies.
+	 * Other courses are left to Tutor LMS enrollment, the same as has_access_to_post().
+	 *
+	 * @since TBD
+	 *
+	 * @param int $course_id The course ID.
+	 * @return bool
+	 */
+	public static function has_access_to_public_course( $course_id ) {
+		if ( empty( $course_id ) || 'yes' !== get_post_meta( $course_id, '_tutor_is_public_course', true ) ) {
+			return true;
+		}
+
+		if ( current_user_can( 'manage_options' ) ) {
+			return true;
+		}
+
+		return self::pmpro_has_membership_access( $course_id );
+	}
+
+	/**
+	 * Don't load a lesson's content over AJAX for users who can't open the lesson page.
+	 *
+	 * @since TBD
+	 */
+	public static function render_lesson_content_access() {
+		$lesson_id = isset( $_POST['lesson_id'] ) ? absint( $_POST['lesson_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Tutor LMS checks the nonce in its own handler; this only denies access.
+		if ( empty( $lesson_id ) ) {
+			return;
+		}
+
+		// Same check as the lesson page in template_redirect().
+		if ( get_post_meta( $lesson_id, '_is_preview', true ) || self::has_access_to_post( $lesson_id ) ) {
+			return;
+		}
+
+		wp_send_json_error( esc_html__( 'You do not have access to this lesson.', 'pmpro-courses' ), 403 );
+	}
+
+	/**
+	 * Deny Tutor LMS REST API requests for lessons, quizzes and announcements
+	 * of a public course that the user can't access.
+	 *
+	 * @since TBD
+	 *
+	 * @param WP_REST_Response|WP_Error|mixed $response The response so far.
+	 * @param array                           $handler  The route handler.
+	 * @param WP_REST_Request                 $request  The request.
+	 * @return WP_REST_Response|WP_Error|mixed
+	 */
+	public static function rest_request_before_callbacks( $response, $handler, $request ) {
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+
+		$route     = $request->get_route();
+		$topic_id  = absint( $request->get_param( 'topic_id' ) );
+		$object_id = absint( $request->get_param( 'id' ) );
+		if ( preg_match( '#^/tutor/v1/(lessons|quizzes)/?$#', $route ) && ! empty( $topic_id ) ) {
+			$course_id = tutor_utils()->get_course_id_by( 'topic', $topic_id );
+		} elseif ( preg_match( '#^/tutor/v1/(quizzes|quiz-question-answer)/\d+$#', $route ) && ! empty( $object_id ) ) {
+			$course_id = tutor_utils()->get_course_id_by( 'quiz', $object_id );
+		} elseif ( preg_match( '#^/tutor/v1/course-announcement/\d+$#', $route ) ) {
+			$course_id = $object_id;
+		} else {
+			return $response;
+		}
+
+		if ( self::has_access_to_public_course( intval( $course_id ) ) ) {
+			return $response;
+		}
+
+		return new WP_Error( 'pmpro_courses_no_access', esc_html__( 'You do not have access to this course.', 'pmpro-courses' ), array( 'status' => rest_authorization_required_code() ) );
+	}
+
+	/**
+	 * Check whether the current user can enroll themselves in a course.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $course_id The course ID.
+	 * @return bool
+	 */
+	public static function can_self_enroll( $course_id ) {
+		if ( empty( $course_id ) || current_user_can( 'manage_options' ) ) {
+			return true;
+		}
+
+		return self::pmpro_has_membership_access( $course_id );
+	}
+
+	/**
+	 * Stop the "Enroll Now" form from enrolling a non-member in a restricted course.
+	 * Runs before Tutor LMS handles the form on template_redirect.
+	 *
+	 * @since TBD
+	 */
+	public static function enroll_now_access() {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Tutor LMS checks the nonce in its own handler; this only denies access.
+		if ( empty( $_POST['tutor_course_action'] ) || '_tutor_course_enroll_now' !== sanitize_text_field( wp_unslash( $_POST['tutor_course_action'] ) ) || empty( $_POST['tutor_course_id'] ) ) {
+			return;
+		}
+
+		$course_id = absint( $_POST['tutor_course_id'] );
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		if ( self::can_self_enroll( $course_id ) ) {
+			return;
+		}
+
+		wp_die( esc_html__( 'You must be a member to enroll in this course.', 'pmpro-courses' ), '', array( 'response' => 403, 'back_link' => true ) );
+	}
+
+	/**
+	 * Stop the course enrollment AJAX request from enrolling a non-member in a restricted course.
+	 *
+	 * @since TBD
+	 */
+	public static function course_enrollment_access() {
+		$course_id = isset( $_POST['course_id'] ) ? absint( $_POST['course_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Tutor LMS checks the nonce in its own handler; this only denies access.
+
+		if ( self::can_self_enroll( $course_id ) ) {
+			return;
+		}
+
+		wp_send_json_error( esc_html__( 'You must be a member to enroll in this course.', 'pmpro-courses' ), 403 );
 	}
 
 	/**

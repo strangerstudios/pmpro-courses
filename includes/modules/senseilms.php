@@ -31,8 +31,10 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 			return;
 		}
 
+		add_filter( 'pmpro_has_membership_access_filter', array( 'PMPro_Courses_SenseiLMS', 'pmpro_has_membership_access_filter' ), 10, 4 );
 		add_filter( 'pmpro_membership_content_filter', array( 'PMPro_Courses_SenseiLMS', 'pmpro_membership_content_filter' ), 10, 2 );
 		add_action( 'template_redirect', array( 'PMPro_Courses_SenseiLMS', 'template_redirect' ) );
+		add_filter( 'sensei_can_user_manually_enrol', array( 'PMPro_Courses_SenseiLMS', 'sensei_can_user_manually_enrol' ), 10, 2 );
 
 		add_action( 'pmpro_after_all_membership_level_changes', array( 'PMPro_Courses_SenseiLMS', 'pmpro_after_all_membership_level_changes' ) );
 	}
@@ -181,6 +183,24 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 			return $hasaccess;
 		}
 		return self::has_access_to_post( $mypost->ID, $myuser->ID );
+	}
+
+	/**
+	 * Non-members can't enroll themselves in a restricted course.
+	 * Members are enrolled when they get the level.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $can_enroll Whether the current user can enroll themselves.
+	 * @param int  $course_id  The course ID.
+	 * @return bool
+	 */
+	public static function sensei_can_user_manually_enrol( $can_enroll, $course_id ) {
+		if ( ! $can_enroll || current_user_can( 'manage_options' ) ) {
+			return $can_enroll;
+		}
+
+		return self::pmpro_has_membership_access( $course_id );
 	}
 
 	/**
