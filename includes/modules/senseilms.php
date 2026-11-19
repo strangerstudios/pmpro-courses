@@ -149,8 +149,8 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 				return true;
 			}
 
-			$is_user_taking_course = Sensei()->course->is_user_enrolled( $post_id, $user_id );
 			$course_id = Sensei()->lesson->get_course_id( $post_id ) ?: '';
+			$is_user_taking_course = ! empty( $course_id ) && Sensei()->course->is_user_enrolled( $course_id, $user_id );
 			if ( $is_user_taking_course ) {
 				return true;
 			} elseif ( ! empty( $course_id ) ) {
