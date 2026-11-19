@@ -16,7 +16,14 @@ function pmpro_courses_the_content_lesson( $content ) {
 	}
 
 	$course_id = wp_get_post_parent_id( $post->ID );
-	$complete_button = pmpro_courses_complete_lesson_button( $post->ID, get_current_user_id() );
+
+	// Only show the complete button if the user can track progress on this lesson.
+	// Same check as pmpro_courses_toggle_lesson_progress_ajax().
+	$has_access = ! empty( $course_id ) && pmpro_has_membership_access( $course_id );
+	if ( ! $has_access ) {
+		$has_access = pmpro_has_membership_access( $post->ID );
+	}
+	$complete_button = $has_access ? pmpro_courses_complete_lesson_button( $post->ID, get_current_user_id() ) : '';
 
 	// If there is no complete button and no parent course, don't add empty wrapper markup.
 	if ( empty( $complete_button ) && empty( $course_id ) ) {
