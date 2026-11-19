@@ -35,6 +35,9 @@ function pmpro_courses_shortcode_my_courses( $atts ) {
 	if ( $filter === 'inactive' ) {
 		// Only show courses with zero progress.
 		$courses = PMPro_Courses_User_Progress::pmpro_courses_get_no_activity_courses_for_user( get_current_user_id() );
+		if ( $course_limit > 0 && is_array( $courses ) ) {
+			$courses = array_slice( $courses, 0, $course_limit );
+		}
 	} else {
 		// Get all the courses available for the current user.
 		$courses = pmpro_courses_get_courses( $course_limit, get_current_user_id() );
