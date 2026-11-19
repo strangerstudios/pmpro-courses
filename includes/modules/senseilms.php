@@ -71,7 +71,7 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 		global $post, $pmpro_pages, $current_user;
 
 		// Only check if a SenseiLMS CPT.
-		if ( ! empty( $post ) && is_singular( array( 'course', 'question', 'lesson' ) ) ) {
+		if ( ! empty( $post ) && is_singular( array( 'course', 'question', 'lesson', 'quiz' ) ) ) {
 			// Check access for this course or lesson.
 			$access = self::has_access_to_post( $post->ID );
 
@@ -93,7 +93,9 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 				// Send lessons and other content to the parent course.
 				$meta = get_post_meta( $post->ID );
 
-				$course_id = Sensei()->lesson->get_course_id( $post->ID ) ?: '';
+				// Quizzes belong to a lesson.
+				$lesson_id = 'quiz' === $post->post_type ? Sensei()->quiz->get_lesson_id( $post->ID ) : $post->ID;
+				$course_id = Sensei()->lesson->get_course_id( $lesson_id ) ?: '';
 
 				$is_user_taking_course = Sensei()->course->is_user_enrolled( $course_id, $current_user->ID );
 
@@ -136,6 +138,14 @@ class PMPro_Courses_SenseiLMS extends PMPro_Courses_Module {
 		// No post, return true.
 		if ( ! $post_id ) {
 			return true;
+		}
+
+		// Quizzes have the same access as their lesson.
+		if ( 'quiz' === get_post_type( $post_id ) ) {
+			$lesson_id = Sensei()->quiz->get_lesson_id( $post_id );
+			if ( ! empty( $lesson_id ) ) {
+				$post_id = $lesson_id;
+			}
 		}
 
 		$sensei_non_course_cpts = array( 'lesson', 'question' );
