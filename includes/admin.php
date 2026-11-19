@@ -22,7 +22,7 @@ function pmpro_courses_activation() {
 register_activation_hook( PMPRO_COURSES_BASENAME, 'pmpro_courses_activation' );
 register_activation_hook( 'lifterlms/lifterlms.php', 'pmpro_courses_activation' );
 register_activation_hook( 'tutor/tutor.php', 'pmpro_courses_activation' );
-register_activation_hook( 'sensei-lms/lsensei-lms.php', 'pmpro_courses_activation' );
+register_activation_hook( 'sensei-lms/sensei-lms.php', 'pmpro_courses_activation' );
 register_activation_hook( 'sfwd-lms/sfwd_lms.php', 'pmpro_courses_activation' );
 
 /**
@@ -37,7 +37,7 @@ function pmpro_courses_deactivation() {
 register_deactivation_hook( PMPRO_COURSES_BASENAME, 'pmpro_courses_deactivation' );
 register_deactivation_hook( 'lifterlms/lifterlms.php', 'pmpro_courses_deactivation' );
 register_deactivation_hook( 'tutor/tutor.php', 'pmpro_courses_deactivation' );
-register_deactivation_hook( 'sensei-lms/lsensei-lms.php', 'pmpro_courses_deactivation' );
+register_deactivation_hook( 'sensei-lms/sensei-lms.php', 'pmpro_courses_deactivation' );
 register_deactivation_hook( 'sfwd-lms/sfwd_lms.php', 'pmpro_courses_deactivation' );
 
 /**
