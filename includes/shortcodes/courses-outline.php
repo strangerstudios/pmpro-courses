@@ -27,7 +27,7 @@ function pmpro_courses_course_outline( $atts ) {
 			$course_id = $current_id;
 		}
 	}
-	$show_course_title = ! empty( $atts['show_course_title'] ) ? filter_var( $atts['show_course_title'], FILTER_VALIDATE_BOOLEAN ) : true;
+	$show_course_title = isset( $atts['show_course_title'] ) ? filter_var( $atts['show_course_title'], FILTER_VALIDATE_BOOLEAN ) : true;
 
 	// Nothing passed in or nothing found.
 	if ( empty( $course_id ) ) {
